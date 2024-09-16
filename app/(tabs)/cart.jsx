@@ -1,9 +1,13 @@
 import { Text, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
+
+// Components
+import { Screen } from "../../components/layout/screen";
 
 export default function Cart() {
     return (
-        <View>
+        <Screen>
             <Text>Carrito</Text>
-        </View>
+        </Screen>
     );
 }

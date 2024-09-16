@@ -1,9 +1,12 @@
 import { Text, View } from "react-native";
 
+// Components
+import { Screen } from "../../components/layout/screen";
+
 export default function Index() {
     return (
-        <View>
+        <Screen>
             <Text>Inicio</Text>
-        </View>
+        </Screen>
     );
 }
