@@ -21,7 +21,7 @@ export default function Header() {
             <SafeAreaView className="items-center gap-3 p-[20px]">
                 <Pressable onPress={() => navigation.navigate("index")}>
                     <Image
-                        source={require("../../assets/logo.png")}
+                        source={require("../../public/logo.png")}
                         style={{
                             width: 80,
                             height: 75,

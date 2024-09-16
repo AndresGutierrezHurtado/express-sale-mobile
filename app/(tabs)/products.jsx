@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Linking, Text, View } from "react-native";
+import { Linking, Pressable, Text, View } from "react-native";
 import { useEffect, useState } from "react";
 
 // Components
@@ -21,21 +21,26 @@ export default function Products() {
 
     return (
         <Screen>
-            <Text>Productos</Text>
-            <View>
+            <View className="p-[20px] flex flex-row justify-between w-full">
+                <Text>Productos</Text>
+                <Pressable>
+                    <Text>
+                        Ordenar por
+                    </Text>
+                </Pressable>
+            </View>
+            <View className="p-[20px] flex flex-col gap-3">
                 {loading ? (
                     <Text>Cargando...</Text>
                 ) : (
-                    <View>
-                        {data.map((product) => (
-                            <Link
-                                key={product.producto_id}
-                                href={`products/${product.producto_id}`}
-                            >
-                                <Text>{product.producto_nombre}</Text>
-                            </Link>
-                        ))}
-                    </View>
+                    data.map((product) => (
+                        <Link
+                            key={product.producto_id}
+                            href={`products/${product.producto_id}`}
+                        >
+                            <Text>{product.producto_nombre}</Text>
+                        </Link>
+                    ))
                 )}
             </View>
         </Screen>
