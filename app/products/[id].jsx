@@ -38,8 +38,9 @@ export default function Product() {
                 <View className="p-[20px] flex flex-col gap-4">
                     <View>
                         <Image
-                            source={{ uri: "http://192.168.1.4:8081" + product.producto_imagen_url }}
-                            className="w-full h-[200px] object-contain rounded-lg bg-gray-200"
+                            source={{ uri: process.env.EXPO_PUBLIC_APP_URL + product.producto_imagen_url }}
+                            className="w-full h-[200px] rounded-lg bg-gray-100"
+                            resizeMode="contain"
                         />
                     </View>
                     <View className="space-y-2">
