@@ -21,3 +21,7 @@ export const UserIcon = (props) => (
 export const SearchIcon = (props) => (
     <Feather name="search" size={24} color={"#6b7280"} {...props} />
 );
+
+export const ChevronsLeftIcon = (props) => (
+    <Feather name="chevrons-left" size={24} color="#6b7280" {...props} />
+);
