@@ -1,6 +1,8 @@
 const { DataTypes } = require("sequelize");
 const conn = require("../config/connection");
 const Category = require("./category.model");
+const Media = require("./media.model");
+const Rating = require("./rating.model");
 
 const Product = conn.define(
     "Product",
@@ -53,13 +55,37 @@ const Product = conn.define(
     }
 );
 
-// Association between Product and Category
+// Association one to many with Category
 Product.belongsTo(Category, {
     foreignKey: "categoria_id",
     as: "category",
 });
 Category.hasMany(Product, { 
     foreignKey: "categoria_id",
+    as: "products",
+});
+
+// Association one to many with Media
+Product.hasMany(Media, {
+    foreignKey: "producto_id",
+    as: "media",
+});
+Media.belongsTo(Product, {
+    foreignKey: "producto_id",
+    as: "product",
+});
+
+// Association many to many with Ratings
+Product.belongsToMany(Rating, {
+    through: "calificaciones_productos",
+    foreignKey: "producto_id",
+    otherKey: "calificacion_id",
+    as: "ratings",
+});
+Rating.belongsToMany(Product, {
+    through: "calificaciones_productos",
+    foreignKey: "calificacion_id",
+    otherKey: "producto_id",
     as: "products",
 });
 

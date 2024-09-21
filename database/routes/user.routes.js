@@ -1,17 +1,26 @@
 const User = require("../models/user.model");
+const Rating = require("../models/rating.model");
 const router = require("express").Router();
 
 // Read
 router.get("/users", async (req, res) => {
     const users = await User.findAll({
-        include: ["role", "worker"],
+        include: [
+            "role",
+            "worker",
+            { model: Rating, as: "ratings", through: { attributes: [] } },
+        ],
     });
     res.json(users);
 });
 
 router.get("/users/:id", async (req, res) => {
     const user = await User.findByPk(req.params.id, {
-        include: ["role", "worker"],
+        include: [
+            "role",
+            "worker",
+            { model: Rating, as: "ratings", through: { attributes: [] } },
+        ],
     });
     res.json(user);
 });

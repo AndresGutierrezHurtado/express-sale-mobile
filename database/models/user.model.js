@@ -4,6 +4,7 @@ const Product = require("./product.model");
 const Role = require("./role.model");
 const Recovery = require("./recovery.model");
 const Worker = require("./worker.model");
+const Rating = require("./rating.model");
 
 const User = conn.define(
     "User",
@@ -66,7 +67,7 @@ const User = conn.define(
     }
 );
 
-// Asociación uno a muchos con Productos
+// Association one to many with Product
 User.hasMany(Product, {
     foreignKey: "usuario_id",
     as: "products",
@@ -76,7 +77,7 @@ Product.belongsTo(User, {
     as: "user",
 });
 
-// Asociación muchos a uno con Roles
+// Association one to many with Role
 User.belongsTo(Role, {
     foreignKey: "rol_id",
     as: "role",
@@ -86,7 +87,7 @@ Role.hasMany(User, {
     as: "users",
 });
 
-// Asociación uno a muchos con Recovery
+// Association one to many with Recovery
 User.hasMany(Recovery, {
     foreignKey: "usuario_id",
     as: "recovery",
@@ -96,7 +97,7 @@ Recovery.belongsTo(User, {
     as: "user",
 });
 
-// Asociación uno a uno con Trabajadores
+// Association one to many with Worker
 User.hasOne(Worker, {
     foreignKey: "usuario_id",
     as: "worker",
@@ -104,6 +105,20 @@ User.hasOne(Worker, {
 Worker.belongsTo(User, {
     foreignKey: "usuario_id",
     as: "user",
+});
+
+// Association many to many with Ratings
+User.belongsToMany(Rating, {
+    through: "calificaciones_usuarios",
+    foreignKey: "usuario_id",
+    otherKey: "calificacion_id",
+    as: "ratings",
+});
+Rating.belongsToMany(User, {
+    through: "calificaciones_usuarios",
+    foreignKey: "calificacion_id",
+    otherKey: "usuario_id",
+    as: "users",
 });
 
 module.exports = User;
