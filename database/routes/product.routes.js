@@ -1,13 +1,14 @@
 const Product = require("../models/product.model");
 const Rating = require("../models/rating.model");
+const User = require("../models/user.model");
 const router = require("express").Router();
 
 // read
 router.get("/products", async (req, res) => {
     const products = await Product.findAll({
         include: [
-            "category", 
-            "user",
+            "category",
+            { model: User, as: "user", include: ["worker"] },
             { model: Rating, as: "ratings", through: { attributes: [] } },
         ],
     });
@@ -17,8 +18,8 @@ router.get("/products", async (req, res) => {
 router.get("/products/:id", async (req, res) => {
     const product = await Product.findByPk(req.params.id, {
         include: [
-            "category", 
-            "user",
+            "category",
+            { model: User, as: "user", include: ["worker"] },
             { model: Rating, as: "ratings", through: { attributes: [] } },
         ],
     });
