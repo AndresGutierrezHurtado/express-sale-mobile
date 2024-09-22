@@ -25,3 +25,11 @@ export const SearchIcon = (props) => (
 export const ChevronsLeftIcon = (props) => (
     <Feather name="chevrons-left" size={24} color="#6b7280" {...props} />
 );
+
+export const UserPlusIcon = (props) => (
+    <Feather name="user-plus" size={24} color="#6b7280" {...props} />
+);
+
+export const LogInIcon = (props) => (
+    <Feather name="log-in" size={24} color="#6b7280" {...props} />
+);
