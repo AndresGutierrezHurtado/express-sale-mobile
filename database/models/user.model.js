@@ -1,10 +1,5 @@
 const { DataTypes } = require("sequelize");
 const conn = require("../config/connection");
-const Product = require("./product.model");
-const Role = require("./role.model");
-const Recovery = require("./recovery.model");
-const Worker = require("./worker.model");
-const Rating = require("./rating.model");
 
 const User = conn.define(
     "User",
@@ -67,58 +62,89 @@ const User = conn.define(
     }
 );
 
-// Association one to many with Product
-User.hasMany(Product, {
-    foreignKey: "usuario_id",
-    as: "products",
-});
-Product.belongsTo(User, {
-    foreignKey: "usuario_id",
-    as: "user",
-});
+const Role = conn.define(
+    "Role",
+    {
+        rol_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        rol_nombre: {
+            type: DataTypes.STRING(50),
+            allowNull: false,
+        },
+    },
+    {
+        tableName: "roles",
+        timestamps: false,
+    }
+);
 
-// Association one to many with Role
-User.belongsTo(Role, {
-    foreignKey: "rol_id",
-    as: "role",
-});
-Role.hasMany(User, {
-    foreignKey: "rol_id",
-    as: "users",
-});
+const Worker = conn.define(
+    "Worker",
+    {
+        trabajador_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        trabajador_descripcion: {
+            type: DataTypes.TEXT,
+            defaultValue: "usuario nuevo.",
+        },
+        trabajador_numero_trabajos: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0,
+        },
+        trabajador_saldo: {
+            type: DataTypes.DECIMAL(10, 0),
+            defaultValue: 0,
+        },
+        usuario_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    },
+    {
+        tableName: "trabajadores",
+        timestamps: false,
+    }
+);
 
-// Association one to many with Recovery
-User.hasMany(Recovery, {
-    foreignKey: "usuario_id",
-    as: "recovery",
-});
-Recovery.belongsTo(User, {
-    foreignKey: "usuario_id",
-    as: "user",
-});
+const Recovery = conn.define(
+    "Recovery",
+    {
+        recuperacion_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        usuario_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        token: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+        email: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+        fecha_creacion: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
+        fecha_expiracion: {
+            type: DataTypes.DATE,
+            defaultValue: () => new Date(new Date().getTime() + 60 * 60 * 1000),
+        },
+    },
+    {
+        tableName: "recuperacion_cuentas",
+        timestamps: false,
+    }
+);
 
-// Association one to many with Worker
-User.hasOne(Worker, {
-    foreignKey: "usuario_id",
-    as: "worker",
-});
-Worker.belongsTo(User, {
-    foreignKey: "usuario_id",
-    as: "user",
-});
-
-// Association many to many with Ratings
-User.belongsToMany(Rating, {
-    through: "calificaciones_usuarios",
-    foreignKey: "usuario_id",
-    otherKey: "calificacion_id",
-    as: "ratings",
-});
-Rating.belongsToMany(User, {
-    through: "calificaciones_usuarios",
-    foreignKey: "calificacion_id",
-    otherKey: "usuario_id",
-    as: "users",
-});
-
-module.exports = User;
+module.exports = { User, Role, Worker, Recovery };

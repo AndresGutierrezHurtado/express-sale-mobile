@@ -1,15 +1,25 @@
-const User = require("../models/user.model");
-const Rating = require("../models/rating.model");
 const router = require("express").Router();
+
+// Models
+const {
+    Order,
+    PaymentDetails,
+    ShippingDetails,
+    OrderProduct,
+    User,
+    Role,
+    Worker,
+    Recovery,
+    Product,
+    Media,
+    Category,
+    Rating,
+} = require("../models/relations");
 
 // Read
 router.get("/users", async (req, res) => {
     const users = await User.findAll({
-        include: [
-            "role",
-            "worker",
-            { model: Rating, as: "ratings", through: { attributes: [] } },
-        ],
+        include: ["role", "worker"],
     });
     res.json(users);
 });
@@ -19,6 +29,15 @@ router.get("/users/:id", async (req, res) => {
         include: [
             "role",
             "worker",
+            {
+                model: Order,
+                as: "orders",
+                include: [
+                    { model: PaymentDetails, as: "paymentDetails" },
+                    { model: ShippingDetails, as: "shippingDetails" },
+                    { model: OrderProduct, as: "orderProducts" },
+                ],
+            },
             { model: Rating, as: "ratings", through: { attributes: [] } },
         ],
     });

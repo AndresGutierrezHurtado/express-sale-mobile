@@ -1,8 +1,5 @@
 const { DataTypes } = require("sequelize");
 const conn = require("../config/connection");
-const Category = require("./category.model");
-const Media = require("./media.model");
-const Rating = require("./rating.model");
 
 const Product = conn.define(
     "Product",
@@ -55,38 +52,50 @@ const Product = conn.define(
     }
 );
 
-// Association one to many with Category
-Product.belongsTo(Category, {
-    foreignKey: "categoria_id",
-    as: "category",
-});
-Category.hasMany(Product, { 
-    foreignKey: "categoria_id",
-    as: "products",
-});
+const Media = conn.define(
+    "Media",
+    {
+        multimedia_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        multimedia_url: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+        multimedia_tipo: {
+            type: DataTypes.ENUM("imagen", "video"),
+            allowNull: false,
+        },
+        producto_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+    },
+    {
+        tableName: "multimedias",
+        timestamps: false,
+    }
+);
 
-// Association one to many with Media
-Product.hasMany(Media, {
-    foreignKey: "producto_id",
-    as: "media",
-});
-Media.belongsTo(Product, {
-    foreignKey: "producto_id",
-    as: "product",
-});
+const Category = conn.define(
+    "Category",
+    {
+        categoria_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        categoria_nombre: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+        },
+    },
+    {
+        tableName: "categorias",
+        timestamps: false,
+    }
+);
 
-// Association many to many with Ratings
-Product.belongsToMany(Rating, {
-    through: "calificaciones_productos",
-    foreignKey: "producto_id",
-    otherKey: "calificacion_id",
-    as: "ratings",
-});
-Rating.belongsToMany(Product, {
-    through: "calificaciones_productos",
-    foreignKey: "calificacion_id",
-    otherKey: "producto_id",
-    as: "products",
-});
-
-module.exports = Product;
+module.exports = { Product, Media, Category };

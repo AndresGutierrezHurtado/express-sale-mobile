@@ -1,7 +1,20 @@
-const Product = require("../models/product.model");
-const Rating = require("../models/rating.model");
-const User = require("../models/user.model");
 const router = require("express").Router();
+
+// Models
+const {
+    Order,
+    PaymentDetails,
+    ShippingDetails,
+    OrderProduct,
+    User,
+    Role,
+    Worker,
+    Recovery,
+    Product,
+    Media,
+    Category,
+    Rating,
+} = require("../models/relations");
 
 // read
 router.get("/products", async (req, res) => {

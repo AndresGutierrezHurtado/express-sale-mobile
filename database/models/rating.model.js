@@ -32,4 +32,4 @@ const Rating = conn.define('Rating', {
     timestamps: false
 });
 
-module.exports = Rating;
+module.exports = { Rating };
