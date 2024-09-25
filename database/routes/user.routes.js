@@ -1,4 +1,6 @@
 const router = require("express").Router();
+require("dotenv").config();
+const crypto = require("crypto");
 
 // Models
 const {
@@ -68,6 +70,38 @@ router.delete("/users/:id", async (req, res) => {
         },
     });
     res.json(user);
+});
+
+// Auth
+router.post("/auth", async (req, res) => {
+    const { usuario_correo, usuario_contra } = req.body;
+
+    const user = await User.findOne({
+        where: { usuario_correo: usuario_correo },
+    });
+
+    if (!user) {
+        return res
+            .status(401)
+            .json({ success: false, message: "Usuario no encontrado" });
+    }
+
+    const hashedPassword = crypto
+        .createHash("md5")
+        .update(usuario_contra)
+        .digest("hex");
+
+    if (user.usuario_contra !== hashedPassword) {
+        return res
+            .status(401)
+            .json({ success: false, message: "Contraseña incorrecta" });
+    }
+
+    const token = jwt.sign({ ...user }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+    });
+
+    res.status(200).json({ success: true, token });
 });
 
 module.exports = router;
