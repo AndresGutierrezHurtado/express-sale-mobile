@@ -5,4 +5,4 @@ const app = express();
 
 app.use(express.json({ limit: "50mb" }));
 
-app.listen(process.env.VITE_API_PORT, () => console.log("server running"));
+app.listen(process.env.EXPO_PUBLIC_API_PORT, () => console.log("server running"));
