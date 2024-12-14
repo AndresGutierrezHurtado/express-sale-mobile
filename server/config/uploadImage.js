@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 
-// Cloudinary configuration
+// Cloudinary
 (async function () {
     cloudinary.config({
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,7 +12,7 @@ import { v2 as cloudinary } from "cloudinary";
 export const uploadFile = async (file, id, url) => {
     try {
         const result = await cloudinary.uploader.upload(file, {
-            folder: `/ac-computers${url}`,
+            folder: `/express-sale${url}`,
             id: id,
             public_id: id,
             resource_type: "image",
@@ -20,17 +20,16 @@ export const uploadFile = async (file, id, url) => {
             unique_filename: true,
             transformation: [{ quality: "auto", fetch_format: "auto" }],
         });
-
         return {
             success: true,
             message: "Imagen subida correctamente",
-            data: result.secure_url,
+            data: result,
         };
     } catch (error) {
         return {
             success: false,
             message: error.message,
-            data: error,
+            data: null,
         };
     }
 };
@@ -38,9 +37,6 @@ export const uploadFile = async (file, id, url) => {
 export const deleteFile = async (public_id) => {
     try {
         const result = await cloudinary.uploader.destroy(public_id);
-
-        if (result.result == "not found") throw new Error("No se encontró el archivo.");
-
         return {
             success: true,
             message: "Imagen eliminada correctamente",
@@ -50,7 +46,7 @@ export const deleteFile = async (public_id) => {
         return {
             success: false,
             message: error.message,
-            data: error,
+            data: null,
         };
     }
 };

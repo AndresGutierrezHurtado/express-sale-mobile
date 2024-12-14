@@ -1,279 +1,343 @@
-import { Op } from "sequelize";
 import * as models from "../models/relations.js";
-import { deleteFile, uploadFile } from "../config/useUploadImage.js";
-import { sequelize } from "../config/database.js";
+import sequelize from "../config/database.js";
+import { Op } from "sequelize";
+import crypto from "crypto";
+import { deleteFile, uploadFile } from "../config/uploadImage.js";
 
 export default class ProductController {
-    static async getProducts(req, res) {
-        let whereClause = {};
-
-        if (req.query.search) {
-            whereClause = {
-                [Op.or]: {
-                    product_id: { [Op.like]: `%${req.query.search}%` },
-                    product_name: { [Op.like]: `%${req.query.search}%` },
-                    product_description: { [Op.like]: `%${req.query.search}%` },
-                },
+    static createProduct = async (req, res) => {
+        try {
+            let productData = {
+                producto_id: crypto.randomUUID(),
+                usuario_id: req.session.usuario_id,
+                ...req.body.product,
             };
-        }
-        if (req.query.category_id)
-            whereClause.category_id = req.query.category_id;
-        if (req.query.sort && req.query.sort === "product_discount:desc")
-            whereClause.product_discount = { [Op.gt]: 0 };
+            const product = await models.Product.create(productData);
 
+            if (req.body.producto_imagen) {
+                const response = await uploadFile(
+                    req.body.producto_imagen,
+                    product.producto_id,
+                    "/products"
+                );
+
+                if (!response.success)
+                    return res.status(500).json({
+                        success: false,
+                        message: response.message || "Error al subir a la nube la imagen",
+                        data: null,
+                    });
+
+                const responseUpdate = await models.Product.update(
+                    {
+                        producto_imagen_url: response.data.secure_url || response.data.url,
+                    },
+                    {
+                        where: {
+                            producto_id: product.producto_id,
+                        },
+                    }
+                );
+
+                if (responseUpdate[0] < 1) {
+                    return res.status(500).json({
+                        success: false,
+                        message: responseUpdate.message || "Error al guardar en la nube la imagen",
+                        data: null,
+                    });
+                }
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Producto creado correctamente",
+                data: product,
+            });
+        } catch (error) {
+            res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    };
+
+    static updateProduct = async (req, res) => {
+        try {
+            let productData = req.body.product;
+            if (req.body.producto_imagen) {
+                const response = await uploadFile(
+                    req.body.producto_imagen,
+                    req.params.id,
+                    "/products"
+                );
+                if (response.success)
+                    productData.producto_imagen_url = response.data.secure_url || response.data.url;
+                else
+                    return res.status(500).json({
+                        success: false,
+                        message: response.message || "Error al subir la imagen",
+                        data: null,
+                    });
+            }
+
+            if (req.body.multimedias.length > 0) {
+                req.body.multimedias.forEach(async (multimedia) => {
+                    const multimediaId = crypto.randomUUID();
+                    const response = await uploadFile(
+                        multimedia,
+                        multimediaId,
+                        "/products/multimedia"
+                    );
+
+                    if (response.success)
+                        await models.Media.create({
+                            multimedia_id: multimediaId,
+                            multimedia_url: response.data.secure_url || response.data.url,
+                            producto_id: req.params.id,
+                        });
+                    else
+                        return res.status(500).json({
+                            success: false,
+                            message: response.message || "Error al subir la imagen",
+                            data: null,
+                        });
+                });
+            }
+
+            const product = await models.Product.update(productData, {
+                where: {
+                    producto_id: req.params.id,
+                },
+            });
+            res.status(200).json({
+                success: true,
+                message: "Producto actualizado correctamente",
+                data: product,
+            });
+        } catch (error) {
+            res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    };
+
+    static deleteProduct = async (req, res) => {
+        try {
+            const product = await models.Product.destroy({
+                where: {
+                    producto_id: req.params.id,
+                },
+            });
+            res.status(200).json({
+                success: true,
+                message: "Producto eliminado correctamente",
+                data: product,
+            });
+        } catch (error) {
+            res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    };
+
+    static getProducts = async (req, res) => {
         try {
             const products = await models.Product.findAndCountAll({
+                where: {
+                    [Op.and]: [
+                        {
+                            producto_estado: "publico",
+                        },
+                        {
+                            [Op.or]: [
+                                {
+                                    producto_nombre: {
+                                        [Op.like]: `%${req.query.search || ""}%`,
+                                    },
+                                },
+                                {
+                                    producto_descripcion: {
+                                        [Op.like]: `%${req.query.search || ""}%`,
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            producto_precio: {
+                                [Op.gte]: req.query.min || 0,
+                            },
+                        },
+                        {
+                            producto_precio: {
+                                [Op.lte]: req.query.max || 9999999999,
+                            },
+                        },
+                        {
+                            categoria_id: {
+                                [Op.in]: req.query.category ? [req.query.category] : [1, 2, 3, 4],
+                            },
+                        },
+                    ],
+                },
+                limit: parseInt(req.query.limit || 5),
+                offset: req.query.page ? (req.query.page - 1) * 5 : 0,
+                distinct: true,
                 include: [
-                    { model: models.Category, as: "category" },
-                    { model: models.Spec, as: "specs" },
-                    { model: models.Multimedia, as: "multimedias" },
+                    "category",
+                    {
+                        model: models.User,
+                        as: "user",
+                    },
                 ],
-                where: whereClause,
+                attributes: {
+                    include: [
+                        [
+                            sequelize.literal(`(
+                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
+                                FROM calificaciones
+                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
+                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                            )`),
+                            "calificacion_promedio",
+                        ],
+                        [
+                            sequelize.literal(`(
+                                SELECT COALESCE(COUNT(*), 0)
+                                FROM calificaciones
+                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
+                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                            )`),
+                            "calificacion_cantidad",
+                        ],
+                    ],
+                },
                 order: [
                     [
                         req.query.sort
                             ? req.query.sort.split(":")[0]
-                            : "product_id",
-                        req.query.sort ? req.query.sort.split(":")[1] : "asc",
+                            : sequelize.literal("`calificacion_promedio`"),
+                        req.query.sort ? req.query.sort.split(":")[1] : "DESC",
                     ],
                 ],
-                limit: req.query.limit ? parseInt(req.query.limit) : 10,
-                offset: (parseInt(req.query.page || 1) - 1) * 10,
-                distinct: true,
             });
 
             res.status(200).json({
                 success: true,
-                message: "Productos obtenidos con éxito",
-                data: {
-                    ...products,
-                    page: parseInt(req.query.page) || 1,
-                    limit: parseInt(req.query.limit) || 10,
-                },
+                message: "Listado de productos.",
+                data: products,
             });
         } catch (error) {
             res.status(500).json({
                 success: false,
-                message: "Error al obtener los productos",
-                data: error,
+                message: error.message,
+                data: null,
             });
         }
-    }
+    };
 
-    static async getProduct(req, res) {
+    static getProduct = async (req, res) => {
         try {
             const product = await models.Product.findByPk(req.params.id, {
+                attributes: {
+                    include: [
+                        [
+                            sequelize.literal(`(
+                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
+                                FROM calificaciones
+                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
+                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                            )`),
+                            "calificacion_promedio",
+                        ],
+                        [
+                            sequelize.literal(`(
+                                SELECT COALESCE(COUNT(*), 0)
+                                FROM calificaciones
+                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
+                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                            )`),
+                            "calificacion_cantidad",
+                        ],
+                    ],
+                },
                 include: [
-                    { model: models.Category, as: "category" },
-                    { model: models.Spec, as: "specs" },
-                    { model: models.Multimedia, as: "multimedias" },
+                    "category",
+                    "media",
+                    { model: models.User, as: "user", include: ["worker"] },
                 ],
             });
 
             res.status(200).json({
                 success: true,
-                message: "Producto obtenido con éxito",
-                data: product,
-            });
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                message: "Error al obtener el producto",
-                error: error.message,
-            });
-        }
-    }
-
-    static async createProduct(req, res) {
-        try {
-            req.body.product.product_id = crypto.randomUUID();
-
-            if (req.body.product_image) {
-                const url = await uploadFile(
-                    req.body.product_image,
-                    req.body.product.product_id,
-                    "/"
-                );
-
-                req.body.product.product_image_url = url.data;
-            }
-
-            const product = await models.Product.create(req.body.product);
-
-            if (req.body.specs) {
-                const specs = await models.Spec.bulkCreate(
-                    req.body.specs.map((spec) => ({
-                        ...spec,
-                        product_id: product.product_id,
-                    }))
-                );
-            }
-
-            if (req.body.multimedias) {
-                const multimediaData = await Promise.all(
-                    req.body.multimedias.map(async (file) => {
-                        const id = crypto.randomUUID();
-                        const { data: url } = await uploadFile(file, id, "/medias");
-
-                        return {
-                            media_id: id,
-                            media_url: url,
-                            product_id: product.product_id,
-                        };
-                    })
-                );
-
-                await models.Multimedia.bulkCreate(multimediaData);
-            }
-
-            res.status(200).json({
-                success: true,
-                message: "Producto creado con éxito",
+                message: "Listado de productos.",
                 data: product,
             });
         } catch (error) {
             res.status(500).json({
                 success: false,
                 message: error.message,
-                data: error,
+                data: null,
             });
         }
-    }
+    };
 
-    static async updateProduct(req, res) {
+    static getProductRatings = async (req, res) => {
         try {
-            if (req.body.product_image) {
-                const { data: url } = await uploadFile(
-                    req.body.product_image,
-                    req.params.id,
-                    "/"
-                );
-
-                req.body.product.product_image_url = url;
-            }
-
-            const product = await models.Product.update(req.body.product, {
-                where: { product_id: req.params.id },
-            });
-
-            if (req.body.specs) {
-                await models.Spec.destroy({
-                    where: { product_id: req.params.id },
-                });
-
-                const specs = await models.Spec.bulkCreate(
-                    req.body.specs.map((spec) => ({
-                        ...spec,
-                        product_id: req.params.id,
-                    }))
-                );
-            }
-
-            if (req.body.multimedias) {
-
-                const multimediaData = await Promise.all(
-                    req.body.multimedias.map(async (file) => {
-                        const id = crypto.randomUUID();
-                        const { data: url } = await uploadFile(file, id, "/medias");
-
-                        return {
-                            media_id: id,
-                            media_url: url,
-                            product_id: req.params.id,
-                        };
-                    })
-                );
-
-
-                const medias = await models.Multimedia.bulkCreate(multimediaData)
-            }
-
-            res.status(200).json({
-                success: true,
-                message: "Producto actualizado con éxito",
-                data: product,
-            });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({
-                success: false,
-                message: "Error al actualizar el producto",
-                error: error.message,
-            });
-        }
-    }
-
-    static async deleteProduct(req, res) {
-        const transaction = sequelize.transaction();
-        try {
-            const referenceProduct = await models.Product.findByPk(req.params.id, {
+            const { ratings } = await models.Product.findByPk(req.params.id, {
                 include: [
-                    { model: models.Category, as: "category" },
-                    { model: models.Spec, as: "specs" },
-                    { model: models.Multimedia, as: "multimedias" },
+                    {
+                        model: models.Rating,
+                        as: "ratings",
+                        through: { attributes: [] },
+                        include: [{ model: models.User, as: "calificator" }],
+                    },
                 ],
-                transaction
             });
-
-            const product = await models.Product.destroy({
-                where: { product_id: req.params.id },
-                transaction
-            });
-
-            const image = await deleteFile(`ac-computers/${req.params.id}`);
-            const medias = Promise.all(referenceProduct.multimedias.map(async media => await deleteFile(`ac-computers/medias/${media_id}`)));
-
-            if (!image.success || medias.filter(el => !el.success).length > 0) throw new Error(image.data);
-
-            await models.Spec.destroy({
-                where: { product_id: req.params.id },
-                transaction
-            });
-
-            await models.Multimedia.destroy({
-                where: { product_id: req.params.id },
-                transaction
-            });
-
-            (await transaction).commit();
-            res.status(200).json({
-                success: true,
-                message: "Producto eliminado con éxito",
-                data: product,
-            });
-        } catch (error) {
-            await (await transaction).rollback();
-            res.status(500).json({
-                success: false,
-                message: "Error al eliminar el producto",
-                error: error.message,
-            });
-        }
-    }
-
-    static async deleteMedia(req, res) {
-        try {
-            const image = await deleteFile(`ac-computers/medias/${req.params.id}`);
-
-            if (!image.success) throw new Error(image.data);
-
-            const media = await models.Multimedia.destroy({
-                where: { media_id: req.params.id },
-            });
-
-            if (media == 0) throw new Error("No se encontró la multimedia");
 
             res.status(200).json({
                 success: true,
-                message: "Producto eliminado con éxito",
-                data: { image, media },
+                message: "Listado de productos.",
+                data: ratings,
             });
         } catch (error) {
             res.status(500).json({
                 success: false,
                 message: error.message,
-                error: error,
+                data: null,
             });
         }
-    }
+    };
+
+    static deleteMultimedia = async (req, res) => {
+        const t = await sequelize.transaction();
+        try {
+            await models.Media.destroy({
+                where: {
+                    multimedia_id: req.params.id,
+                },
+                transaction: t,
+            });
+
+            const response = await deleteFile(`express-sale/products/multimedia/${req.params.id}`);
+
+            if (!response || !response.success) {
+                throw new Error(response.message);
+            }
+
+            await t.commit();
+            res.status(200).json({
+                success: true,
+                message: "Imagen eliminada correctamente",
+                data: null,
+            });
+        } catch (error) {
+            await t.rollback();
+            res.status(404).json({
+                success: false,
+                message: error.message,
+            });
+        }
+    };
 }

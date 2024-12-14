@@ -1,63 +1,85 @@
 import express from "express";
+import { createServer } from "http";
+import { initSocket } from "./config/socket.js";
 import cors from "cors";
+import "dotenv/config";
 import session from "express-session";
-import sequelizeStore from "connect-session-sequelize";
-import { sequelize } from "./config/database.js";
-import * as models from "./models/relations.js";
-const SequelizeStore = new sequelizeStore(session.Store);
+import conn from "./config/database.js";
+import SequelizeStore from "connect-session-sequelize";
 
-// routes
+// Routes
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import ratingRoutes from "./routes/rating.routes.js";
+import orderRoutes from "./routes/order.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
-const app = express();
+// Models
+import * as models from "./models/relations.js";
 
-const store = new SequelizeStore({
-    db: sequelize,
-    tableName: "sessions",
-    checkExpirationInterval: 15 * 60 * 1000,
-    expiration: 60 * 60 * 1000,
+// Config
+const SequelizeSessionStore = SequelizeStore(session.Store);
+const sessionStore = new SequelizeSessionStore({
+    db: conn,
+    table: "Session",
 });
-await store.sync();
 
-// Middlewares
-app.use(express.json({ limit: "20mb" }));
+const app = express();
+const httpServer = createServer(app);
+const io = initSocket(httpServer);
+
+app.use(express.json({ limit: "10mb" }));
 app.use(
     cors({
-        origin: process.env.VITE_APP_URL,
+        origin: process.env.VITE_URL,
         credentials: true,
     })
 );
 app.use(
     session({
-        secret: process.env.SESSION_SECRET,
+        secret: process.env.JWT_SECRET,
         resave: false,
         saveUninitialized: false,
-        store: store,
+        store: sessionStore,
         cookie: {
-            secure: process.env.NODE_ENV === "production",
+            maxAge: 1000 * 60 * 60 * 24,
+            secure: false,
             httpOnly: true,
-            maxAge: 60 * 60 * 1000,
+            sameSite: "lax",
         },
     })
 );
 app.use(async (req, res, next) => {
-    if (req.session.user_id) {
-        req.session.user = await models.User.findByPk(req.session.user_id, {
-            include: [{ model: models.Role, as: "role" }],
+    if (req.session.usuario_id) {
+        const user = await models.User.findByPk(req.session.usuario_id, {
+            attributes: {
+                include: [
+                    [
+                        conn.literal(`(
+                            SELECT pedidos.pedido_id
+                            FROM pedidos
+                            INNER JOIN detalles_envios ON detalles_envios.pedido_id = pedidos.pedido_id
+                            INNER JOIN trabajadores ON detalles_envios.trabajador_id = trabajadores.trabajador_id
+                            WHERE trabajadores.usuario_id = "${req.session.usuario_id}" AND pedidos.pedido_estado = "enviando"
+                            )`),
+                        "domiciliario_domicilio",
+                    ],
+                ],
+            },
+            include: ["worker", "role"],
         });
+        if (user) {
+            req.session.user = user;
+        }
     }
-
     next();
 });
 
-app.use("/api/v1", userRoutes);
-app.use("/api/v1", productRoutes);
-app.use("/api/v1", authRoutes);
+// Routes
+app.use("/api/v2", userRoutes);
+app.use("/api/v2", productRoutes);
+app.use("/api/v2", ratingRoutes);
+app.use("/api/v2", orderRoutes);
+app.use("/api/v2", authRoutes);
 
-app.get("/", (req, res) => res.redirect(process.env.VITE_APP_URL));
-
-app.listen(process.env.VITE_API_PORT, () =>
-    console.log(`Server running on port ${process.env.VITE_API_PORT}`)
-);
+httpServer.listen(process.env.PORT, () => console.log(`Listening on port ${process.env.PORT}`));
