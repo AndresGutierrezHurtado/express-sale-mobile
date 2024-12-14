@@ -1,0 +1,13 @@
+{
+    "name": "express-sale-mobile",
+    "version": "1.0.0",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "npm run dev --prefix client",
+        "server": "npm run server --prefix server"
+    },
+    "keywords": [],
+    "author": "Andrés Gutiérrez Hurtado",
+    "license": "ISC",
+    "description": "Sistema de información de ventas para las tiendas de barrio"
+}
