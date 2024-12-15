@@ -25,7 +25,6 @@ export const User = sequelize.define(
         user_alias: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            unique: true,
         },
         user_phone: {
             type: DataTypes.DECIMAL(10, 0),
