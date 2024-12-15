@@ -145,32 +145,32 @@ export default class UserController {
         const limit = parseInt(req.query.limit || 5);
         const page = parseInt(req.query.page || 1);
         const offset = (page - 1) * limit;
-        const order = req.query.sort ? req.query.sort.split(":") : ["usuario_creacion", "ASC"];
+        const order = req.query.sort ? req.query.sort.split(":") : ["user_date", "ASC"];
 
         const whereClause = {
             [Op.or]: [
                 {
-                    usuario_alias: {
+                    user_alias: {
                         [Op.like]: `%${req.query.search || ""}%`,
                     },
                 },
                 {
-                    usuario_correo: {
+                    user_email: {
                         [Op.like]: `%${req.query.search || ""}%`,
                     },
                 },
                 {
-                    usuario_nombre: {
+                    user_name: {
                         [Op.like]: `%${req.query.search || ""}%`,
                     },
                 },
                 {
-                    usuario_apellido: {
+                    user_lastname: {
                         [Op.like]: `%${req.query.search || ""}%`,
                     },
                 },
                 {
-                    usuario_id: {
+                    user_id: {
                         [Op.like]: `%${req.query.search || ""}%`,
                     },
                 },
@@ -183,7 +183,7 @@ export default class UserController {
                 where: whereClause,
                 include: ["role", "worker"],
                 attributes: {
-                    exclude: ["usuario_contra"],
+                    exclude: ["user_password"],
                 },
                 limit,
                 offset,
