@@ -215,58 +215,59 @@ export default class UserController {
                     include: [
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2),0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_usuarios ON calificaciones.calificacion_id = calificaciones_usuarios.calificacion_id
-                                WHERE calificaciones_usuarios.usuario_id = User.usuario_id
+                                SELECT COALESCE(ROUND(AVG(ratings.rating_value), 2),0)
+                                FROM ratings
+                                INNER JOIN user_ratings ON ratings.rating_id = user_ratings.rating_id
+                                WHERE user_ratings.user_id = User.user_id
                             )`),
                             "calificacion_promedio",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*) ,0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_usuarios ON calificaciones.calificacion_id = calificaciones_usuarios.calificacion_id
-                                WHERE calificaciones_usuarios.usuario_id = User.usuario_id
+                                FROM ratings
+                                INNER JOIN user_ratings ON ratings.rating_id = user_ratings.rating_id
+                                WHERE user_ratings.user_id = User.user_id
                             )`),
                             "calificacion_cantidad",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*) ,0)
-                                FROM detalles_envios
-                                INNER JOIN trabajadores ON User.usuario_id = trabajadores.usuario_id
-                                INNER JOIN pedidos ON detalles_envios.pedido_id = pedidos.pedido_id
-                                WHERE trabajadores.trabajador_id = detalles_envios.trabajador_id
-                                AND pedidos.pedido_estado = "recibido"
+                                FROM shipping_details
+                                INNER JOIN workers ON User.user_id = workers.user_id
+                                INNER JOIN orders ON shipping_details.order_id = orders.order_Id
+                                WHERE workers.worker_id = shipping_details.worker_id
+                                AND orders.order_status = "recibido"
                             )`),
                             "envios_cantidad",
                         ],
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(SUM(detalles_envios.envio_valor) ,0)
-                                FROM detalles_envios
-                                INNER JOIN trabajadores ON User.usuario_id = trabajadores.usuario_id
-                                INNER JOIN pedidos ON detalles_envios.pedido_id = pedidos.pedido_id
-                                WHERE trabajadores.trabajador_id = detalles_envios.trabajador_id AND pedidos.pedido_estado = "recibido"
+                                SELECT COALESCE(SUM(shipping_details.shipping_cost) ,0)
+                                FROM shipping_details
+                                INNER JOIN workers ON User.user_id = workers.user_id
+                                INNER JOIN orders ON shipping_details.order_Id = orders.order_Id
+                                WHERE workers.worker_id = shipping_details.worker_id 
+                                AND orders.order_status = "recibido"
                             )`),
                             "envios_dinero",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*) ,0)
-                                FROM productos_pedidos
-                                INNER JOIN productos ON productos_pedidos.producto_id = productos.producto_id
-                                WHERE productos.usuario_id = User.usuario_id
+                                FROM order_products
+                                INNER JOIN products ON order_products.product_id = products.product_id
+                                WHERE products.user_id = User.user_id
                             )`),
                             "ventas_cantidad",
                         ],
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(SUM(productos_pedidos.producto_precio * productos_pedidos.producto_cantidad) ,0)
-                                FROM productos_pedidos
-                                INNER JOIN productos ON productos_pedidos.producto_id = productos.producto_id
-                                WHERE productos.usuario_id = User.usuario_id
+                                SELECT COALESCE(SUM(order_products.product_price * order_products.product_quantity) ,0)
+                                FROM order_products
+                                INNER JOIN products ON order_products.product_id = products.product_id
+                                WHERE products.user_id = User.user_id
                             )`),
                             "ventas_dinero",
                         ],
@@ -287,25 +288,25 @@ export default class UserController {
 
             const yearDeliveries = await sequelize.query(
                 `
-                    SELECT MONTH(pedidos.pedido_fecha) AS mes, YEAR(pedidos.pedido_fecha) AS anio, COUNT(*) AS total_envios, SUM(detalles_envios.envio_valor) AS dinero_envios
-                    FROM detalles_envios
-                    INNER JOIN pedidos ON detalles_envios.pedido_id = pedidos.pedido_id
-                    INNER JOIN trabajadores ON trabajadores.trabajador_id = detalles_envios.trabajador_id
-                    WHERE detalles_envios.trabajador_id = "${req.session.user.worker.trabajador_id}" AND pedidos.pedido_estado = "recibido"
-                    GROUP BY MONTH(pedidos.pedido_fecha)
+                    SELECT MONTH(orders.order_date) AS mes, YEAR(orders.order_date) AS anio, COUNT(*) AS shippings_quantity, SUM(shipping_details.shipping_cost) AS shipping_money
+                    FROM shipping_details
+                    INNER JOIN orders ON shipping_details.order_id = orders.order_id
+                    INNER JOIN workers ON worker.worker_id = shipping_details.worker_id
+                    WHERE shipping_details.worker_id = "${req.session.user.worker.worker_id}" AND orders.order_status = "recibido"
+                    GROUP BY MONTH(orders.pedido_fecha)
                     ORDER BY mes;
                 `
             );
 
             const yearSales = await sequelize.query(
                 `
-                    SELECT MONTH(pedidos.pedido_fecha) AS mes, YEAR(pedidos.pedido_fecha) AS anio, SUM(productos_pedidos.producto_cantidad) AS total_productos, SUM(productos_pedidos.producto_precio * productos_pedidos.producto_cantidad) AS dinero_ventas
+                    SELECT MONTH(orders.pedido_fecha) AS mes, YEAR(orders.pedido_fecha) AS anio, SUM(productos_pedidos.producto_cantidad) AS total_productos, SUM(productos_pedidos.producto_precio * productos_pedidos.producto_cantidad) AS dinero_ventas
                     FROM productos_pedidos
                     INNER JOIN productos ON productos_pedidos.producto_id = productos.producto_id
-                    INNER JOIN pedidos ON pedidos.pedido_id = productos_pedidos.pedido_id
-                    INNER JOIN detalles_pagos ON pedidos.pedido_id = detalles_pagos.pedido_id
+                    INNER JOIN orders ON orders.pedido_id = productos_pedidos.pedido_id
+                    INNER JOIN detalles_pagos ON orders.pedido_id = detalles_pagos.pedido_id
                     WHERE productos.usuario_id = "${req.params.id}"
-                    GROUP BY MONTH(pedidos.pedido_fecha)
+                    GROUP BY MONTH(orders.pedido_fecha)
                     ORDER BY mes;
                 `
             );
