@@ -4,6 +4,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "npm run dev --prefix client",
+        "download": "npm install --prefix client && npm install --prefix server",
         "server": "npm run server --prefix server"
     },
     "keywords": [],
