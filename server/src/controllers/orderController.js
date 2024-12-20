@@ -46,43 +46,40 @@ export default class OrderController {
             }
 
             const order = await models.Order.create({
-                pedido_id: crypto.randomUUID(),
-                usuario_id: req.session.user.usuario_id,
+                user_id: req.session.user.user_id,
             });
 
             const paymentDetails = await models.PaymentDetails.create({
-                pago_id: crypto.randomUUID(),
-                pedido_id: order.pedido_id,
-                pago_metodo: transactionDetailedInfo.paymentMethod,
-                pago_valor: transactionDetailedInfo.additionalValues.PM_PAYER_TOTAL_AMOUNT.value,
-                comprador_nombre: transactionDetailedInfo.payer.fullName,
-                comprador_correo: transactionDetailedInfo.payer.emailAddress,
-                comprador_tipo_documento: transactionDetailedInfo.payer.dniType,
-                comprador_numero_documento: transactionDetailedInfo.payer.dniNumber,
-                comprador_telefono: transactionDetailedInfo.extraParameters.PAYER_TELEPHONE,
-                payu_referencia: payuResponse.referenceCode,
+                order_id: order.order_id,
+                payment_method: transactionDetailedInfo.paymentMethod,
+                payment_amount: transactionDetailedInfo.additionalValues.PM_PAYER_TOTAL_AMOUNT.value,
+                buyer_name: transactionDetailedInfo.payer.fullName,
+                buyer_email: transactionDetailedInfo.payer.emailAddress,
+                buyer_document_type: transactionDetailedInfo.payer.dniType,
+                buyer_document_number: transactionDetailedInfo.payer.dniNumber,
+                buyer_phone: transactionDetailedInfo.extraParameters.PAYER_TELEPHONE,
+                payu_reference: payuResponse.referenceCode,
             });
 
             const shippingDetails = await models.ShippingDetails.create({
-                envio_id: crypto.randomUUID(),
-                pedido_id: order.pedido_id,
-                envio_direccion: extraInfo.shippingAddress,
-                envio_coordenadas: extraInfo.shippingCoordinates,
-                envio_valor: 7500,
-                envio_mensaje: extraInfo.payerMessage,
+                order_id: order.order_id,
+                shipping_address: extraInfo.shippingAddress,
+                shipping_coordinates: extraInfo.shippingCoordinates,
+                shipping_cost: 7500,
+                shipping_message: extraInfo.payerMessage,
             });
 
             const carts = await models.Cart.findAll({
-                where: { usuario_id: req.session.user.usuario_id },
+                where: { user_id: req.session.user_id },
                 include: [{ model: models.Product, as: "product" }],
             });
 
             const cartItems = carts.map((cart) => {
                 return {
-                    pedido_id: order.pedido_id,
-                    producto_id: cart.producto_id,
-                    producto_cantidad: cart.producto_cantidad,
-                    producto_precio: cart.product.producto_precio,
+                    order_id: order.order_id,
+                    product_id: cart.product_id,
+                    product_quantity: cart.product_quantity,
+                    product_price: cart.product.product_price,
                 };
             });
 
@@ -93,7 +90,7 @@ export default class OrderController {
             const workerBalances = {};
 
             const orderProductPromises = orderProducts.map(async (orderProduct) => {
-                const product = await models.Product.findByPk(orderProduct.producto_id, {
+                const product = await models.Product.findByPk(orderProduct.product_id, {
                     include: [
                         {
                             model: models.User,
@@ -106,32 +103,32 @@ export default class OrderController {
                 // Update product quantity
                 await models.Product.update(
                     {
-                        producto_cantidad:
-                            product.producto_cantidad - orderProduct.producto_cantidad,
+                        product_quantity:
+                            product.product_quantity - orderProduct.product_quantity,
                     },
                     {
-                        where: { producto_id: orderProduct.producto_id },
+                        where: { product_id: orderProduct.product_id },
                         transaction: t,
                     }
                 );
 
-                const userId = product.usuario_id;
+                const userId = product.user_id;
 
                 if (!workerBalances[userId]) {
-                    workerBalances[userId] = parseInt(product.user.worker.trabajador_saldo);
+                    workerBalances[userId] = parseInt(product.user.worker.worker_balance);
                 }
 
                 workerBalances[userId] +=
-                    parseInt(orderProduct.producto_precio) *
-                    parseInt(orderProduct.producto_cantidad);
+                    parseInt(orderProduct.product_price) *
+                    parseInt(orderProduct.product_quantity);
 
                 // Escribir el nuevo saldo en la base de datos
                 await models.Worker.update(
                     {
-                        trabajador_saldo: workerBalances[userId],
+                        worker_balance: workerBalances[userId],
                     },
                     {
-                        where: { usuario_id: userId },
+                        where: { user_id: userId },
                         transaction: t,
                     }
                 );
@@ -140,7 +137,7 @@ export default class OrderController {
             await Promise.all(orderProductPromises);
 
             const emptyCart = await models.Cart.destroy({
-                where: { usuario_id: req.session.usuario_id },
+                where: { user_id: req.session.user_id },
                 transaction: t,
             });
 
@@ -149,12 +146,12 @@ export default class OrderController {
             const io = getSocket();
 
             const soldProducts = await Promise.all(
-                cartItems.map((cartItem) => models.Product.findByPk(cartItem.producto_id))
+                cartItems.map((cartItem) => models.Product.findByPk(cartItem.product_id))
             );
 
             io.emit("sale", soldProducts);
 
-            res.redirect(`${process.env.EXPO_PUBLIC_APP_DOMAIN}/order/${order.pedido_id}`);
+            res.redirect(`${process.env.EXPO_PUBLIC_APP_DOMAIN}/order/${order.order_id}`);
         } catch (error) {
             await t.rollback();
             res.status(500).json({
@@ -170,21 +167,21 @@ export default class OrderController {
         try {
             if (req.body.order) {
                 await models.Order.update(req.body.order, {
-                    where: { pedido_id: req.params.id },
+                    where: { order_id: req.params.id },
                     transaction: t,
                 });
             }
 
             if (req.body.shippingDetails) {
                 await models.ShippingDetails.update(req.body.shippingDetails, {
-                    where: { pedido_id: req.params.id },
+                    where: { order_id: req.params.id },
                     transaction: t,
                 });
             }
 
             if (req.body.delivery) {
                 await models.Worker.update(req.body.delivery, {
-                    where: { trabajador_id: req.body.delivery_id },
+                    where: { worker_id: req.body.delivery_id },
                     transaction: t,
                 });
             }
@@ -254,10 +251,10 @@ export default class OrderController {
         const whereClause = {};
         const whereOrderProductClause = {};
     
-        if (req.query.pedido_estado) whereClause.pedido_estado = {
-            [Op.in]: req.query.pedido_estado.split(","),
+        if (req.query.order_status) whereClause.order_status = {
+            [Op.in]: req.query.order_status.split(","),
         };
-        if (req.query.usuario_id) whereOrderProductClause.usuario_id = req.query.usuario_id;
+        if (req.query.user_id) whereOrderProductClause.user_id = req.query.user_id;
 
         try {
             const order = await models.Order.findAll({
