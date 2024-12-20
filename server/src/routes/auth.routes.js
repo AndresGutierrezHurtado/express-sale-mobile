@@ -129,7 +129,7 @@ authRoutes.get(
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
     (req, res) => {
-        req.session.usuario_id = req.user.usuario_id;
+        req.session.user_id = req.user.user_id;
         res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
     }
 );
@@ -147,7 +147,7 @@ authRoutes.get(
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
     (req, res) => {
-        req.session.usuario_id = req.user.usuario_id;
+        req.session.user_id = req.user.user_id;
         res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
     }
 );
@@ -160,14 +160,14 @@ authRoutes.get(
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
     function (req, res) {
-        req.session.usuario_id = req.user.usuario_id;
+        req.session.user_id = req.user.user_id;
         res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
     }
 );
 
 // Normal Auth
 authRoutes.get("/user/session", async (req, res) => {
-    if (!req.session.usuario_id) {
+    if (!req.session.user_id) {
         res.status(200).json({ success: false, message: "Usuario no autenticado", data: null });
         return;
     }

@@ -65,7 +65,7 @@ export const feedbackTemplate = (asunto, mensaje, nombre, correo, usuario) => {
                             usuario &&
                             `
                             <p>
-                                <a href="${process.env.EXPO_PUBLIC_APP_DOMAIN}/users/${usuario?.usuario_id}" style="display: inline-block; padding: 15px 40px; background-color: #18163a; color: white; text-decoration: none; border-radius: 2px; font-weight: bold;">Ver más información del usuario</a>
+                                <a href="${process.env.EXPO_PUBLIC_APP_DOMAIN}/users/${usuario?.user_id}" style="display: inline-block; padding: 15px 40px; background-color: #18163a; color: white; text-decoration: none; border-radius: 2px; font-weight: bold;">Ver más información del usuario</a>
                             </p>
                             `
                         }
