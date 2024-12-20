@@ -20,7 +20,7 @@ export default class UserController {
                 transaction,
             });
 
-            if (user.rol_id == 2 || user.rol_id == 3) {
+            if (user.role_id == 2 || user.role_id == 3) {
                 const worker = await models.Worker.create(
                     {
                         user_id: user.user_id,
@@ -291,7 +291,7 @@ export default class UserController {
                         COUNT(*) AS shippings_quantity, 
                         SUM(shipping_details.shipping_cost) AS shipping_money
                     FROM shipping_details
-                    INNER JOIN orders ON shipping_details.order_id = orders.order_id
+                        INNER JOIN orders ON shipping_details.order_id = orders.order_id
                         INNER JOIN workers ON workers.worker_id = shipping_details.worker_id
                     WHERE shipping_details.worker_id = "${user.worker.worker_id}" AND orders.order_status = "recibido"
                     GROUP BY MONTH(orders.order_date)
@@ -405,7 +405,7 @@ export default class UserController {
     static getUserOrders = async (req, res) => {
         try {
             const orders = await models.Order.findAll({
-                where: { usuario_id: req.params.id },
+                where: { user_id: req.params.id },
                 include: [
                     { model: models.PaymentDetails, as: "paymentDetails" },
                     {
@@ -468,7 +468,7 @@ export default class UserController {
     static getUserCart = async (req, res) => {
         try {
             const cart = await models.Cart.findAll({
-                where: { usuario_id: req.params.id },
+                where: { user_id: req.params.id },
                 include: [{ model: models.Product, as: "product" }],
             });
 
@@ -490,18 +490,18 @@ export default class UserController {
         try {
             const cart = await models.Cart.findOne({
                 where: {
-                    producto_id: req.body.producto_id,
-                    usuario_id: req.session.usuario_id,
+                    product_id: req.body.product_id,
+                    user_id: req.session.user_id,
                 },
             });
 
             if (cart) {
                 await models.Cart.update(
                     {
-                        producto_cantidad: cart.producto_cantidad + 1,
+                        product_quantity: cart.product_quantity + 1,
                     },
                     {
-                        where: { carrito_id: cart.carrito_id },
+                        where: { cart_id: cart.cart_id },
                     }
                 );
                 return res.status(200).json({
@@ -512,9 +512,9 @@ export default class UserController {
             }
 
             const newCart = await models.Cart.create({
-                carrito_id: crypto.randomUUID(),
-                usuario_id: req.session.usuario_id,
-                producto_id: req.body.producto_id,
+                cart_id: crypto.randomUUID(),
+                user_id: req.session.user_id,
+                product_id: req.body.product_id,
             });
 
             res.status(200).json({
@@ -535,10 +535,10 @@ export default class UserController {
         try {
             const cart = await models.Cart.update(
                 {
-                    producto_cantidad: req.body.producto_cantidad,
+                    product_quantity: req.body.product_quantity,
                 },
                 {
-                    where: { carrito_id: req.params.id },
+                    where: { cart_id: req.params.id },
                 }
             );
 
@@ -559,7 +559,7 @@ export default class UserController {
     static deleteUserCart = async (req, res) => {
         try {
             const cart = await models.Cart.destroy({
-                where: { carrito_id: req.params.id },
+                where: { cart_id: req.params.id },
             });
 
             res.status(200).json({
@@ -579,7 +579,7 @@ export default class UserController {
     static emptyUserCart = async (req, res) => {
         try {
             const cart = await models.Cart.destroy({
-                where: { usuario_id: req.session.usuario_id },
+                where: { user_id: req.session.user_id },
             });
             res.status(200).json({
                 success: true,
@@ -602,39 +602,39 @@ export default class UserController {
             });
 
             const deliveryShippings = await models.ShippingDetails.findAll({
-                where: { trabajador_id: user.worker.trabajador_id },
+                where: { worker_id: user.worker.worker_id },
             });
 
             const sellerSales = await models.OrderProduct.findAll({
                 include: [
-                    { model: models.Product, as: "product", where: { usuario_id: req.params.id } },
+                    { model: models.Product, as: "product", where: { user_id: req.params.id } },
                     { model: models.Order, as: "order" },
                 ],
             });
 
             const withdrawalsDb = await models.Withdrawal.findAll({
-                where: { trabajador_id: user.worker.trabajador_id },
+                where: { worker_id: user.worker.worker_id },
             });
 
             const withdrawals = withdrawalsDb.map((withdrawal) => ({
-                id: withdrawal.retiro_id,
-                valor: withdrawal.retiro_valor,
-                fecha: withdrawal.retiro_fecha,
-                tipo: "retiro",
+                id: withdrawal.withdrawal_id,
+                amount: withdrawal.withdrawal_amount,
+                date: withdrawal.withdrawal_date,
+                type: "retiro",
             }));
 
             const deliveryEarnings = deliveryShippings.map((shipping) => ({
-                id: shipping.envio_id,
-                valor: shipping.envio_valor,
-                fecha: shipping.fecha_inicio,
-                tipo: "ingreso",
+                id: shipping.shipping_id,
+                amount: shipping.shipping_cost,
+                date: shipping.shipping_start,
+                type: "ingreso",
             }));
 
             const sellerEarnings = sellerSales.map((sale) => ({
                 id: crypto.randomUUID(),
-                valor: sale.producto_precio * sale.producto_cantidad,
-                fecha: sale.order.pedido_fecha,
-                tipo: "ingreso",
+                amount: sale.product_price * sale.product_quantity,
+                date: sale.order.order_date,
+                type: "ingreso",
             }));
 
             res.status(200).json({
@@ -643,7 +643,6 @@ export default class UserController {
                 data: [...deliveryEarnings, ...withdrawals, ...sellerEarnings],
             });
         } catch (error) {
-            console.error(error);
             res.status(500).json({
                 success: false,
                 message: error.message,
@@ -655,18 +654,18 @@ export default class UserController {
     static createUserWithdrawal = async (req, res) => {
         try {
             const withdrawal = await models.Withdrawal.create({
-                retiro_id: crypto.randomUUID(),
-                trabajador_id: req.session.user.worker.trabajador_id,
-                retiro_valor: req.body.retiro_valor,
+                withdrawal_id: crypto.randomUUID(),
+                worker_id: req.session.user.worker.worker_id,
+                withdrawal_amount: req.body.withdrawal_amount,
             });
 
             await models.Worker.update(
                 {
-                    trabajador_saldo:
-                        req.session.user.worker.trabajador_saldo - req.body.retiro_valor,
+                    worker_balance:
+                        req.session.user.worker.worker_balance - req.body.withdrawal_amount,
                 },
                 {
-                    where: { trabajador_id: req.session.user.worker.trabajador_id },
+                    where: { worker_id: req.session.user.worker.worker_id },
                 }
             );
 
@@ -687,7 +686,7 @@ export default class UserController {
     static createRecovery = async (req, res) => {
         try {
             const user = await models.User.findOne({
-                where: { usuario_correo: req.body.usuario_correo },
+                where: { user_email: req.body.user_email },
             });
 
             if (!user) {
@@ -698,8 +697,7 @@ export default class UserController {
             }
 
             const recovery = await models.Recovery.create({
-                recuperacion_id: crypto.randomUUID(),
-                usuario_id: user.usuario_id,
+                user_id: user.user_id,
             });
 
             const transporter = nodemailer.createTransport({
@@ -714,10 +712,10 @@ export default class UserController {
 
             await transporter.sendMail({
                 from: process.env.EMAIL_USER,
-                to: user.usuario_correo,
+                to: user.user_email,
                 subject: "Recupera tu contraseña | Express Sale",
                 html: recoveryTemplate(
-                    `${process.env.EXPO_PUBLIC_APP_DOMAIN}/reset-password/${recovery.recuperacion_id}`
+                    `${process.env.EXPO_PUBLIC_APP_DOMAIN}/reset-password/${recovery.recovery_id}`
                 ),
             });
 
@@ -738,7 +736,7 @@ export default class UserController {
     static getRecovery = async (req, res) => {
         try {
             const recovery = await models.Recovery.findOne({
-                where: { recuperacion_id: req.params.token },
+                where: { recovery_id: req.params.token },
             });
 
             if (!recovery) {
@@ -749,7 +747,7 @@ export default class UserController {
                 });
             }
 
-            if (new Date().getTime() >= new Date(recovery.fecha_expiracion).getTime()) {
+            if (new Date().getTime() >= new Date(recovery.recovery_expiration).getTime()) {
                 return res.status(404).json({
                     success: false,
                     message: "La recuperación ha expirado.",
@@ -775,19 +773,19 @@ export default class UserController {
         try {
             const recovery = await models.Recovery.update(
                 {
-                    fecha_expiracion: new Date().toISOString(),
+                    recovery_expiration: new Date().toISOString(),
                 },
                 {
-                    where: { recuperacion_id: req.params.token },
+                    where: { recovery_id: req.params.token },
                 }
             );
 
             const user = await models.User.update(
                 {
-                    usuario_contra: bcrypt.hashSync(req.body.usuario_contra, 10),
+                    user_password: bcrypt.hashSync(req.body.user_password, 10),
                 },
                 {
-                    where: { usuario_id: req.body.usuario_id },
+                    where: { user_id: req.body.user_id },
                 }
             );
 
@@ -820,12 +818,12 @@ export default class UserController {
             await transporter.sendMail({
                 from: process.env.EMAIL_USER,
                 to: process.env.EMAIL_USER,
-                subject: `Formulario de contacto de usuario ${req.body.usuario_nombre} | Express Sale`,
+                subject: `Formulario de contacto de usuario ${req.body.user_name} | Express Sale`,
                 html: feedbackTemplate(
-                    req.body.correo_asunto,
-                    req.body.correo_mensaje,
-                    req.body.usuario_nombre,
-                    req.body.usuario_correo,
+                    req.body.email_subject,
+                    req.body.email_message,
+                    req.body.user_name,
+                    req.body.user_email,
                     req.session.user
                 ),
             });
