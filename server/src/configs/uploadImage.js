@@ -20,10 +20,11 @@ export const uploadFile = async (file, id, url) => {
             unique_filename: true,
             transformation: [{ quality: "auto", fetch_format: "auto" }],
         });
+
         return {
             success: true,
             message: "Imagen subida correctamente",
-            data: result,
+            data: result.secure_url || result.url,
         };
     } catch (error) {
         return {
