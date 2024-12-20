@@ -1,24 +1,24 @@
 import { Tabs } from "expo-router";
-import { View } from "react-native";
+import { HomeIcon, ShopIcon, CartIcon, ProfileIcon } from "../../components/icons";
 
 export default function TabsLayout() {
     return (
         <Tabs>
             <Tabs.Screen
                 name="index"
-                options={{ title: "Inicio", headerShown: false, tabBarIcon: null }}
+                options={{ title: "Inicio", tabBarIcon: HomeIcon }}
             />
             <Tabs.Screen
                 name="products"
-                options={{ title: "Tienda", headerShown: false, tabBarIcon: null }}
+                options={{ title: "Tienda", tabBarIcon: ShopIcon }}
             />
             <Tabs.Screen
                 name="cart"
-                options={{ title: "Carrito", headerShown: false, tabBarIcon: null }}
+                options={{ title: "Carrito", tabBarIcon: CartIcon }}
             />
             <Tabs.Screen
                 name="profile"
-                options={{ title: "Perfil", headerShown: false, tabBarIcon: null }}
+                options={{ title: "Perfil", tabBarIcon: ProfileIcon }}
             />
         </Tabs>
     );
