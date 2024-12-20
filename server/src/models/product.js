@@ -1,20 +1,11 @@
 import { DataTypes } from "sequelize";
-<<<<<<<< HEAD:server/models/product.model.js
-import sequelize from "../config/database.js";
-========
 import sequelize from "../configs/database.js";
->>>>>>>> develop:server/src/models/product.js
 
 const Product = sequelize.define(
     "Product",
     {
-<<<<<<<< HEAD:server/models/product.model.js
-        producto_id: {
-            type: DataTypes.STRING(60),
-========
         product_id: {
             type: DataTypes.UUID,
->>>>>>>> develop:server/src/models/product.js
             primaryKey: true,
         },
         product_name: {
@@ -45,13 +36,8 @@ const Product = sequelize.define(
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-<<<<<<<< HEAD:server/models/product.model.js
-        usuario_id: {
-            type: DataTypes.STRING(60),
-========
         user_id: {
             type: DataTypes.UUID,
->>>>>>>> develop:server/src/models/product.js
             allowNull: false,
         },
         category_id: {
@@ -68,26 +54,16 @@ const Product = sequelize.define(
 const Media = sequelize.define(
     "Media",
     {
-<<<<<<<< HEAD:server/models/product.model.js
-        multimedia_id: {
-            type: DataTypes.STRING(60),
-========
         media_id: {
             type: DataTypes.UUID,
->>>>>>>> develop:server/src/models/product.js
             primaryKey: true,
         },
         media_url: {
             type: DataTypes.STRING(255),
             allowNull: false,
         },
-<<<<<<<< HEAD:server/models/product.model.js
-        producto_id: {
-            type: DataTypes.STRING(60),
-========
         product_id: {
             type: DataTypes.UUID,
->>>>>>>> develop:server/src/models/product.js
             allowNull: false,
         },
     },

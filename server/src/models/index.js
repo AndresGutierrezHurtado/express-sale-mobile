@@ -1,15 +1,8 @@
 // Models
-<<<<<<<< HEAD:server/models/relations.js
-import { User, Role, Worker, Recovery, Session, Cart, Withdrawal } from "./user.model.js";
-import { Product, Media, Category } from "./product.model.js";
-import { Order, PaymentDetails, ShippingDetails, OrderProduct } from "./order.model.js";
-import { Rating, ProductsCalifications, UsersCalifications } from "./rating.model.js";
-========
 import { User, Role, Worker, Recovery, Session, Cart, Withdrawal } from "./user.js";
-import { Product, Media, Category } from "./product.js";
 import { Order, PaymentDetails, ShippingDetails, OrderProduct } from "./order.js";
 import { Rating, ProductsCalifications, UsersCalifications } from "./rating.js";
->>>>>>>> develop:server/src/models/index.js
+import { Product, Media, Category } from "./product.js";
 
 // ------ USER ASSOCIATIONS ----- //
 
@@ -76,104 +69,62 @@ Order.belongsTo(User, {
 // User to Rating: Many-to-Many
 User.belongsToMany(Rating, {
     through: UsersCalifications,
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "usuario_id",
-    otherKey: "calificacion_id",
-========
     foreignKey: "user_id",
     otherKey: "rating_id",
->>>>>>>> develop:server/src/models/index.js
     as: "ratings",
 });
 Rating.belongsToMany(User, {
     through: UsersCalifications,
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "calificacion_id",
-    otherKey: "usuario_id",
-========
     foreignKey: "rating_id",
     otherKey: "user_id",
->>>>>>>> develop:server/src/models/index.js
     as: "users",
 });
 
 // User to Rating: One-to-Many
 User.hasMany(Rating, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "usuario_id",
-========
     foreignKey: "user_id",
->>>>>>>> develop:server/src/models/index.js
     as: "califications",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 Rating.belongsTo(User, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "usuario_id",
-========
     foreignKey: "user_id",
->>>>>>>> develop:server/src/models/index.js
     as: "calificator",
 });
 
 // Worker to Withdraw: One-to-Many
 Worker.hasMany(Withdrawal, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "trabajador_id",
-========
     foreignKey: "worker_id",
->>>>>>>> develop:server/src/models/index.js
     as: "withdrawals",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 Withdrawal.belongsTo(Worker, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "trabajador_id",
-========
     foreignKey: "worker_id",
->>>>>>>> develop:server/src/models/index.js
     as: "worker",
 });
 
 // User to Cart: One-to-Many
 User.hasMany(Cart, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "usuario_id",
-========
     foreignKey: "user_id",
->>>>>>>> develop:server/src/models/index.js
     as: "carts",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 Cart.belongsTo(User, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "usuario_id",
-========
     foreignKey: "user_id",
->>>>>>>> develop:server/src/models/index.js
     as: "user",
 });
 
 // Product to Cart: One-to-Many
 Product.hasMany(Cart, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "producto_id",
-========
     foreignKey: "product_id",
->>>>>>>> develop:server/src/models/index.js
     as: "carts",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 Cart.belongsTo(Product, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "producto_id",
-========
     foreignKey: "product_id",
->>>>>>>> develop:server/src/models/index.js
     as: "product",
 });
 
@@ -206,24 +157,14 @@ Media.belongsTo(Product, {
 // Product to Rating: Many-to-Many
 Product.belongsToMany(Rating, {
     through: ProductsCalifications,
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "producto_id",
-    otherKey: "calificacion_id",
-========
     foreignKey: "product_id",
     otherKey: "rating_id",
->>>>>>>> develop:server/src/models/index.js
     as: "ratings",
 });
 Rating.belongsToMany(Product, {
     through: ProductsCalifications,
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "calificacion_id",
-    otherKey: "producto_id",
-========
     foreignKey: "rating_id",
     otherKey: "product_id",
->>>>>>>> develop:server/src/models/index.js
     as: "products",
 });
 
@@ -231,55 +172,51 @@ Rating.belongsToMany(Product, {
 
 // Order to PaymentDetails: One-to-One
 Order.hasOne(PaymentDetails, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "paymentDetails",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 PaymentDetails.belongsTo(Order, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "order",
 });
 
 // Order to ShippingDetails: One-to-One
 Order.hasOne(ShippingDetails, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "shippingDetails",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 ShippingDetails.belongsTo(Order, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "order",
 });
 
 // Order to OrderProduct: One-to-Many
 Order.hasMany(OrderProduct, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "orderProducts",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });
 OrderProduct.belongsTo(Order, {
-    foreignKey: "pedido_id",
+    foreignKey: "order_id",
     as: "order",
 });
 
 // OrderProduct to Product: Many-to-One
 OrderProduct.belongsTo(Product, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "producto_id",
-    as: "product",
-});
-Product.hasMany(OrderProduct, {
-    foreignKey: "producto_id",
-========
     foreignKey: "product_id",
     as: "product",
 });
 Product.hasMany(OrderProduct, {
     foreignKey: "product_id",
->>>>>>>> develop:server/src/models/index.js
+    as: "product",
+});
+Product.hasMany(OrderProduct, {
+    foreignKey: "product_id",
     as: "orderProducts",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
@@ -287,11 +224,7 @@ Product.hasMany(OrderProduct, {
 
 // Worker to ShippingDetails: One-to-Many
 Worker.hasMany(ShippingDetails, {
-<<<<<<<< HEAD:server/models/relations.js
-    foreignKey: "trabajador_id",
-========
     foreignKey: "worker_id",
->>>>>>>> develop:server/src/models/index.js
     as: "shippings",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
