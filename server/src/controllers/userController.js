@@ -68,11 +68,7 @@ export default class UserController {
 
             if (userData) {
                 if (req.body.user_image) {
-                    const response = await uploadFile(
-                        req.body.user_image,
-                        req.params.id,
-                        "/users"
-                    );
+                    const response = await uploadFile(req.body.user_image, req.params.id, "/users");
 
                     if (response.success) {
                         userData = { ...userData, user_image_url: response.data.secure_url };
@@ -131,13 +127,13 @@ export default class UserController {
             res.status(200).json({
                 success: true,
                 message: "Usuario eliminado correctamente.",
-                data: null
+                data: null,
             });
         } catch (error) {
             res.status(500).json({
                 success: false,
                 message: error.message,
-                data: null
+                data: null,
             });
         }
     };
@@ -221,7 +217,7 @@ export default class UserController {
                                 INNER JOIN user_ratings ON ratings.rating_id = user_ratings.rating_id
                                 WHERE user_ratings.user_id = User.user_id
                             )`),
-                            "calificacion_promedio",
+                            "average_rating",
                         ],
                         [
                             sequelize.literal(`(
@@ -230,7 +226,7 @@ export default class UserController {
                                 INNER JOIN user_ratings ON ratings.rating_id = user_ratings.rating_id
                                 WHERE user_ratings.user_id = User.user_id
                             )`),
-                            "calificacion_cantidad",
+                            "ratings_count",
                         ],
                         [
                             sequelize.literal(`(
@@ -241,7 +237,7 @@ export default class UserController {
                                 WHERE workers.worker_id = shipping_details.worker_id
                                 AND orders.order_status = "recibido"
                             )`),
-                            "envios_cantidad",
+                            "shippings_count",
                         ],
                         [
                             sequelize.literal(`(
@@ -252,7 +248,7 @@ export default class UserController {
                                 WHERE workers.worker_id = shipping_details.worker_id 
                                 AND orders.order_status = "recibido"
                             )`),
-                            "envios_dinero",
+                            "shippings_money",
                         ],
                         [
                             sequelize.literal(`(
@@ -261,7 +257,7 @@ export default class UserController {
                                 INNER JOIN products ON order_products.product_id = products.product_id
                                 WHERE products.user_id = User.user_id
                             )`),
-                            "ventas_cantidad",
+                            "sales_count",
                         ],
                         [
                             sequelize.literal(`(
@@ -270,7 +266,7 @@ export default class UserController {
                                 INNER JOIN products ON order_products.product_id = products.product_id
                                 WHERE products.user_id = User.user_id
                             )`),
-                            "ventas_dinero",
+                            "sales_money",
                         ],
                     ],
                     exclude: ["user_password"],
@@ -367,27 +363,27 @@ export default class UserController {
             const products = await models.Product.findAndCountAll({
                 limit: parseInt(req.query.limit || 5),
                 offset: req.query.page ? (req.query.page - 1) * 5 : 0,
-                where: { usuario_id: req.params.id },
+                where: { user_id: req.params.id },
                 include: ["category"],
                 attributes: {
                     include: [
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                SELECT COALESCE(ROUND(AVG(ratings.rating_value), 2), 0)
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
-                            "calificacion_promedio",
+                            "average_rating",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
-                            "calificacion_cantidad",
+                            "rating_count",
                         ],
                     ],
                 },
