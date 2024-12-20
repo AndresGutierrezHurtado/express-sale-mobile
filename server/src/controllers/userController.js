@@ -59,23 +59,23 @@ export default class UserController {
         let userData = req.body.user;
         let workerData = req.body.worker;
 
-        if (userData && userData.usuario_contra) {
-            userData.usuario_contra = bcrypt.hashSync(userData.usuario_contra, 10);
+        if (userData && userData.user_password) {
+            userData.user_password = bcrypt.hashSync(userData.user_password, 10);
         }
 
         try {
             const transaction = await sequelize.transaction();
 
             if (userData) {
-                if (req.body.usuario_imagen) {
+                if (req.body.user_image) {
                     const response = await uploadFile(
-                        req.body.usuario_imagen,
+                        req.body.user_image,
                         req.params.id,
                         "/users"
                     );
 
                     if (response.success) {
-                        userData = { ...userData, usuario_imagen_url: response.data.secure_url };
+                        userData = { ...userData, user_image_url: response.data.secure_url };
                     } else {
                         res.status(500).json({
                             success: false,
@@ -87,14 +87,14 @@ export default class UserController {
                 }
 
                 const user = await models.User.update(userData, {
-                    where: { usuario_id: req.params.id },
+                    where: { user_id: req.params.id },
                     transaction,
                 });
             }
 
             if (workerData) {
                 const worker = await models.Worker.update(workerData, {
-                    where: { usuario_id: req.params.id },
+                    where: { user_id: req.params.id },
                     transaction,
                 });
             }
@@ -109,7 +109,6 @@ export default class UserController {
             await transaction.rollback();
 
             if (error.name == "SequelizeUniqueConstraintError") {
-                console.error(error.errors);
                 res.status(500).json({
                     success: false,
                     message: "El campo " + error.errors[0].value + " ya lo tiene otro usuario.",
