@@ -7,17 +7,15 @@ import { deleteFile, uploadFile } from "../configs/uploadImage.js";
 export default class ProductController {
     static createProduct = async (req, res) => {
         try {
-            let productData = {
-                producto_id: crypto.randomUUID(),
-                usuario_id: req.session.usuario_id,
+            const product = await models.Product.create({
                 ...req.body.product,
-            };
-            const product = await models.Product.create(productData);
+                user_id: req.session.user_id,
+            });
 
-            if (req.body.producto_imagen) {
+            if (req.body.product_image) {
                 const response = await uploadFile(
-                    req.body.producto_imagen,
-                    product.producto_id,
+                    req.body.product_image,
+                    product.product_id,
                     "/products"
                 );
 
@@ -30,11 +28,11 @@ export default class ProductController {
 
                 const responseUpdate = await models.Product.update(
                     {
-                        producto_imagen_url: response.data.secure_url || response.data.url,
+                        product_image_url: response.data || response.data,
                     },
                     {
                         where: {
-                            producto_id: product.producto_id,
+                            product_id: product.product_id,
                         },
                     }
                 );
@@ -64,14 +62,14 @@ export default class ProductController {
     static updateProduct = async (req, res) => {
         try {
             let productData = req.body.product;
-            if (req.body.producto_imagen) {
+            if (req.body.product_image) {
                 const response = await uploadFile(
-                    req.body.producto_imagen,
+                    req.body.product_image,
                     req.params.id,
                     "/products"
                 );
                 if (response.success)
-                    productData.producto_imagen_url = response.data.secure_url || response.data.url;
+                    productData.product_image_url = response.data || response.data.url;
                 else
                     return res.status(500).json({
                         success: false,
@@ -91,9 +89,9 @@ export default class ProductController {
 
                     if (response.success)
                         await models.Media.create({
-                            multimedia_id: multimediaId,
-                            multimedia_url: response.data.secure_url || response.data.url,
-                            producto_id: req.params.id,
+                            media_id: multimediaId,
+                            media_url: response.data || response.data.url,
+                            product_id: req.params.id,
                         });
                     else
                         return res.status(500).json({
@@ -106,7 +104,7 @@ export default class ProductController {
 
             const product = await models.Product.update(productData, {
                 where: {
-                    producto_id: req.params.id,
+                    product_id: req.params.id,
                 },
             });
             res.status(200).json({
@@ -126,7 +124,7 @@ export default class ProductController {
         try {
             const product = await models.Product.destroy({
                 where: {
-                    producto_id: req.params.id,
+                    product_id: req.params.id,
                 },
             });
             res.status(200).json({
@@ -148,34 +146,34 @@ export default class ProductController {
                 where: {
                     [Op.and]: [
                         {
-                            producto_estado: "publico",
+                            product_status: "publico",
                         },
                         {
                             [Op.or]: [
                                 {
-                                    producto_nombre: {
+                                    product_name: {
                                         [Op.like]: `%${req.query.search || ""}%`,
                                     },
                                 },
                                 {
-                                    producto_descripcion: {
+                                    product_description: {
                                         [Op.like]: `%${req.query.search || ""}%`,
                                     },
                                 },
                             ],
                         },
                         {
-                            producto_precio: {
+                            product_price: {
                                 [Op.gte]: req.query.min || 0,
                             },
                         },
                         {
-                            producto_precio: {
+                            product_price: {
                                 [Op.lte]: req.query.max || 9999999999,
                             },
                         },
                         {
-                            categoria_id: {
+                            category_id: {
                                 [Op.in]: req.query.category ? [req.query.category] : [1, 2, 3, 4],
                             },
                         },
@@ -197,19 +195,19 @@ export default class ProductController {
                             sequelize.literal(`(
                                 SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
                                 FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
+                                WHERE calificaciones_productos.product_id = Product.product_id
                             )`),
-                            "calificacion_promedio",
+                            "average_rating",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*), 0)
                                 FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
+                                WHERE calificaciones_productos.product_id = Product.product_id
                             )`),
-                            "calificacion_cantidad",
+                            "rating_count",
                         ],
                     ],
                 },
@@ -217,7 +215,7 @@ export default class ProductController {
                     [
                         req.query.sort
                             ? req.query.sort.split(":")[0]
-                            : sequelize.literal("`calificacion_promedio`"),
+                            : sequelize.literal("`average_rating`"),
                         req.query.sort ? req.query.sort.split(":")[1] : "DESC",
                     ],
                 ],
@@ -246,19 +244,19 @@ export default class ProductController {
                             sequelize.literal(`(
                                 SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
                                 FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
+                                WHERE calificaciones_productos.product_id = Product.product_id
                             )`),
-                            "calificacion_promedio",
+                            "average_rating",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*), 0)
                                 FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.calificacion_id = calificaciones_productos.calificacion_id
-                                WHERE calificaciones_productos.producto_id = Product.producto_id
+                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
+                                WHERE calificaciones_productos.product_id = Product.product_id
                             )`),
-                            "calificacion_cantidad",
+                            "rating_count",
                         ],
                     ],
                 },
@@ -315,7 +313,7 @@ export default class ProductController {
         try {
             await models.Media.destroy({
                 where: {
-                    multimedia_id: req.params.id,
+                    media_id: req.params.id,
                 },
                 transaction: t,
             });
