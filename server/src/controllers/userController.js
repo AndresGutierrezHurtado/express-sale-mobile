@@ -289,37 +289,49 @@ export default class UserController {
 
             const yearDeliveries = await sequelize.query(
                 `
-                    SELECT MONTH(orders.order_date) AS mes, YEAR(orders.order_date) AS anio, COUNT(*) AS shippings_quantity, SUM(shipping_details.shipping_cost) AS shipping_money
+                    SELECT 
+                        MONTH(orders.order_date) AS month, 
+                        YEAR(orders.order_date) AS anio, 
+                        COUNT(*) AS shippings_quantity, 
+                        SUM(shipping_details.shipping_cost) AS shipping_money
                     FROM shipping_details
                     INNER JOIN orders ON shipping_details.order_id = orders.order_id
-                    INNER JOIN workers ON worker.worker_id = shipping_details.worker_id
-                    WHERE shipping_details.worker_id = "${req.session.user.worker.worker_id}" AND orders.order_status = "recibido"
-                    GROUP BY MONTH(orders.pedido_fecha)
-                    ORDER BY mes;
+                        INNER JOIN workers ON workers.worker_id = shipping_details.worker_id
+                    WHERE shipping_details.worker_id = "${user.worker.worker_id}" AND orders.order_status = "recibido"
+                    GROUP BY MONTH(orders.order_date)
+                    ORDER BY month;
                 `
             );
 
             const yearSales = await sequelize.query(
                 `
-                    SELECT MONTH(orders.pedido_fecha) AS mes, YEAR(orders.pedido_fecha) AS anio, SUM(productos_pedidos.producto_cantidad) AS total_productos, SUM(productos_pedidos.producto_precio * productos_pedidos.producto_cantidad) AS dinero_ventas
-                    FROM productos_pedidos
-                    INNER JOIN productos ON productos_pedidos.producto_id = productos.producto_id
-                    INNER JOIN orders ON orders.pedido_id = productos_pedidos.pedido_id
-                    INNER JOIN detalles_pagos ON orders.pedido_id = detalles_pagos.pedido_id
-                    WHERE productos.usuario_id = "${req.params.id}"
-                    GROUP BY MONTH(orders.pedido_fecha)
-                    ORDER BY mes;
+                    SELECT 
+                        MONTH(orders.order_date) AS month, 
+                        YEAR(orders.order_date) AS anio, 
+                        SUM(order_products.product_quantity) AS total_products, 
+                        SUM(order_products.product_price * order_products.product_quantity) AS total_money
+                    FROM order_products
+                        INNER JOIN products ON order_products.product_id = products.product_id
+                        INNER JOIN orders ON orders.order_id = order_products.order_id
+                        INNER JOIN payment_details ON orders.order_id = payment_details.order_id
+                    WHERE products.user_id = "${req.params.id}"
+                    GROUP BY MONTH(orders.order_date)
+                    ORDER BY month;
                 `
             );
 
             const MostSelledProducts = await sequelize.query(
                 `
-                    SELECT productos.producto_id, productos.producto_imagen_url, productos.producto_nombre, SUM(productos_pedidos.producto_cantidad) AS total_ventas
-                    FROM productos_pedidos
-                    INNER JOIN productos ON productos_pedidos.producto_id = productos.producto_id
-                    WHERE productos.usuario_id = "${req.params.id}"
-                    GROUP BY productos.producto_id
-                    ORDER BY total_ventas DESC
+                    SELECT 
+                        products.product_id, 
+                        products.product_image_url, 
+                        products.product_name, 
+                        SUM(order_products.product_quantity) AS total_selled
+                    FROM order_products
+                        INNER JOIN products ON order_products.product_id = products.product_id
+                    WHERE products.user_id = "${req.params.id}"
+                    GROUP BY products.product_id
+                    ORDER BY total_selled DESC
                     LIMIT 5;
                 `
             );
@@ -329,8 +341,8 @@ export default class UserController {
                       ...user.toJSON(),
                       worker: {
                           ...user.worker.toJSON(),
-                          ventas_mensuales: yearSales[0],
-                          envios_mensuales: yearDeliveries[0],
+                          total_selled: yearSales[0],
+                          month_deliveries: yearDeliveries[0],
                           most_selled_products: MostSelledProducts[0],
                       },
                   }
