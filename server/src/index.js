@@ -1,4 +1,5 @@
 import express from "express";
+import morgan from "morgan";
 import cors from "cors";
 import session from "express-session";
 import * as models from "./models/index.js";
@@ -14,6 +15,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json({ limit: "50mb" }));
+app.use(morgan("dev"));
 app.use(
     cors({
         origin: process.env.EXPO_PUBLIC_APP_DOMAIN,
