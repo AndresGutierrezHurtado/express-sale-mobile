@@ -4,6 +4,9 @@ import { Link } from "expo-router";
 // Hooks
 import { usePaginateData } from "../../hooks/useFetchData";
 
+// Components
+import { CartPlusIcon } from "../../components/icons";
+
 export default function Home() {
     const { data: products, loading: loadingProducts } = usePaginateData("/products");
 
@@ -83,12 +86,14 @@ export default function Home() {
                             </View>
                             <View className="flex-row justify-between items-center p-1 w-full">
                                 <Link asChild href={`/products/${product.product_id}`}>
-                                    <Pressable className="bg-purple-700 p-2 rounded-md">
+                                    <Pressable className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800">
                                         <Text className="text-white">Ver</Text>
                                     </Pressable>
                                 </Link>
-                                <Pressable className="bg-purple-700 p-2 rounded-md">
-                                    <Text className="text-white">Ver</Text>
+                                <Pressable className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800">
+                                    <Text className="text-white">
+                                        <CartPlusIcon size={16} />
+                                    </Text>
                                 </Pressable>
                             </View>
                         </View>

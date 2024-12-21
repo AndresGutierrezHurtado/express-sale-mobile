@@ -145,7 +145,7 @@ Category.hasMany(Product, {
 // Product to Media: One-to-Many
 Product.hasMany(Media, {
     foreignKey: "product_id",
-    as: "media",
+    as: "medias",
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
 });

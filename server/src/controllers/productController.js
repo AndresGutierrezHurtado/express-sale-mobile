@@ -262,7 +262,7 @@ export default class ProductController {
                 },
                 include: [
                     "category",
-                    "media",
+                    "medias",
                     { model: models.User, as: "user", include: ["worker"] },
                 ],
             });
