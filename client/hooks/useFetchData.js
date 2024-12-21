@@ -11,6 +11,8 @@ export const useFetchData = async (endpoint, options) => {
         credentials: "include",
         method: "GET",
         ...options,
+    }).catch((error) => {
+        console.error(error);
     });
 
     return request.json();
@@ -29,7 +31,7 @@ export const useGetData = (endpoint) => {
         };
 
         getData();
-    }, [endpoint, trigger, location]);
+    }, [endpoint, trigger]);
 
     const reload = () => setTrigger((prev) => prev + 1);
 
