@@ -193,19 +193,19 @@ export default class ProductController {
                     include: [
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
-                                WHERE calificaciones_productos.product_id = Product.product_id
+                                SELECT COALESCE(ROUND(AVG(ratings.rating_value), 2), 0)
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
                             "average_rating",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
-                                WHERE calificaciones_productos.product_id = Product.product_id
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
                             "rating_count",
                         ],
@@ -242,19 +242,19 @@ export default class ProductController {
                     include: [
                         [
                             sequelize.literal(`(
-                                SELECT COALESCE(ROUND(AVG(calificaciones.calificacion), 2), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
-                                WHERE calificaciones_productos.product_id = Product.product_id
+                                SELECT COALESCE(ROUND(AVG(ratings.rating_value), 2), 0)
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
                             "average_rating",
                         ],
                         [
                             sequelize.literal(`(
                                 SELECT COALESCE(COUNT(*), 0)
-                                FROM calificaciones
-                                INNER JOIN calificaciones_productos ON calificaciones.rating_id = calificaciones_productos.rating_id
-                                WHERE calificaciones_productos.product_id = Product.product_id
+                                FROM ratings
+                                INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
+                                WHERE product_ratings.product_id = Product.product_id
                             )`),
                             "rating_count",
                         ],

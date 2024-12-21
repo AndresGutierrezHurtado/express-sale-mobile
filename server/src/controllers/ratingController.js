@@ -11,7 +11,7 @@ export default class RatingController {
                 rating_id: crypto.randomUUID(),
                 rating_comment: req.body.rating_comment,
                 rating_image_url: req.body.rating_image_url || "",
-                calificacion: req.body.calificacion,
+                rating_value: req.body.rating_value,
                 user_id: req.session.user.user_id,
             });
 
@@ -42,7 +42,7 @@ export default class RatingController {
                 rating_id: crypto.randomUUID(),
                 rating_comment: req.body.rating_comment,
                 rating_image_url: req.body.rating_image_url || "",
-                calificacion: req.body.calificacion,
+                rating_value: req.body.rating_value,
                 user_id: req.session.user.user_id,
             });
 
@@ -72,7 +72,7 @@ export default class RatingController {
                     rating_comment: req.body.rating_comment,
                     rating_image_url:
                         req.body.rating_image_url || "",
-                    calificacion: req.body.calificacion,
+                    rating_value: req.body.rating_value,
                 },
                 {
                     where: { rating_id: req.params.id },
