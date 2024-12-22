@@ -174,7 +174,7 @@ export default class ProductController {
                         },
                         {
                             category_id: {
-                                [Op.in]: req.query.category ? [req.query.category] : [1, 2, 3, 4],
+                                [Op.in]: req.query.category_id ? [req.query.category_id] : [1, 2, 3, 4],
                             },
                         },
                     ],
@@ -213,10 +213,7 @@ export default class ProductController {
                 },
                 order: [
                     [
-                        req.query.sort
-                            ? req.query.sort.split(":")[0]
-                            : sequelize.literal("`average_rating`"),
-                        req.query.sort ? req.query.sort.split(":")[1] : "DESC",
+                        req.query.sort ? req.query.sort.split(":") : [sequelize.literal("`average_rating`"), "DESC"],
                     ],
                 ],
             });
@@ -227,6 +224,7 @@ export default class ProductController {
                 data: products,
             });
         } catch (error) {
+            console.log(error);
             res.status(500).json({
                 success: false,
                 message: error.message,
