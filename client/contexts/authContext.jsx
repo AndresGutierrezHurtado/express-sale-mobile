@@ -3,6 +3,7 @@ import { router } from "expo-router";
 
 // Hooks
 import { useGetData, usePostData } from "../hooks/useFetchData";
+import { ActivityIndicator } from "react-native";
 
 const authContext = createContext();
 
@@ -25,6 +26,10 @@ export default function AuthContextProvider({ children }) {
         else alert("Debes iniciar sesión para realizar esta acción.");
         router.push("/");
     };
+
+    if (loadinUserSession) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+    }
 
     return (
         <authContext.Provider value={{ userSession, reloadUserSession, handleLogout, handleAuth }}>

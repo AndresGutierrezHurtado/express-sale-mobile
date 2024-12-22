@@ -18,7 +18,15 @@ export default function TabsLayout() {
             <Tabs.Screen name="index" options={{ title: "Inicio", tabBarIcon: HomeIcon }} />
             <Tabs.Screen name="products" options={{ title: "Tienda", tabBarIcon: ShopIcon }} />
             <Tabs.Screen name="cart" options={{ title: "Carrito", tabBarIcon: CartIcon }} />
-            <Tabs.Screen name="profile" options={{ title: "Perfil", tabBarIcon: ProfileIcon, headerShown: false }} />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Perfil",
+                    tabBarIcon: ProfileIcon,
+                    headerTitleAlign: "center",
+                    header: undefined,
+                }}
+            />
         </Tabs>
     );
 }
