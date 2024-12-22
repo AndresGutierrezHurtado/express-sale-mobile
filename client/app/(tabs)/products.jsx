@@ -170,7 +170,7 @@ export default function Products() {
                     ))}
                 </View>
                 <View className="flex-row justify-between items-center gap-5">
-                    {limit > 4 && (
+                    {limit > 4 && countProducts > 4 && (
                         <Pressable
                             onPress={() => setLimit((prev) => prev - 4)}
                             className="bg-gray-300 h-[40px] grow justify-center items-center rounded-md active:bg-gray-200"
