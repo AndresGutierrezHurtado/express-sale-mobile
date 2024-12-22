@@ -3,7 +3,6 @@ import {
     Image,
     Pressable,
     ScrollView,
-    SectionListComponent,
     Text,
     View,
 } from "react-native";
@@ -132,7 +131,12 @@ export default function Products() {
                         </View>
                     </ScrollView>
                 </View>
-                <View className="flex-row flex-wrap gap-5 justify-between ">
+                <View className="flex-row flex-wrap gap-5 justify-between">
+                    {products.length === 0 && (
+                        <Text className="text-2xl font-bold w-full text-center">
+                            No se encontraron productos...
+                        </Text>
+                    )}
                     {products.map((product) => (
                         <View
                             key={product.product_id}
