@@ -14,7 +14,7 @@ export default function AuthContextProvider({ children }) {
         data: userSession,
         loading: loadinUserSession,
         reload: reloadUserSession,
-    } = useGetData("/user/session");
+    } = useGetData("/auth/session");
 
     const handleLogout = async () => {
         const response = await usePostData("/user/logout");

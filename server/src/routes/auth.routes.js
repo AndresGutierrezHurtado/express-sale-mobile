@@ -120,11 +120,11 @@ const authRoutes = Router();
 
 // Google Auth
 authRoutes.get(
-    "/user/auth/google",
+    "/auth/google",
     passport.authenticate("google", { scope: ["profile", "email"] })
 );
 authRoutes.get(
-    "/user/auth/google/callback",
+    "/auth/google/callback",
     passport.authenticate("google", {
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
@@ -136,13 +136,13 @@ authRoutes.get(
 
 // Facebook Auth
 authRoutes.get(
-    "/user/auth/facebook",
+    "/auth/facebook",
     passport.authenticate("facebook", {
         scope: ["email"],
     })
 );
 authRoutes.get(
-    "/user/auth/facebook/callback",
+    "/auth/facebook/callback",
     passport.authenticate("facebook", {
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
@@ -153,9 +153,9 @@ authRoutes.get(
 );
 
 // Github Auth
-authRoutes.get("/user/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
+authRoutes.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
 authRoutes.get(
-    "/user/auth/github/callback",
+    "/auth/github/callback",
     passport.authenticate("github", {
         failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
     }),
@@ -166,7 +166,7 @@ authRoutes.get(
 );
 
 // Normal Auth
-authRoutes.get("/user/session", async (req, res) => {
+authRoutes.get("/auth/session", async (req, res) => {
     if (!req.session.user_id) {
         res.status(200).json({ success: false, message: "Usuario no autenticado", data: null });
         return;
@@ -179,7 +179,7 @@ authRoutes.get("/user/session", async (req, res) => {
     });
 });
 
-authRoutes.post("/user/auth", async (req, res) => {
+authRoutes.post("/auth/login", async (req, res) => {
     try {
         const { user_email, user_password } = req.body;
 
@@ -212,7 +212,7 @@ authRoutes.post("/user/auth", async (req, res) => {
     }
 });
 
-authRoutes.post("/user/logout", (req, res) => {
+authRoutes.post("/auth/logout", (req, res) => {
     req.session.destroy();
 
     res.status(200).json({
