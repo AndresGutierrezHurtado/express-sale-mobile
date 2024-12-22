@@ -15,7 +15,27 @@ export default function Home() {
     }
 
     return (
-        <View className="w-full">
+        <ScrollView className="w-full">
+            <View className="w-full p-5">
+                <View className="w-full h-[200px] flex-row bg-purple-700 rounded-lg">
+                    <View className="w-2/3 h-full p-5 gap-1">
+                        <Text className="text-4xl font-extrabold text-white leading-none">
+                            ¡Bienvenidos a <Text className="text-yellow-500">Express Sale!</Text>
+                        </Text>
+                        <Text className="text-white text-lg leading-[1.15]">
+                            Acá puedes obtener los mejores productos de las tiendas de barrio.
+                        </Text>
+                    </View>
+                    <View className="w-1/3 h-full">
+                        <Image
+                            source={{
+                                uri: "https://png.pngtree.com/png-clipart/20231002/original/pngtree-man-with-shopping-cart-png-image_13228575.png",
+                            }}
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                    </View>
+                </View>
+            </View>
             <View className="w-full p-5">
                 <Text className="text-3xl font-extrabold tracking-tight">Categorias</Text>
                 <View className="w-full flex-row justify-between mt-5">
@@ -66,7 +86,7 @@ export default function Home() {
                     {products.map((product) => (
                         <View
                             key={product.product_id}
-                            className="bg-white p-4 shadow-xl rounded-md w-[175px] h-[205px]"
+                            className="bg-white p-4 shadow-xl rounded-md w-[175px] min-h-[205px]"
                         >
                             <Link asChild href={`/products/${product.product_id}`}>
                                 <Pressable className="items-center">
@@ -76,7 +96,7 @@ export default function Home() {
                                     />
                                 </Pressable>
                             </Link>
-                            <View className="grow">
+                            <View className="grow pb-2">
                                 <Text className="font-extrabold text-xl leading-none line-clamp-2">
                                     {product.product_name}
                                 </Text>
@@ -100,6 +120,6 @@ export default function Home() {
                     ))}
                 </ScrollView>
             </View>
-        </View>
+        </ScrollView>
     );
 }
