@@ -1,11 +1,4 @@
-import {
-    ActivityIndicator,
-    Image,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
-} from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { Link, useLocalSearchParams } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 
@@ -62,7 +55,7 @@ export default function Products() {
                                     <Text
                                         className={`text-xl font-bold ${
                                             !category ? "text-white" : ""
-                                        } ${!category ? "text-white" : ""}`}
+                                        }`}
                                     >
                                         Todos
                                     </Text>
