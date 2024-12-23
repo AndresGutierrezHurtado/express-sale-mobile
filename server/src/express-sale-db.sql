@@ -21,7 +21,7 @@ CREATE TABLE `recoveries` (
     `user_id` VARCHAR(60) NOT NULL,
     `recovery_status` ENUM('pending', 'completed') NOT NULL DEFAULT 'pending',
     `recovery_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `recovery_expiration` TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL 1 HOUR
+    `recovery_expiration` TIMESTAMP NOT NULL DEFAULT DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 1 HOUR)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------
