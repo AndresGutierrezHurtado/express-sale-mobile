@@ -107,7 +107,7 @@ passport.use(
                     user_lastname: info.name.split(" ")[1],
                     user_alias: info.login,
                     user_email: info.email,
-                    user_password: bcrypt.hashSync(info.id, 10),
+                    user_password: bcrypt.hashSync(info.id.toString(), 10),
                     user_image_url: info.avatar_url,
                 },
             });
