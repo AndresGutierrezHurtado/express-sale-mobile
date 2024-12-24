@@ -1,4 +1,5 @@
 import { Router } from "express";
+import bcrypt from "bcrypt";
 
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
@@ -25,7 +26,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "/auth/google/callback",
+            callbackURL: process.env.GOOGLE_REDIRECT_URL,
         },
         async function (accessToken, refreshToken, profile, cb) {
             const info = profile._json;
@@ -54,7 +55,7 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
-            callbackURL: "/auth/facebook/callback",
+            callbackURL: process.env.FACEBOOK_REDIRECT_URL,
             profileFields: ["id", "email", "first_name", "last_name", "picture"],
         },
         async function (accessToken, refreshToken, profile, cb) {
@@ -88,7 +89,7 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: "/auth/github/callback",
+            callbackURL: process.env.GITHUB_REDIRECT_URL,
         },
         async function (accessToken, refreshToken, profile, cb) {
             const info = profile._json;
@@ -119,20 +120,11 @@ passport.use(
 const authRoutes = Router();
 
 // Google Auth
-authRoutes.get(
-    "/auth/google",
-    passport.authenticate("google", { scope: ["profile", "email"] })
-);
-authRoutes.get(
-    "/auth/google/callback",
-    passport.authenticate("google", {
-        failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
-    }),
-    (req, res) => {
-        req.session.user_id = req.user.user_id;
-        res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
-    }
-);
+authRoutes.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+authRoutes.get("/auth/google/callback", passport.authenticate("google"), (req, res) => {
+    req.session.user_id = req.user.user_id;
+    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+});
 
 // Facebook Auth
 authRoutes.get(
@@ -141,29 +133,17 @@ authRoutes.get(
         scope: ["email"],
     })
 );
-authRoutes.get(
-    "/auth/facebook/callback",
-    passport.authenticate("facebook", {
-        failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
-    }),
-    (req, res) => {
-        req.session.user_id = req.user.user_id;
-        res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
-    }
-);
+authRoutes.get("/auth/facebook/callback", passport.authenticate("facebook"), (req, res) => {
+    req.session.user_id = req.user.user_id;
+    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+});
 
 // Github Auth
 authRoutes.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
-authRoutes.get(
-    "/auth/github/callback",
-    passport.authenticate("github", {
-        failureRedirect: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/login?error=true`,
-    }),
-    function (req, res) {
-        req.session.user_id = req.user.user_id;
-        res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
-    }
-);
+authRoutes.get("/auth/github/callback", passport.authenticate("github"), function (req, res) {
+    req.session.user_id = req.user.user_id;
+    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+});
 
 // Normal Auth
 authRoutes.get("/auth/session", async (req, res) => {
