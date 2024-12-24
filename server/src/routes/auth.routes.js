@@ -123,7 +123,14 @@ const authRoutes = Router();
 authRoutes.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 authRoutes.get("/auth/google/callback", passport.authenticate("google"), (req, res) => {
     req.session.user_id = req.user.user_id;
-    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+    res.send(`
+        <html>
+          <body>
+            <h1>Abre la app con el siguiente enlace</h1>
+            <a href="exp://192.168.1.6:8081">Haz clic aquí para abrir la app de Expo</a>
+          </body>
+        </html>
+    `);
 });
 
 // Facebook Auth
@@ -135,14 +142,28 @@ authRoutes.get(
 );
 authRoutes.get("/auth/facebook/callback", passport.authenticate("facebook"), (req, res) => {
     req.session.user_id = req.user.user_id;
-    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+    res.send(`
+        <html>
+          <body>
+            <h1>Abre la app con el siguiente enlace</h1>
+            <a href="exp://192.168.1.6:8081">Haz clic aquí para abrir la app de Expo</a>
+          </body>
+        </html>
+    `);
 });
 
 // Github Auth
 authRoutes.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
 authRoutes.get("/auth/github/callback", passport.authenticate("github"), function (req, res) {
     req.session.user_id = req.user.user_id;
-    res.redirect(process.env.EXPO_PUBLIC_APP_DOMAIN);
+    res.send(`
+        <html>
+          <body>
+            <h1>Abre la app con el siguiente enlace</h1>
+            <a href="exp://192.168.1.6:8081">Haz clic aquí para abrir la app de Expo</a>
+          </body>
+        </html>
+    `);
 });
 
 // Normal Auth

@@ -2,12 +2,12 @@
     "expo": {
         "name": "express-sale",
         "slug": "express-sale",
+        "scheme": "express-sale",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./public/logo.png",
         "userInterfaceStyle": "light",
         "newArchEnabled": true,
-        "scheme": "express-sale",
         "splash": {
             "image": "./public/logo.jpg",
             "resizeMode": "contain",
