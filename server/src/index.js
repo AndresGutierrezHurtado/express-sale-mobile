@@ -2,7 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import session from "express-session";
+import sequelizeStore from "connect-session-sequelize";
 import * as models from "./models/index.js";
+import sequelize from "./configs/database.js";
 
 // Routes
 import userRoutes from "./routes/user.routes.js";
@@ -12,6 +14,16 @@ import orderRoutes from "./routes/order.routes.js";
 import ratingRoutes from "./routes/rating.routes.js";
 
 const app = express();
+
+const SequelizeStore = new sequelizeStore(session.Store);
+
+const store = new SequelizeStore({
+    db: sequelize,
+    tableName: "sessions",
+    checkExpirationInterval: 15 * 60 * 1000,
+    expiration: 60 * 60 * 1000,
+});
+await store.sync();
 
 // Middlewares
 app.use(express.json({ limit: "50mb" }));
@@ -27,7 +39,7 @@ app.use(
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        // store: ,
+        store: store,
         cookie: {
             maxAge: 1000 * 60 * 60,
             httpOnly: process.env.NODE_ENV === "production",
