@@ -1,5 +1,5 @@
 import react, { useState } from "react";
-import { View, Modal, Text, Pressable } from "react-native";
+import { View, Modal, Text, Pressable, Linking } from "react-native";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext.jsx";
@@ -64,27 +64,44 @@ export default function Profile() {
                                         </Text>
                                     </Pressable>
                                 </Link>
-                                <Link href={process.env.EXPO_PUBLIC_API_URL + "/auth/google"}>
-                                    <Pressable className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg">
-                                        <Text className="text-gray-800 text-center font-semibold">
-                                            Iniciar sesión con Google
-                                        </Text>
-                                    </Pressable>
-                                </Link>
-                                <Link href={process.env.EXPO_PUBLIC_API_URL + "/auth/facebook"}>
-                                    <Pressable className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg">
-                                        <Text className="text-gray-800 text-center font-semibold">
-                                            Iniciar sesión con Facebook
-                                        </Text>
-                                    </Pressable>
-                                </Link>
-                                <Link href={process.env.EXPO_PUBLIC_API_URL + "/auth/github"}>
-                                    <Pressable className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg">
-                                        <Text className="text-gray-800 text-center font-semibold">
-                                            Iniciar sesión con GitHub
-                                        </Text>
-                                    </Pressable>
-                                </Link>
+                                <Pressable
+                                    onPress={() =>
+                                        Linking.openURL(
+                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/google`
+                                        )
+                                    }
+                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                >
+                                    <Text className="text-gray-800 text-center font-semibold">
+                                        Iniciar sesión con Google
+                                    </Text>
+                                </Pressable>
+
+                                <Pressable
+                                    onPress={() =>
+                                        Linking.openURL(
+                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/facebook`
+                                        )
+                                    }
+                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                >
+                                    <Text className="text-gray-800 text-center font-semibold">
+                                        Iniciar sesión con Facebook
+                                    </Text>
+                                </Pressable>
+
+                                <Pressable
+                                    onPress={() =>
+                                        Linking.openURL(
+                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/github`
+                                        )
+                                    }
+                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                >
+                                    <Text className="text-gray-800 text-center font-semibold">
+                                        Iniciar sesión con GitHub
+                                    </Text>
+                                </Pressable>
                             </View>
                         </View>
                         <View className="w-full bg-gray-300 p-5 border-t border-gray-600">
