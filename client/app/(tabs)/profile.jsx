@@ -1,9 +1,15 @@
 import react, { useState } from "react";
-import { View, Modal, Text, Pressable, Linking } from "react-native";
+import { View, Modal, Text, Pressable } from "react-native";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext.jsx";
-import { ProfileIcon } from "../../components/icons.jsx";
+import {
+    AtIcon,
+    FacebookIcon,
+    GithubIcon,
+    GoogleIcon,
+    ProfileIcon,
+} from "../../components/icons.jsx";
 import { Link } from "expo-router";
 
 export default function Profile() {
@@ -22,7 +28,9 @@ export default function Profile() {
                         className="mt-5 py-2 px-10 bg-purple-700 rounded-full"
                         onPress={() => setShowModal(true)}
                     >
-                        <Text className="text-white text-lg">Iniciar sesión</Text>
+                        <Text className="text-white text-lg disabled:opacity-50">
+                            Iniciar sesión
+                        </Text>
                     </Pressable>
                 </View>
                 <Modal animationType="slide" visible={showModal} transparent>
@@ -51,63 +59,62 @@ export default function Profile() {
                                 <Text className="text-2xl font-extrabold text-gray-800 text-center">
                                     Inicia sesión en Express Sale
                                 </Text>
-                                <Text className="text-lg max-w-sm text-center mx-auto">
+                                <Text className="text-lg disabled:opacity-50 max-w-sm text-center mx-auto">
                                     Gestiona tu cuenta, haz pedidos y mucho más.
                                 </Text>
                             </View>
 
                             <View className="gap-2">
-                                <Link href="/login">
-                                    <Pressable className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg">
-                                        <Text className="text-gray-800 text-center font-semibold">
+                                <Link asChild href="/login">
+                                    <Pressable
+                                        onPress={() => setShowModal(false)}
+                                        className="flex-row w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg disabled:opacity-50"
+                                    >
+                                        <AtIcon size={20} className="ml-1" />
+                                        <Text className="text-gray-800 text-center font-semibold grow">
                                             Iniciar sesión con Correo
                                         </Text>
                                     </Pressable>
                                 </Link>
                                 <Pressable
-                                    onPress={() =>
-                                        Linking.openURL(
-                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/google`
-                                        )
-                                    }
-                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                    disabled={true}
+                                    className="flex-row w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg disabled:opacity-50"
                                 >
-                                    <Text className="text-gray-800 text-center font-semibold">
+                                    <GoogleIcon size={20} className="ml-1" />
+                                    <Text className="text-gray-800 text-center font-semibold grow">
                                         Iniciar sesión con Google
                                     </Text>
                                 </Pressable>
 
                                 <Pressable
-                                    onPress={() =>
-                                        Linking.openURL(
-                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/facebook`
-                                        )
-                                    }
-                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                    disabled={true}
+                                    className="flex-row w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg disabled:opacity-50"
                                 >
-                                    <Text className="text-gray-800 text-center font-semibold">
+                                    <FacebookIcon size={20} className="ml-1" />
+                                    <Text className="text-gray-800 text-center font-semibold grow">
                                         Iniciar sesión con Facebook
                                     </Text>
                                 </Pressable>
 
                                 <Pressable
-                                    onPress={() =>
-                                        Linking.openURL(
-                                            `${process.env.EXPO_PUBLIC_API_URL}/auth/github`
-                                        )
-                                    }
-                                    className="w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg"
+                                    disabled={true}
+                                    className="flex-row w-full bg-gray-300 active:bg-gray-400 px-3 py-2 rounded-lg disabled:opacity-50"
                                 >
-                                    <Text className="text-gray-800 text-center font-semibold">
+                                    <GithubIcon size={20} className="ml-1" />
+                                    <Text className="text-gray-800 text-center font-semibold grow">
                                         Iniciar sesión con GitHub
                                     </Text>
                                 </Pressable>
                             </View>
                         </View>
                         <View className="w-full bg-gray-300 p-5 border-t border-gray-600">
-                            <Text className="text-center text-lg">
+                            <Text className="text-center text-lg disabled:opacity-50">
                                 {"¿No tienes una cuenta?, "}
-                                <Link href="/login" className="text-purple-700 font-semibold">
+                                <Link
+                                    href="/register"
+                                    onPress={() => setShowModal(false)}
+                                    className="text-purple-700 font-semibold"
+                                >
                                     Regístrate
                                 </Link>
                             </Text>
