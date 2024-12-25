@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { usePathname } from "expo-router";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -23,6 +24,8 @@ export const useGetData = (endpoint) => {
     const [loading, setLoading] = useState(true);
     const [trigger, setTrigger] = useState(0);
 
+    const pathname = usePathname();
+
     useEffect(() => {
         const getData = async () => {
             const response = await useFetchData(endpoint);
@@ -31,7 +34,7 @@ export const useGetData = (endpoint) => {
         };
 
         getData();
-    }, [endpoint, trigger]);
+    }, [endpoint, trigger, pathname]);
 
     const reload = () => setTrigger((prev) => prev + 1);
 
