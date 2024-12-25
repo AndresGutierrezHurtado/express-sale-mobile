@@ -25,6 +25,8 @@ const FacebookIcon = (props) => <FontAwesome name="facebook" {...props} />;
 
 const GithubIcon = (props) => <Feather name="github" {...props} />;
 
+const ChevronsLeft = (props) => <Feather name="chevrons-left" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -32,6 +34,7 @@ export {
     CartPlusIcon,
     ProfileIcon,
     SearchIcon,
+    ChevronsLeft,
     AtIcon,
     GoogleIcon,
     FacebookIcon,
