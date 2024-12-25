@@ -15,7 +15,7 @@ export default function Login() {
                         <Text className="text-4xl font-extrabold tracking-tight">Express Sale</Text>
                         <Text className="text-lg leading-tight">
                             Si no tienes cuenta aún,{" "}
-                            <Link href="/register" className="text-purple-700 font-semibold">
+                            <Link replace href="/register" className="text-purple-700 font-semibold">
                                 regístrate
                             </Link>
                         </Text>
