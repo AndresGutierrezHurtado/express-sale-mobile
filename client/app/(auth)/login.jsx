@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
 import { Link } from "expo-router";
 import { Formik } from "formik";
+import { useValidateForm } from "../../hooks/useValidateForm";
 
 export default function Login() {
+    const [errors, setErrors] = useState([]);
+
     return (
         <View className="flex-1 pt-[50px]">
             <View className="flex-1 items-center justify-center">
@@ -31,7 +34,14 @@ export default function Login() {
                         user_email: "",
                         user_password: "",
                     }}
-                    onSubmit={(values) => console.log(values)}
+                    onSubmit={(data) => {
+                        const validation = useValidateForm(data, "login-form");
+                        setErrors(validation.errors || []);
+
+                        if (validation.success) {
+                            console.log(data);
+                        }
+                    }}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View
@@ -58,6 +68,14 @@ export default function Login() {
                                         value={values.user_email}
                                         onChangeText={handleChange("user_email")}
                                     />
+                                    {errors.find((error) => error.field === "user_email") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find((error) => error.field === "user_email")
+                                                    .message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">Contraseña: </Text>
@@ -67,6 +85,15 @@ export default function Login() {
                                         value={values.user_password}
                                         onChangeText={handleChange("user_password")}
                                     />
+                                    {errors.find((error) => error.field === "user_password") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find(
+                                                    (error) => error.field === "user_password"
+                                                ).message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <Link
                                     href="/recover"

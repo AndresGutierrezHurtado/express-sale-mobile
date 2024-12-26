@@ -11,6 +11,7 @@ export default function Header() {
         setSearch("");
         router.push(`/products?search=${query}`);
     };
+
     return (
         <View
             className="w-full bg-purple-700 p-5 items-center gap-2"

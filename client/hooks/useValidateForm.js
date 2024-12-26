@@ -13,19 +13,19 @@ import {
     ValiError,
 } from "valibot";
 
-export const useValidateform = (data = {}, form = "", extra = null) => {
+export const useValidateForm = (data = {}, form = "", extra = null) => {
     try {
         let schema;
 
         switch (form) {
             case "login-form":
                 schema = object({
-                    usuario_correo: pipe(
+                    user_email: pipe(
                         nonEmpty("Correo requerido"),
                         string("Correo requerido"),
                         email("El correo debe ser válido")
                     ),
-                    usuario_contra: pipe(
+                    user_password: pipe(
                         nonEmpty("Contraseña requerida"),
                         string("Contraseña requerida"),
                         minLength(6, "La contraseña debe tener al menos 6 caracteres")
@@ -300,6 +300,7 @@ export const useValidateform = (data = {}, form = "", extra = null) => {
         }
 
         const finalData = parse(schema, data);
+
         if (form === "reset-password-form" && data.usuario_contra !== data.usuario_contra_confirm) {
             if (data.usuario_contra !== data.usuario_contra_confirm) {
                 throw new ValiError([
@@ -318,6 +319,13 @@ export const useValidateform = (data = {}, form = "", extra = null) => {
         return { success: true, message: "Formulario valido", data: finalData };
     } catch (error) {
         let fieldErrors = [];
+
+        error.issues.forEach((issue) => {
+            fieldErrors.push({
+                field: issue.path[0].key,
+                message: issue.message,
+            });
+        });
 
         return { success: false, message: "Formulario no valido", errors: fieldErrors };
     }
