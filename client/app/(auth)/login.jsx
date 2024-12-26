@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
 import { Link } from "expo-router";
+import { Formik } from "formik";
 
 export default function Login() {
     return (
@@ -15,56 +16,79 @@ export default function Login() {
                         <Text className="text-4xl font-extrabold tracking-tight">Express Sale</Text>
                         <Text className="text-lg leading-tight">
                             Si no tienes cuenta aún,{" "}
-                            <Link replace href="/register" className="text-purple-700 font-semibold">
+                            <Link
+                                replace
+                                href="/register"
+                                className="text-purple-700 font-semibold"
+                            >
                                 regístrate
                             </Link>
                         </Text>
                     </View>
                 </View>
-                <View
-                    className="h-fit w-full bg-white border border-gray-200 px-7 pt-12 pb-20 gap-10"
-                    style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
+                <Formik
+                    initialValues={{
+                        user_email: "",
+                        user_password: "",
+                    }}
+                    onSubmit={(values) => console.log(values)}
                 >
-                    <View className="gap-2">
-                        <Text className="text-3xl font-extrabold text-center capitalize">
-                            Inicia sesión
-                        </Text>
-                        <Text className="text-lg text-gray-600 leading-none text-center max-w-xs mx-auto">
-                            Ingresa a tu cuenta para poder acceder a todas las funciones de la
-                            página
-                        </Text>
-                    </View>
-                    <View className="gap-3">
-                        <View className="gap-1">
-                            <Text className="text-lg font-semibold">Correo electrónico: </Text>
-                            <TextInput
-                                placeholder="ejemplo@gmail.com"
-                                className="w-full bg-white border px-3 py-1 rounded text-lg"
-                            />
-                        </View>
-                        <View className="gap-1">
-                            <Text className="text-lg font-semibold">Contraseña: </Text>
-                            <TextInput
-                                placeholder="********"
-                                className="w-full bg-white border px-3 py-1 rounded text-lg"
-                            />
-                        </View>
-                        <Link
-                            href="/recover"
-                            className="text-lg text-purple-700 font-semibold text-right"
+                    {({ handleChange, handleBlur, handleSubmit, values }) => (
+                        <View
+                            className="h-fit w-full bg-white border border-gray-200 px-7 pt-12 pb-20 gap-10"
+                            style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
                         >
-                            Olvidaste tu contraseña?
-                        </Link>
-
-                        <View className="gap-2">
-                            <Pressable className="w-full bg-purple-700 py-2 rounded">
-                                <Text className="text-lg font-semibold text-center text-white">
-                                    Iniciar sesión
+                            <View className="gap-2">
+                                <Text className="text-3xl font-extrabold text-center capitalize">
+                                    Inicia sesión
                                 </Text>
-                            </Pressable>
+                                <Text className="text-lg text-gray-600 leading-none text-center max-w-xs mx-auto">
+                                    Ingresa a tu cuenta para poder acceder a todas las funciones de
+                                    la página
+                                </Text>
+                            </View>
+                            <View className="gap-3">
+                                <View className="gap-1">
+                                    <Text className="text-lg font-semibold">
+                                        Correo electrónico:
+                                    </Text>
+                                    <TextInput
+                                        placeholder="ejemplo@gmail.com"
+                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                        value={values.user_email}
+                                        onChangeText={handleChange("user_email")}
+                                    />
+                                </View>
+                                <View className="gap-1">
+                                    <Text className="text-lg font-semibold">Contraseña: </Text>
+                                    <TextInput
+                                        placeholder="********"
+                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                        value={values.user_password}
+                                        onChangeText={handleChange("user_password")}
+                                    />
+                                </View>
+                                <Link
+                                    href="/recover"
+                                    className="text-lg text-purple-700 font-semibold text-right"
+                                >
+                                    Olvidaste tu contraseña?
+                                </Link>
+
+                                <View className="gap-2">
+                                    <Pressable
+                                        onPress={handleSubmit}
+                                        className="w-full bg-purple-700 py-2 rounded"
+                                    >
+                                        <Text className="text-lg font-semibold text-center text-white">
+                                            Iniciar sesión
+                                        </Text>
+                                    </Pressable>
+                                </View>
+                            </View>
                         </View>
-                    </View>
-                </View>
+                    )}
+                </Formik>
             </View>
         </View>
     );
