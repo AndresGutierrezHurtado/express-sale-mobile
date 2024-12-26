@@ -56,7 +56,7 @@ export default function Home() {
                             <View className="w-[70px] aspect-square rounded-full overflow-hidden border-2">
                                 <Image
                                     source={{
-                                        uri: "https://github.com/AndresGutierrezHurtado/express-sale-react/blob/main/public/images/categories/moda.jpg?raw=true",
+                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/moda.jpg`,
                                     }}
                                     style={{
                                         width: 70,
@@ -73,7 +73,7 @@ export default function Home() {
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image
                                     source={{
-                                        uri: "https://github.com/AndresGutierrezHurtado/express-sale-react/blob/main/public/images/categories/tecnologia.jpg?raw=true",
+                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/tecnologia.jpg`,
                                     }}
                                     style={{
                                         width: 70,
@@ -90,7 +90,7 @@ export default function Home() {
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image
                                     source={{
-                                        uri: "https://github.com/AndresGutierrezHurtado/express-sale-react/blob/main/public/images/categories/comida.jpg?raw=true",
+                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/comida.jpg`,
                                     }}
                                     style={{
                                         width: 70,
@@ -107,7 +107,7 @@ export default function Home() {
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image
                                     source={{
-                                        uri: "https://github.com/AndresGutierrezHurtado/express-sale-react/blob/main/public/images/categories/otros.jpg?raw=true",
+                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/otros.jpg`,
                                     }}
                                     style={{
                                         width: 70,
