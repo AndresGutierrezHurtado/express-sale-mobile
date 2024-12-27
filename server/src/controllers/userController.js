@@ -16,6 +16,8 @@ export default class UserController {
         const transaction = await sequelize.transaction();
 
         try {
+            req.body.user.user_password = bcrypt.hashSync(req.body.user.user_password, 10);
+
             const user = await models.User.create(req.body.user, {
                 transaction,
             });
