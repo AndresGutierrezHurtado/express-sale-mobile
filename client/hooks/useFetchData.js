@@ -74,6 +74,9 @@ export const usePostData = async (endpoint, body = {}) => {
         body: JSON.stringify(body),
     });
 
+    if (response.success) alert("Operación exitosa");
+    else alert(response.message);
+
     return response;
 };
 
@@ -83,6 +86,9 @@ export const usePutData = async (endpoint, body = {}) => {
         body: JSON.stringify(body),
     });
 
+    if (response.success) alert("Operación exitosa");
+    else alert(response.message);
+
     return response;
 };
 
@@ -91,6 +97,9 @@ export const useDeleteData = async (endpoint, body = {}) => {
         method: "DELETE",
         body: JSON.stringify(body),
     });
+
+    if (response.success) alert("Operación exitosa");
+    else alert(response.message);
 
     return response;
 };

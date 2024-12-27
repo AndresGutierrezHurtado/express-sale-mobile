@@ -1,11 +1,27 @@
 import React, { useState } from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Formik } from "formik";
+
+// Hooks
 import { useValidateForm } from "../../hooks/useValidateForm";
+import { usePostData } from "../../hooks/useFetchData";
 
 export default function Login() {
     const [errors, setErrors] = useState([]);
+
+    const handleFormSubmit = async (data) => {
+        const validation = useValidateForm(data, "login-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) {
+            const response = await usePostData("/auth/login", data);
+
+            if (response.success) {
+                router.push("/");
+            }
+        }
+    };
 
     return (
         <View className="flex-1 pt-[50px]">
@@ -34,14 +50,7 @@ export default function Login() {
                         user_email: "",
                         user_password: "",
                     }}
-                    onSubmit={(data) => {
-                        const validation = useValidateForm(data, "login-form");
-                        setErrors(validation.errors || []);
-
-                        if (validation.success) {
-                            console.log(data);
-                        }
-                    }}
+                    onSubmit={(values) => handleFormSubmit(values)}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View
