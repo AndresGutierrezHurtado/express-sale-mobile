@@ -34,17 +34,17 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                 break;
             case "register-form":
                 schema = object({
-                    usuario_nombre: pipe(
+                    user_name: pipe(
                         nonEmpty("Nombre requerido"),
                         string("Nombre requerido"),
                         minLength(3, "El nombre debe tener al menos 3 caracteres")
                     ),
-                    usuario_apellido: pipe(
+                    user_lastname: pipe(
                         nonEmpty("Apellido requerido"),
                         string("Apellido requerido"),
                         minLength(3, "El apellido debe tener al menos 3 caracteres")
                     ),
-                    usuario_alias: pipe(
+                    user_alias: pipe(
                         nonEmpty("Alias requerido"),
                         string("Alias requerido"),
                         regex(
@@ -53,17 +53,17 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                         ),
                         minLength(10, "El usuario debe tener al menos 10 caracteres")
                     ),
-                    usuario_correo: pipe(
+                    user_email: pipe(
                         nonEmpty("Correo requerido"),
                         string("Correo requerido"),
                         email("El correo debe ser válido")
                     ),
-                    usuario_contra: pipe(
+                    user_password: pipe(
                         nonEmpty("Contraseña requerida"),
                         string("Contraseña requerida"),
                         minLength(6, "La contraseña debe tener al menos 6 caracteres")
                     ),
-                    rol_id: pipe(
+                    role_id: pipe(
                         nonEmpty("Rol requerido"),
                         string("Rol requerido"),
                         minLength(1, "El rol es requerido")

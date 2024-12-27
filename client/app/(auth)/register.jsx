@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Link } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import { Formik } from "formik";
 
+// Hooks
+import { useValidateForm } from "../../hooks/useValidateForm";
+
 export default function Register() {
+    const [errors, setErrors] = useState([]);
+
+    const handleFormSubmit = async (data) => {
+        const validation = useValidateForm(data, "register-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) {
+            // console.log(data);
+        }
+    };
     return (
         <View className="flex-1 pt-[50px]">
             <View className="flex-1 items-center justify-center">
@@ -32,7 +45,7 @@ export default function Register() {
                         user_password: "",
                         role_id: 1,
                     }}
-                    onSubmit={(values) => console.log(values)}
+                    onSubmit={handleFormSubmit}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <ScrollView
@@ -56,6 +69,14 @@ export default function Register() {
                                         value={values.user_name}
                                         onChangeText={handleChange("user_name")}
                                     />
+                                    {errors.find((error) => error.field === "user_name") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find((error) => error.field === "user_name")
+                                                    .message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">Apellidos: </Text>
@@ -65,6 +86,15 @@ export default function Register() {
                                         value={values.user_lastname}
                                         onChangeText={handleChange("user_lastname")}
                                     />
+                                    {errors.find((error) => error.field === "user_lastname") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find(
+                                                    (error) => error.field === "user_lastname"
+                                                ).message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">Usuario: </Text>
@@ -74,6 +104,14 @@ export default function Register() {
                                         value={values.user_alias}
                                         onChangeText={handleChange("user_alias")}
                                     />
+                                    {errors.find((error) => error.field === "user_alias") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find((error) => error.field === "user_alias")
+                                                    .message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">
@@ -85,6 +123,14 @@ export default function Register() {
                                         value={values.user_email}
                                         onChangeText={handleChange("user_email")}
                                     />
+                                    {errors.find((error) => error.field === "user_email") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find((error) => error.field === "user_email")
+                                                    .message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">Contraseña: </Text>
@@ -94,6 +140,15 @@ export default function Register() {
                                         value={values.user_password}
                                         onChangeText={handleChange("user_password")}
                                     />
+                                    {errors.find((error) => error.field === "user_password") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find(
+                                                    (error) => error.field === "user_password"
+                                                ).message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <View className="gap-1">
                                     <Text className="text-lg font-semibold">Rol: </Text>
@@ -109,6 +164,14 @@ export default function Register() {
                                             <Picker.Item label="Domiciliario" value="3" />
                                         </Picker>
                                     </View>
+                                    {errors.find((error) => error.field === "role_id") && (
+                                        <Text className="text-red-600">
+                                            {
+                                                errors.find((error) => error.field === "role_id")
+                                                    .message
+                                            }
+                                        </Text>
+                                    )}
                                 </View>
                                 <Link
                                     href="/recover"
