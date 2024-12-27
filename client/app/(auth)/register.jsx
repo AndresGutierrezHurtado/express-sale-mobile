@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 import { Formik } from "formik";
 
 // Hooks
+import { usePostData } from "../../hooks/useFetchData";
 import { useValidateForm } from "../../hooks/useValidateForm";
 
 export default function Register() {
@@ -15,7 +16,11 @@ export default function Register() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            // console.log(data);
+            const response = await usePostData("/users", { user: data });
+
+            if (response.success) {
+                router.push("/login");
+            }
         }
     };
     return (

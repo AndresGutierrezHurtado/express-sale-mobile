@@ -65,7 +65,6 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                     ),
                     role_id: pipe(
                         nonEmpty("Rol requerido"),
-                        string("Rol requerido"),
                         minLength(1, "El rol es requerido")
                     ),
                 });
