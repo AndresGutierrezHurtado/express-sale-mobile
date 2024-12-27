@@ -10,7 +10,7 @@ import { usePostData } from "../../hooks/useFetchData";
 export default function Login() {
     const [errors, setErrors] = useState([]);
 
-    const handleFormSubmit = async (data) => {
+    const handleFormSubmit = async (data, { resetForm }) => {
         const validation = useValidateForm(data, "login-form");
         setErrors(validation.errors || []);
 
@@ -18,6 +18,7 @@ export default function Login() {
             const response = await usePostData("/auth/login", data);
 
             if (response.success) {
+                resetForm();
                 router.push("/");
             }
         }
@@ -50,7 +51,7 @@ export default function Login() {
                         user_email: "",
                         user_password: "",
                     }}
-                    onSubmit={(values) => handleFormSubmit(values)}
+                    onSubmit={handleFormSubmit}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View
@@ -129,3 +130,4 @@ export default function Login() {
         </View>
     );
 }
+

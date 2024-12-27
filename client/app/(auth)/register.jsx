@@ -11,7 +11,7 @@ import { useValidateForm } from "../../hooks/useValidateForm";
 export default function Register() {
     const [errors, setErrors] = useState([]);
 
-    const handleFormSubmit = async (data) => {
+    const handleFormSubmit = async (data, { resetForm }) => {
         const validation = useValidateForm(data, "register-form");
         setErrors(validation.errors || []);
 
@@ -19,6 +19,7 @@ export default function Register() {
             const response = await usePostData("/users", { user: data });
 
             if (response.success) {
+                resetForm();
                 router.push("/login");
             }
         }
