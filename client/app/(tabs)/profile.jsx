@@ -1,5 +1,5 @@
 import react, { useState } from "react";
-import { View, Modal, Text, Pressable, Image } from "react-native";
+import { View, Modal, Text, Pressable, Image, ActivityIndicator } from "react-native";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext.jsx";
@@ -10,7 +10,7 @@ import {
     GoogleIcon,
     ProfileIcon,
 } from "../../components/icons.jsx";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { useGetData } from "../../hooks/useFetchData.js";
 
 export default function Profile() {
@@ -134,6 +134,9 @@ export default function Profile() {
         loading: loadingUser,
     } = useGetData(`/users/${id || userSession.user_id}`);
 
+    if (id && id !== userSession.user_id && userSession.role_id != 4) router.replace("/");
+
+    if (loadingUser) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <View className="w-full">
             <View className="w-full px-5 py-10 gap-5 items-center">
@@ -153,9 +156,13 @@ export default function Profile() {
                     </View>
                 </View>
                 <View className="w-full flex-row gap-4 justify-center items-center">
-                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
-                        <Text className="text-lg text-gray-600 font-semibold">Editar Perfil</Text>
-                    </Pressable>
+                    {(user.user_id === userSession.user_id || userSession.role_id == 4) && (
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                            <Text className="text-lg text-gray-600 font-semibold">
+                                Editar Perfil
+                            </Text>
+                        </Pressable>
+                    )}
                     {user.worker && (
                         <Pressable className="px-3 py-1 bg-purple-700 rounded-lg">
                             <Text className="text-lg text-purple-100 font-semibold text-center">
