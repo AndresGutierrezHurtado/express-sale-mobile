@@ -10,11 +10,14 @@ import {
     GoogleIcon,
     ProfileIcon,
 } from "../../components/icons.jsx";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useGetData } from "../../hooks/useFetchData.js";
 
 export default function Profile() {
     const { userSession } = useAuthContext();
     const [showModal, setShowModal] = useState(false);
+
+    const { id } = useLocalSearchParams();
 
     if (!userSession) {
         return (
@@ -125,19 +128,27 @@ export default function Profile() {
         );
     }
 
+    const {
+        data: user,
+        reload: reloadUser,
+        loading: loadingUser,
+    } = useGetData(`/users/${id || userSession.user_id}`);
+
     return (
         <View className="w-full">
             <View className="w-full px-5 py-10 gap-5 items-center">
                 <View className="w-full items-center gap-3">
                     <Image
-                        source={{ uri: userSession.user_image_url }}
+                        source={{ uri: user.user_image_url }}
                         className="w-20 h-20 rounded-full"
                         style={{ width: 120, height: 120, objectFit: "cover" }}
                     />
                     <View>
-                        <Text className="text-2xl font-semibold text-center">@{userSession.user_alias}</Text>
+                        <Text className="text-2xl font-semibold text-center">
+                            @{user.user_alias}
+                        </Text>
                         <Text className="text-lg text-gray-500 font-medium text-center">
-                            {userSession.role.role_name}
+                            {user.role.role_name}
                         </Text>
                     </View>
                 </View>
@@ -145,7 +156,7 @@ export default function Profile() {
                     <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
                         <Text className="text-lg text-gray-600 font-semibold">Editar Perfil</Text>
                     </Pressable>
-                    {userSession.worker && (
+                    {user.worker && (
                         <Pressable className="px-3 py-1 bg-purple-700 rounded-lg">
                             <Text className="text-lg text-purple-100 font-semibold text-center">
                                 Calificar
@@ -153,7 +164,7 @@ export default function Profile() {
                         </Pressable>
                     )}
                 </View>
-                <Text>{userSession.worker.worker_description}</Text>
+                <Text>{user.worker.worker_description}</Text>
             </View>
         </View>
     );
