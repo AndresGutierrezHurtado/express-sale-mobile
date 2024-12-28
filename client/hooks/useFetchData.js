@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { usePathname } from "expo-router";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect, usePathname } from "expo-router";
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -26,15 +26,20 @@ export const useGetData = (endpoint) => {
 
     const pathname = usePathname();
 
-    useEffect(() => {
-        const getData = async () => {
-            const response = await useFetchData(endpoint);
-            setLoading(false);
-            setData(response.data);
-        };
+    useFocusEffect(
+        useCallback(() => {
+            const getData = async () => {
+                setLoading(true);
+                const response = await useFetchData(endpoint);
+                setData(response.data);
+                setLoading(false);
+            };
 
-        getData();
-    }, [endpoint, trigger, pathname]);
+            getData();
+
+            return () => {};
+        }, [endpoint, trigger])
+    );
 
     const reload = () => setTrigger((prev) => prev + 1);
 
