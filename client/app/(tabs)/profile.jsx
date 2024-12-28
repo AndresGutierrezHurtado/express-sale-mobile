@@ -170,6 +170,16 @@ export default function Profile() {
                                 </Text>
                             </Pressable>
                         )}
+                        {user.user_id === userSession.user_id && (
+                            <Pressable
+                                className="px-3 py-1 bg-red-600 rounded-lg"
+                                onPress={async () => await handleLogout()}
+                            >
+                                <Text className="text-lg text-red-100 font-semibold">
+                                    Cerrar Sesión
+                                </Text>
+                            </Pressable>
+                        )}
                         {user.worker && (
                             <Pressable className="px-3 py-1 bg-purple-700 rounded-lg">
                                 <Text className="text-lg text-purple-100 font-semibold text-center">
