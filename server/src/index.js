@@ -67,4 +67,4 @@ app.use("/api/v1", productRoutes);
 app.use("/api/v1", orderRoutes);
 app.use("/api/v1", ratingRoutes);
 
-app.listen(process.env.EXPO_PUBLIC_API_PORT, () => console.log("server running"));
+app.listen(process.env.PORT, () => console.log("server running on port", process.env.PORT));
