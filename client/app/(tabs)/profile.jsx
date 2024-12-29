@@ -19,17 +19,18 @@ export default function Profile() {
     const [showEditUserModal, setShowEditUserModal] = useState(false);
     const [errors, setErrors] = useState([]);
 
-    if (id && id !== userSession.user_id && userSession.role_id != 4) router.replace("/");
+    if (id && userSession && id !== userSession.user_id && userSession.role_id != 4)
+        router.replace("/");
 
     const {
         data: user,
         reload: reloadUser,
         loading: loadingUser,
-    } = useGetData(`/users/${id ? id : (userSession ? userSession.user_id : 0)}`);
+    } = useGetData(`/users/${id || userSession?.user_id}`);
 
     if (loadingUser) return <ActivityIndicator size="large" color="#0000ff" />;
 
-    if (!user) {
+    if (!user || !userSession) {
         return <GuestProfile />;
     }
 
