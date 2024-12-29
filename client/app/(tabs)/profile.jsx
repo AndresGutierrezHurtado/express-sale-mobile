@@ -14,23 +14,25 @@ import GuestProfile from "../../components/guestProfile.jsx";
 
 export default function Profile() {
     const { id } = useLocalSearchParams();
-    const { userSession, reloadUserSession, handleLogout } = useAuthContext();
+    const { userSession, handleLogout } = useAuthContext();
+
     const [showEditUserModal, setShowEditUserModal] = useState(false);
     const [errors, setErrors] = useState([]);
 
-    if (!userSession) {
-        return <GuestProfile />;
-    }
+    if (id && id !== userSession.user_id && userSession.role_id != 4) router.replace("/");
 
     const {
         data: user,
         reload: reloadUser,
         loading: loadingUser,
-    } = useGetData(`/users/${id || userSession.user_id}`);
-
-    if (id && id !== userSession.user_id && userSession.role_id != 4) router.replace("/");
+    } = useGetData(`/users/${id ? id : (userSession ? userSession.user_id : 0)}`);
 
     if (loadingUser) return <ActivityIndicator size="large" color="#0000ff" />;
+
+    if (!user) {
+        return <GuestProfile />;
+    }
+
     return (
         <>
             <View className="w-full">
