@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Image, Pressable, Text, View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 
 // Hooks
@@ -42,15 +42,15 @@ export default function Product() {
                                 style={{ width: "100%", height: 200, objectFit: "contain" }}
                             />
                         </View>
-                        <ScrollView
+                        <FlatList
                             horizontal={true}
-                            contentContainerStyle={{ gap: 10 }}
-                            className="border p-3 w-full"
-                        >
-                            {images.map((image, index) => (
-                                <Pressable key={image.id} onPress={() => setCurrentImage(index)}>
+                            className="border p-3 w-full gap-5"
+                            data={images}
+                            keyExtractor={(image) => image.id}
+                            renderItem={({ item, index }) => (
+                                <Pressable key={item.id} onPress={() => setCurrentImage(index)}>
                                     <Image
-                                        source={{ uri: image.url }}
+                                        source={{ uri: item.url }}
                                         style={{ width: 90, height: 90, objectFit: "contain" }}
                                         className={`${
                                             currentImage === index
@@ -59,8 +59,8 @@ export default function Product() {
                                         }`}
                                     />
                                 </Pressable>
-                            ))}
-                        </ScrollView>
+                            )}
+                        />
                     </View>
                     <View className="gap-2">
                         <Text className="text-4xl font-bold tracking-tight leading-none">
