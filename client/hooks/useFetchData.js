@@ -29,16 +29,14 @@ export const useGetData = (endpoint) => {
     useFocusEffect(
         useCallback(() => {
             const getData = async () => {
-                setLoading(true);
                 const response = await useFetchData(endpoint);
                 setData(response.data);
                 setLoading(false);
             };
 
             getData();
-
             return () => {};
-        }, [endpoint, trigger])
+        }, [endpoint, trigger, pathname])
     );
 
     const reload = () => setTrigger((prev) => prev + 1);
