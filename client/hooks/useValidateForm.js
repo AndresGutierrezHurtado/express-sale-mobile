@@ -63,10 +63,7 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                         string("Contraseña requerida"),
                         minLength(6, "La contraseña debe tener al menos 6 caracteres")
                     ),
-                    role_id: pipe(
-                        nonEmpty("Rol requerido"),
-                        minLength(1, "El rol es requerido")
-                    ),
+                    role_id: pipe(nonEmpty("Rol requerido"), minLength(1, "El rol es requerido")),
                 });
                 break;
             case "contact-form":
@@ -93,19 +90,19 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                     ),
                 });
                 break;
-            case "user-edit-modal-form":
+            case "user-edit-form":
                 schema = object({
-                    usuario_nombre: pipe(
+                    user_name: pipe(
                         nonEmpty("Nombre requerido"),
                         string("Nombre requerido"),
                         minLength(3, "El nombre debe tener al menos 3 caracteres")
                     ),
-                    usuario_apellido: pipe(
+                    user_lastname: pipe(
                         nonEmpty("Apellido requerido"),
                         string("Apellido requerido"),
                         minLength(3, "El apellido debe tener al menos 3 caracteres")
                     ),
-                    usuario_alias: pipe(
+                    user_alias: pipe(
                         nonEmpty("Alias requerido"),
                         string("Alias requerido"),
                         regex(
@@ -114,15 +111,20 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                         ),
                         minLength(10, "El usuario debe tener al menos 10 caracteres")
                     ),
-                    usuario_direccion: pipe(string("La dirección no es valida")),
-                    usuario_telefono: pipe(
+                    user_address: pipe(string("La dirección no es valida")),
+                    user_phone: pipe(
                         string("El teléfono no es valido"),
                         regex(/^[0-9]*$/, "El teléfono solo puede contener números"),
                         regex(/^(?:\d{0}|\d{10})$/, "El telefono debe tener 10 digitos")
                     ),
-                    trabajador_descripcion: pipe(
-                        regex(/^$|^.{3,}$/, "La descripción debe tener al menos 3 caracteres")
+                    worker_description: pipe(
+                        string("La descripción no es valida"),
+                        regex(
+                            /^(?:$|.{10,})$/,
+                            "La descripción debe tener al menos 10 caracteres alfanuméricos"
+                        )
                     ),
+                    role_id: pipe(nonEmpty("Rol requerido"), minLength(1, "El rol es requerido")),
                 });
                 break;
             case "rate-form":

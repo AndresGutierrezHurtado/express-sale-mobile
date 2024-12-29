@@ -1,13 +1,23 @@
-import react, { useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-import { View, Modal, Text, Pressable, Image, ActivityIndicator, TextInput } from "react-native";
+import React, { useState } from "react";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import {
+    View,
+    Modal,
+    Text,
+    Pressable,
+    Image,
+    ActivityIndicator,
+    TextInput,
+    ScrollView,
+} from "react-native";
 import { Formik } from "formik";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext.jsx";
 
 // Hooks
-import { useGetData } from "../../hooks/useFetchData.js";
+import { useGetData, usePutData } from "../../hooks/useFetchData.js";
+import { useValidateForm } from "../../hooks/useValidateForm.js";
 
 // Components
 import GuestProfile from "../../components/guestProfile.jsx";
@@ -33,6 +43,32 @@ export default function Profile() {
     if (!user || !userSession) {
         return <GuestProfile />;
     }
+
+    const handleSubmit = async (values) => {
+        const data = {
+            user: {
+                user_name: values.user_name,
+                user_lastname: values.user_lastname,
+                user_alias: values.user_alias,
+                user_address: values.user_address,
+                user_phone: values.user_phone,
+                role_id: values.role_id,
+            },
+        };
+
+        if (user.worker) {
+            data.worker = {
+                worker_description: values.worker.worker_description,
+            };
+        }
+
+        const validation = useValidateForm({ ...data.user, ...data.worker }, "user-edit-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) {
+            console.log(data);
+        }
+    };
 
     return (
         <>
@@ -87,128 +123,182 @@ export default function Profile() {
             </View>
             <Modal visible={showEditUserModal} animationType="slide" transparent>
                 <View className="flex-1"></View>
-                <View className="w-full h-fit bg-white p-5 pt-12 pb-[100px] rounded-t-[30px] border border-gray-400 gap-10">
-                    <View className="flex-row justify-between items-center pt-5 pr-5">
-                        <Text className="text-3xl font-extrabold">Editar perfil</Text>
-                        <Pressable
-                            className="bg-gray-300 w-fit p-3 py-2 rounded-full active:bg-gray-200 z-50"
-                            onPress={() => setShowEditUserModal(false)}
-                        >
-                            <Text className="text-gray-800 text-center">X</Text>
-                        </Pressable>
-                    </View>
-                    <Formik initialValues={user} onSubmit={(values) => console.log(values)}>
-                        {({ handleChange, handleBlur, handleSubmit, values }) => (
-                            <View className="gap-3">
-                                <View className="gap-1">
-                                    <Text className="text-lg font-semibold">Nombre: </Text>
-                                    <TextInput
-                                        placeholder="Ingresa tu nombre"
-                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                        value={values.user_name}
-                                        onChangeText={handleChange("user_name")}
-                                    />
-                                    {errors.find((error) => error.field === "user_name") && (
-                                        <Text className="text-red-600">
-                                            {
-                                                errors.find((error) => error.field === "user_name")
-                                                    .message
-                                            }
-                                        </Text>
-                                    )}
-                                </View>
-                                <View className="gap-1">
-                                    <Text className="text-lg font-semibold">Apellidos: </Text>
-                                    <TextInput
-                                        placeholder="Ingresa tu apellidos"
-                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                        value={values.user_lastname}
-                                        onChangeText={handleChange("user_lastname")}
-                                    />
-                                    {errors.find((error) => error.field === "user_lastname") && (
-                                        <Text className="text-red-600">
-                                            {
-                                                errors.find(
-                                                    (error) => error.field === "user_lastname"
-                                                ).message
-                                            }
-                                        </Text>
-                                    )}
-                                </View>
-                                <View className="gap-1">
-                                    <Text className="text-lg font-semibold">Usuario: </Text>
-                                    <TextInput
-                                        placeholder="Ingresa tu usuario"
-                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                        value={values.user_alias}
-                                        onChangeText={handleChange("user_alias")}
-                                    />
-                                    {errors.find((error) => error.field === "user_alias") && (
-                                        <Text className="text-red-600">
-                                            {
-                                                errors.find((error) => error.field === "user_alias")
-                                                    .message
-                                            }
-                                        </Text>
-                                    )}
-                                </View>
-                                <View className="gap-1">
-                                    <Text className="text-lg font-semibold">
-                                        Correo electrónico:{" "}
-                                    </Text>
-                                    <TextInput
-                                        placeholder="ejemplo@gmail.com"
-                                        className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                        value={values.user_email}
-                                        onChangeText={handleChange("user_email")}
-                                    />
-                                    {errors.find((error) => error.field === "user_email") && (
-                                        <Text className="text-red-600">
-                                            {
-                                                errors.find((error) => error.field === "user_email")
-                                                    .message
-                                            }
-                                        </Text>
-                                    )}
-                                </View>
-                                {user.user_id !== userSession.user_id && (
+                <ScrollView className="w-full h-[70%] bg-white rounded-t-[30px] border border-gray-400">
+                    <View className="gap-10 px-5 pt-10 pb-[50px]">
+                        <View className="flex-row justify-between items-center pt-5 pr-5">
+                            <Text className="text-3xl font-extrabold">Editar perfil</Text>
+                            <Pressable
+                                className="bg-gray-300 w-fit p-3 py-2 rounded-full active:bg-gray-200 z-50"
+                                onPress={() => setShowEditUserModal(false)}
+                            >
+                                <Text className="text-gray-800 text-center">X</Text>
+                            </Pressable>
+                        </View>
+                        <Formik initialValues={user} onSubmit={handleSubmit}>
+                            {({ handleChange, handleBlur, handleSubmit, values }) => (
+                                <View className="gap-3">
                                     <View className="gap-1">
-                                        <Text className="text-lg font-semibold">Rol: </Text>
-                                        <View className="border rounded">
-                                            <Picker
-                                                style={{ height: 50 }}
-                                                className="w-full bg-white border px-3 py-1 rounded"
-                                                selectedValue={values.role_id}
-                                                onValueChange={handleChange("role_id")}
-                                            >
-                                                <Picker.Item label="Usuario" value="1" />
-                                                <Picker.Item label="Vendedor" value="2" />
-                                                <Picker.Item label="Domiciliario" value="3" />
-                                            </Picker>
-                                        </View>
-                                        {errors.find((error) => error.field === "role_id") && (
+                                        <Text className="text-lg font-semibold">Nombre: </Text>
+                                        <TextInput
+                                            placeholder="Ingresa tu nombre"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.user_name}
+                                            onChangeText={handleChange("user_name")}
+                                        />
+                                        {errors.find((error) => error.field === "user_name") && (
                                             <Text className="text-red-600">
                                                 {
                                                     errors.find(
-                                                        (error) => error.field === "role_id"
+                                                        (error) => error.field === "user_name"
                                                     ).message
                                                 }
                                             </Text>
                                         )}
                                     </View>
-                                )}
-                                <View className="gap-1 pt-5">
-                                    <Pressable
-                                        className="bg-purple-700 w-full p-3 py-2 rounded-lg active:bg-purple-600 z-50"
-                                        onPress={handleSubmit}
-                                    >
-                                        <Text className="text-white text-center">Actualizar</Text>
-                                    </Pressable>
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">Apellidos: </Text>
+                                        <TextInput
+                                            placeholder="Ingresa tu apellidos"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.user_lastname}
+                                            onChangeText={handleChange("user_lastname")}
+                                        />
+                                        {errors.find(
+                                            (error) => error.field === "user_lastname"
+                                        ) && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "user_lastname"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">Usuario: </Text>
+                                        <TextInput
+                                            placeholder="Ingresa tu usuario"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.user_alias}
+                                            onChangeText={handleChange("user_alias")}
+                                        />
+                                        {errors.find((error) => error.field === "user_alias") && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "user_alias"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">Teléfono: </Text>
+                                        <TextInput
+                                            placeholder="Ingresa tu numero de telefono"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.user_phone}
+                                            onChangeText={handleChange("user_phone")}
+                                        />
+                                        {errors.find((error) => error.field === "user_phone") && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "user_phone"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">Dirección: </Text>
+                                        <TextInput
+                                            placeholder="Ingresa la dirección de tu hogar/tienda"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.user_address}
+                                            onChangeText={handleChange("user_address")}
+                                        />
+                                        {errors.find((error) => error.field === "user_address") && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "user_address"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
+                                    {user.worker && (
+                                        <View className="gap-1">
+                                            <Text className="text-lg font-semibold">
+                                                Descripción:{" "}
+                                            </Text>
+                                            <TextInput
+                                                placeholder="Ingresa una descripcion para tu perfil de trabajador"
+                                                className="w-full bg-white border px-3 py-1 rounded text-lg h-32"
+                                                value={values.worker.worker_description}
+                                                onChangeText={handleChange(
+                                                    "worker.worker_description"
+                                                )}
+                                                multiline
+                                            />
+                                            {errors.find(
+                                                (error) => error.field === "worker_description"
+                                            ) && (
+                                                <Text className="text-red-600">
+                                                    {
+                                                        errors.find(
+                                                            (error) =>
+                                                                error.field === "worker_description"
+                                                        ).message
+                                                    }
+                                                </Text>
+                                            )}
+                                        </View>
+                                    )}
+                                    {user.user_id !== userSession.user_id && (
+                                        <View className="gap-1">
+                                            <Text className="text-lg font-semibold">Rol: </Text>
+                                            <View className="border rounded">
+                                                <Picker
+                                                    style={{ height: 50 }}
+                                                    className="w-full bg-white border px-3 py-1 rounded"
+                                                    selectedValue={values.role_id}
+                                                    onValueChange={handleChange("role_id")}
+                                                >
+                                                    <Picker.Item label="Usuario" value="1" />
+                                                    <Picker.Item label="Vendedor" value="2" />
+                                                    <Picker.Item label="Domiciliario" value="3" />
+                                                </Picker>
+                                            </View>
+                                            {errors.find((error) => error.field === "role_id") && (
+                                                <Text className="text-red-600">
+                                                    {
+                                                        errors.find(
+                                                            (error) => error.field === "role_id"
+                                                        ).message
+                                                    }
+                                                </Text>
+                                            )}
+                                        </View>
+                                    )}
+
+                                    <View className="gap-1 pt-5">
+                                        <Pressable
+                                            className="bg-purple-700 w-full p-3 py-2 rounded-lg active:bg-purple-600 z-50"
+                                            onPress={handleSubmit}
+                                        >
+                                            <Text className="text-white text-center">
+                                                Actualizar
+                                            </Text>
+                                        </Pressable>
+                                    </View>
                                 </View>
-                            </View>
-                        )}
-                    </Formik>
-                </View>
+                            )}
+                        </Formik>
+                    </View>
+                </ScrollView>
             </Modal>
         </>
     );
