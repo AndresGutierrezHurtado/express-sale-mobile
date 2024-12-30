@@ -116,13 +116,6 @@ export default function Profile() {
                                 </Text>
                             </Pressable>
                         )}
-                        {user.worker && (
-                            <Pressable className="px-3 py-1 bg-purple-700 rounded-lg">
-                                <Text className="text-lg text-purple-100 font-semibold text-center">
-                                    Calificar
-                                </Text>
-                            </Pressable>
-                        )}
                     </View>
                     <Text>{user.worker.worker_description}</Text>
                 </View>
