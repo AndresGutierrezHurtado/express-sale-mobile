@@ -583,6 +583,7 @@ export default class UserController {
             const cart = await models.Cart.destroy({
                 where: { user_id: req.session.user_id },
             });
+
             res.status(200).json({
                 success: true,
                 message: "Carrito vaciado correctamente.",
