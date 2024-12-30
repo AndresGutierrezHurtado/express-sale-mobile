@@ -6,6 +6,7 @@ import { Picker } from "@react-native-picker/picker";
 import { usePaginateData } from "../../hooks/useFetchData.js";
 import { CartPlusIcon } from "../../components/icons";
 import { useState } from "react";
+import { useAddCart } from "../../hooks/useCart.js";
 
 export default function Products() {
     const params = useLocalSearchParams();
@@ -157,7 +158,10 @@ export default function Products() {
                                         <Text className="text-white">Ver</Text>
                                     </Pressable>
                                 </Link>
-                                <Pressable className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800">
+                                <Pressable
+                                    onPress={async () => await useAddCart(product.product_id)}
+                                    className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800"
+                                >
                                     <Text className="text-white">
                                         <CartPlusIcon size={16} />
                                     </Text>
