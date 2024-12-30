@@ -66,12 +66,18 @@ export default function Profile() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            console.log(data);
+            const response = await usePutData(`/users/${user.user_id}`, data);
+
+            if (response.success) {
+                setShowEditUserModal(false);
+                reloadUser();
+            }
         }
     };
 
     return (
         <>
+            <Stack.Screen options={{ headerTitle: `Perfil de ${user.user_name}` }} />
             <View className="w-full">
                 <View className="w-full px-5 py-10 gap-5 items-center">
                     <View className="w-full items-center gap-3">
