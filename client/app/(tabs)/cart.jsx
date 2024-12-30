@@ -15,7 +15,7 @@ export default function Cart() {
         data: carts,
         loading: loadingCarts,
         reload: reloadCarts,
-    } = useGetData(`/users/${userSession.user_id}/carts`);
+    } = useGetData(`/users/${userSession?.user_id || 0}/carts`);
 
     if (loadingCarts) return <ActivityIndicator size="large" color="#0000ff" />;
     return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ActivityIndicator, FlatList, Image, Pressable, Text, View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 
 // Hooks
 import { useGetData } from "../../hooks/useFetchData";
@@ -62,24 +62,39 @@ export default function Product() {
                             )}
                         />
                     </View>
-                    <View className="gap-2">
-                        <Text className="text-4xl font-bold tracking-tight leading-none">
-                            {product.product_name}
-                        </Text>
-                        <Text className="text-lg font-bold tracking-tight leading-none text-gray-600">
+                    <View className="gap-5">
+                        <View className="">
+                            <Text className="text-4xl font-bold tracking-tight leading-none">
+                                {product.product_name}
+                            </Text>
+                            <Text className="text-gray-600 leading-none">
+                                {"publicado por "}
+                                <Link
+                                    href={`worker/${product.user_id}`}
+                                    className="italic underline"
+                                >
+                                    @{product.user.user_name}
+                                </Link>
+                            </Text>
+                        </View>
+
+                        <Text className="text-lg font-medium tracking-tight leading-none text-gray-600">
                             {product.product_description}
                         </Text>
-                        <Text>{product.product_quantity} Unidades disponibles</Text>
-                        <Text className="text-2xl font-extrabold tracking-tight leading-none">
-                            {parseInt(product.product_price).toLocaleString("es-CO")} COP
-                        </Text>
-                        <Pressable className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800">
-                            <Text className="text-white text-center">
-                                <CartPlusIcon />
-                                {"    "}
-                                Agregar al carrito
+
+                        <View className="gap-2">
+                            <Text>{product.product_quantity} Unidades disponibles</Text>
+                            <Text className="text-2xl font-extrabold tracking-tight leading-none">
+                                {parseInt(product.product_price).toLocaleString("es-CO")} COP
                             </Text>
-                        </Pressable>
+                            <Pressable className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800">
+                                <Text className="text-white text-center">
+                                    <CartPlusIcon />
+                                    {"    "}
+                                    Agregar al carrito
+                                </Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
             </View>
