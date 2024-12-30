@@ -1,5 +1,137 @@
-import { View } from "react-native";
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
+
+// Hooks
+import { useAuthContext } from "../../contexts/authContext";
+import { useGetData } from "../../hooks/useFetchData";
+import { Link } from "expo-router";
 
 export default function Cart() {
-    return <View></View>;
+    const { userSession, handleAuth } = useAuthContext();
+
+    handleAuth([!userSession], "navigate");
+
+    const {
+        data: carts,
+        loading: loadingCarts,
+        reload: reloadCarts,
+    } = useGetData(`/users/${userSession.user_id}/carts`);
+
+    if (loadingCarts) return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+        <ScrollView className="w-full">
+            <View className="w-full px-5 py-10 pb-[100px]">
+                <View className="gap-10">
+                    <View
+                        className="w-full h-fit p-5 bg-white rounded-lg gap-5"
+                        style={{
+                            shadowColor: "#000",
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 1,
+                            shadowRadius: 10.32,
+                            elevation: 10,
+                        }}
+                    >
+                        <Text className="text-4xl font-extrabold tracking-tight">Carrito</Text>
+                        <View>
+                            <View className="flex-row justify-between">
+                                <Text className="text-2xl font-extrabold">Envio:</Text>
+                                <Text className="text-xl font-medium">pendiente</Text>
+                            </View>
+                            <View className="flex-row justify-between">
+                                <Text className="text-2xl font-extrabold">Total:</Text>
+                                <Text className="text-xl font-medium">
+                                    {carts
+                                        .reduce(
+                                            (total, cart) =>
+                                                total +
+                                                parseInt(
+                                                    cart.product.product_price *
+                                                        cart.product_quantity
+                                                ),
+                                            0
+                                        )
+                                        .toLocaleString("es-CO")}
+                                    {" COP"}
+                                </Text>
+                            </View>
+                            <Pressable className="mt-5 py-2 px-10 bg-purple-700 rounded-lg active:opacity-50">
+                                <Text className="text-white text-lg text-center font-bold">
+                                    Pagar
+                                </Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                    <Text className="text-4xl font-extrabold tracking-tight">Productos:</Text>
+                    <View className="gap-5">
+                        {carts.map((cart) => (
+                            <View
+                                key={cart.cart_id}
+                                className="w-full h-[150px] flex-row bg-white rounded-lg"
+                                style={{
+                                    shadowColor: "#000",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 8,
+                                    },
+                                    shadowOpacity: 1,
+                                    shadowRadius: 10.32,
+                                    elevation: 10,
+                                }}
+                            >
+                                <View className="w-full h-full flex-row p-5 gap-4">
+                                    <Link href={`/products/${cart.product.product_id}`}>
+                                        <Image
+                                            source={{ uri: cart.product.product_image_url }}
+                                            style={{
+                                                width: 100,
+                                                height: "100%",
+                                                objectFit: "contain",
+                                            }}
+                                        />
+                                    </Link>
+                                    <View className="grow max-w-[40%] overflow-auto">
+                                        <View className="grow">
+                                            <Text className="text-2xl font-extrabold text-black leading-none">
+                                                {cart.product.product_name}
+                                            </Text>
+                                            <Text>
+                                                {parseInt(
+                                                    cart.product.product_price
+                                                ).toLocaleString("es-CO")}
+                                                {" COP"}
+                                            </Text>
+                                            <Text>cantidad: {cart.product_quantity}</Text>
+                                        </View>
+                                        <Text>
+                                            Total:{" "}
+                                            {parseInt(
+                                                cart.product.product_price * cart.product_quantity
+                                            ).toLocaleString("es-CO")}
+                                        </Text>
+                                    </View>
+                                    <View className="justify-center gap-2">
+                                        <Pressable className="bg-gray-300 p-2 rounded-lg active:opacity-50">
+                                            <Text className="text-gray-800 text-center font-semibold">
+                                                Añadir
+                                            </Text>
+                                        </Pressable>
+                                        <Pressable className="bg-gray-300 p-2 rounded-lg active:opacity-50">
+                                            <Text className="text-gray-800 text-center font-semibold">
+                                                Quitar
+                                            </Text>
+                                        </Pressable>
+                                        <Pressable className="bg-red-500 p-2 rounded-lg active:opacity-50">
+                                            <Text className="text-white text-center font-semibold">
+                                                Eliminar
+                                            </Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+            </View>
+        </ScrollView>
+    );
 }
