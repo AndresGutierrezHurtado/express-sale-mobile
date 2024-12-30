@@ -21,10 +21,12 @@ export default function AuthContextProvider({ children }) {
         reloadUserSession();
     };
 
-    const handleAuth = async ({ action = "navigate" }) => {
-        if (action == "navigate") alert("Debes iniciar sesión para acceder a esta sección.");
-        else alert("Debes iniciar sesión para realizar esta acción.");
-        router.push("/");
+    const handleAuth = async (conditions = [], action = "navigate") => {
+        if (conditions.find((condition) => condition === true)) {
+            if (action == "navigate") alert("Debes iniciar sesión para acceder a esta sección.");
+            else alert("Debes iniciar sesión para realizar esta acción.");
+            router.push("/");
+        }
     };
 
     if (loadinUserSession) {
