@@ -4,6 +4,7 @@ import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "rea
 import { useAuthContext } from "../../contexts/authContext";
 import { useGetData } from "../../hooks/useFetchData";
 import { Link } from "expo-router";
+import { useRemoveCart, useUpdateCart } from "../../hooks/useCart";
 
 export default function Cart() {
     const { userSession, handleAuth } = useAuthContext();
@@ -110,17 +111,43 @@ export default function Cart() {
                                         </Text>
                                     </View>
                                     <View className="justify-center gap-2">
-                                        <Pressable className="bg-gray-300 p-2 rounded-lg active:opacity-50">
+                                        <Pressable
+                                            onPress={() =>
+                                                useUpdateCart(
+                                                    cart.cart_id,
+                                                    cart.product_quantity + 1,
+                                                    reloadCarts
+                                                )
+                                            }
+                                            disabled={
+                                                cart.product_quantity ===
+                                                cart.product.product_quantity
+                                            }
+                                            className="bg-gray-300 p-2 rounded-lg active:opacity-50 disabled:opacity-50"
+                                        >
                                             <Text className="text-gray-800 text-center font-semibold">
                                                 Añadir
                                             </Text>
                                         </Pressable>
-                                        <Pressable className="bg-gray-300 p-2 rounded-lg active:opacity-50">
+                                        <Pressable
+                                            onPress={() =>
+                                                useUpdateCart(
+                                                    cart.cart_id,
+                                                    cart.product_quantity - 1,
+                                                    reloadCarts
+                                                )
+                                            }
+                                            disabled={cart.product_quantity === 1}
+                                            className="bg-gray-300 p-2 rounded-lg active:opacity-50 disabled:opacity-50"
+                                        >
                                             <Text className="text-gray-800 text-center font-semibold">
                                                 Quitar
                                             </Text>
                                         </Pressable>
-                                        <Pressable className="bg-red-500 p-2 rounded-lg active:opacity-50">
+                                        <Pressable
+                                            onPress={() => useRemoveCart(cart.cart_id, reloadCarts)}
+                                            className="bg-red-500 p-2 rounded-lg active:opacity-50 disabled:opacity-50"
+                                        >
                                             <Text className="text-white text-center font-semibold">
                                                 Eliminar
                                             </Text>
