@@ -22,6 +22,9 @@ import { useValidateForm } from "../../hooks/useValidateForm.js";
 // Components
 import GuestProfile from "../../components/guestProfile.jsx";
 
+// Middlewares
+import { useRouteMiddleware } from "../../middlewares/useRouteMiddleware.js";
+
 export default function Profile() {
     const { id } = useLocalSearchParams();
     const { userSession, handleLogout } = useAuthContext();
@@ -29,8 +32,10 @@ export default function Profile() {
     const [showEditUserModal, setShowEditUserModal] = useState(false);
     const [errors, setErrors] = useState([]);
 
-    if (id && userSession && id !== userSession.user_id && userSession.role_id != 4)
-        router.replace("/");
+    useRouteMiddleware([
+        id && !userSession,
+        id && id !== userSession?.user_id && userSession?.role_id != 4,
+    ], "Acceso denegado");
 
     const {
         data: user,

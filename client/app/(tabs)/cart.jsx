@@ -15,7 +15,7 @@ import { useRouteMiddleware } from "../../middlewares/useRouteMiddleware";
 export default function Cart() {
     const { userSession } = useAuthContext();
 
-    useRouteMiddleware([!userSession], "navigate");
+    useRouteMiddleware([!userSession]);
 
     const {
         data: carts,
