@@ -4,6 +4,7 @@ import { Link, Stack, useLocalSearchParams } from "expo-router";
 
 // Hooks
 import { useGetData } from "../../hooks/useFetchData";
+import { useAddCart } from "../../hooks/useCart";
 
 // Components
 import { CartPlusIcon } from "../../components/icons";
@@ -87,10 +88,13 @@ export default function Product() {
                             <Text className="text-2xl font-extrabold tracking-tight leading-none">
                                 {parseInt(product.product_price).toLocaleString("es-CO")} COP
                             </Text>
-                            <Pressable className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800">
+                            <Pressable
+                                onPress={async () => await useAddCart(product.product_id)}
+                                className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800"
+                            >
                                 <Text className="text-white text-center">
                                     <CartPlusIcon />
-                                    {"    "}
+                                    {"   "}
                                     Agregar al carrito
                                 </Text>
                             </Pressable>
