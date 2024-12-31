@@ -5,8 +5,7 @@ import { Link } from "expo-router";
 import { usePaginateData } from "../../hooks/useFetchData";
 
 // Components
-import { CartPlusIcon } from "../../components/icons";
-import { useAddCart } from "../../hooks/useCart";
+import ProductCard from "../../components/productCard";
 
 export default function Home() {
     const { data: products, loading: loadingProducts } = usePaginateData("/products");
@@ -141,39 +140,7 @@ export default function Home() {
                     className="w-full py-6 mt-5"
                 >
                     {products.map((product) => (
-                        <View
-                            key={product.product_id}
-                            className="bg-white p-4 shadow-xl rounded-md w-[175px] min-h-[205px]"
-                        >
-                            <Link asChild href={`/products/${product.product_id}`}>
-                                <Pressable className="items-center">
-                                    <Image
-                                        source={{ uri: product.product_image_url }}
-                                        style={{ width: 105, height: 105, objectFit: "contain" }}
-                                    />
-                                </Pressable>
-                            </Link>
-                            <View className="grow pb-2">
-                                <Text className="font-extrabold text-xl leading-none line-clamp-2">
-                                    {product.product_name}
-                                </Text>
-                                <Text className="">
-                                    {parseInt(product.product_price).toLocaleString("es-CO")} COP
-                                </Text>
-                            </View>
-                            <View className="flex-row justify-between items-center p-1 w-full">
-                                <Link asChild href={`/products/${product.product_id}`}>
-                                    <Pressable className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800">
-                                        <Text className="text-white">Ver</Text>
-                                    </Pressable>
-                                </Link>
-                                <Pressable onPress={() => useAddCart(product.product_id)} className="bg-purple-700 h-[30px_!important] w-fit px-3 justify-center rounded-md active:bg-purple-800">
-                                    <Text className="text-white">
-                                        <CartPlusIcon size={16} />
-                                    </Text>
-                                </Pressable>
-                            </View>
-                        </View>
+                        <ProductCard key={product.product_id} product={product} />
                     ))}
                 </ScrollView>
             </View>
