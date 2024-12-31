@@ -8,6 +8,7 @@ import { useAddCart } from "../../hooks/useCart";
 
 // Components
 import { CartPlusIcon } from "../../components/icons";
+import Rating from "../../components/rating";
 
 export default function Product() {
     const [currentImage, setCurrentImage] = useState(0);
@@ -113,23 +114,8 @@ export default function Product() {
                         <FlatList
                             data={productRatings}
                             keyExtractor={(rating) => rating.rating_id}
-                            renderItem={({ item }) => (
-                                <View className="flex-row items-center gap-3">
-                                    <Image
-                                        source={{ uri: item.user.user_image_url }}
-                                        style={{ width: 50, height: 50, objectFit: "contain" }}
-                                    />
-                                    <Text className="text-lg font-medium tracking-tight leading-none">
-                                        {item.user.user_name}
-                                    </Text>
-                                    <Text className="text-lg font-medium tracking-tight leading-none">
-                                        {item.rating}
-                                    </Text>
-                                    <Text>{item.rating_comment}</Text>
-                                    <Pressable className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800">
-                                        :
-                                    </Pressable>
-                                </View>
+                            renderItem={({ rating }) => (
+                                <Rating rating={rating} key={rating.rating_id} />                                
                             )}
                         />
                     </View>
