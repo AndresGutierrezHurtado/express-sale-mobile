@@ -1,15 +1,21 @@
+import React from "react";
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Link } from "expo-router";
 
 // Hooks
-import { useAuthContext } from "../../contexts/authContext";
 import { useGetData } from "../../hooks/useFetchData";
-import { Link } from "expo-router";
 import { useRemoveCart, useUpdateCart } from "../../hooks/useCart";
 
-export default function Cart() {
-    const { userSession, handleAuth } = useAuthContext();
+// Contexts
+import { useAuthContext } from "../../contexts/authContext";
 
-    handleAuth([!userSession], "navigate");
+// Middlewares
+import { useRouteMiddleware } from "../../middlewares/useRouteMiddleware";
+
+export default function Cart() {
+    const { userSession } = useAuthContext();
+
+    useRouteMiddleware([!userSession], "navigate");
 
     const {
         data: carts,

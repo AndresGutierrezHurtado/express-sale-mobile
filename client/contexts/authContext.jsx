@@ -26,7 +26,7 @@ export default function AuthContextProvider({ children }) {
     }
 
     return (
-        <authContext.Provider value={{ userSession, reloadUserSession, handleLogout, handleAuth }}>
+        <authContext.Provider value={{ userSession, reloadUserSession, handleLogout }}>
             {children}
         </authContext.Provider>
     );
