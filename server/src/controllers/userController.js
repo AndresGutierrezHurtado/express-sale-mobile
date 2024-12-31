@@ -35,7 +35,7 @@ export default class UserController {
 
             await transaction.commit();
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Usuario creado correctamente.",
                 data: user,
@@ -49,7 +49,7 @@ export default class UserController {
                     message: "El correo/alias ya existe.",
                 });
             } else {
-                res.status(500).json({
+                return res.status(500).json({
                     success: false,
                     message: error.message,
                 });
@@ -75,12 +75,11 @@ export default class UserController {
                     if (response.success) {
                         userData = { ...userData, user_image_url: response.data };
                     } else {
-                        res.status(500).json({
+                        return res.status(500).json({
                             success: false,
                             message: response.message,
                             data: null,
                         });
-                        return;
                     }
                 }
 
@@ -99,7 +98,7 @@ export default class UserController {
 
             await transaction.commit();
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Usuario actualizado correctamente.",
             });
@@ -107,12 +106,12 @@ export default class UserController {
             await transaction.rollback();
 
             if (error.name == "SequelizeUniqueConstraintError") {
-                res.status(500).json({
+                return res.status(500).json({
                     success: false,
                     message: "El campo " + error.errors[0].value + " ya lo tiene otro usuario.",
                 });
             } else {
-                res.status(500).json({
+                return res.status(500).json({
                     success: false,
                     message: error.message,
                 });
@@ -126,13 +125,13 @@ export default class UserController {
 
             await models.User.destroy({ where: { user_id: req.params.id } });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Usuario eliminado correctamente.",
                 data: null,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -189,7 +188,7 @@ export default class UserController {
                 order: [order],
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Usuarios obtenidos correctamente.",
                 data: {
@@ -199,7 +198,7 @@ export default class UserController {
                 },
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -247,7 +246,7 @@ export default class UserController {
                                 FROM shipping_details
                                 INNER JOIN workers ON User.user_id = workers.user_id
                                 INNER JOIN orders ON shipping_details.order_Id = orders.order_Id
-                                WHERE workers.worker_id = shipping_details.worker_id 
+                                WHERE workers.worker_id = shipping_details.worker_id
                                 AND orders.order_status = "recibido"
                             )`),
                             "shippings_money",
@@ -277,20 +276,19 @@ export default class UserController {
             });
 
             if (!user.worker) {
-                res.status(200).json({
+                return res.status(200).json({
                     success: true,
                     message: "Usuario obtenido correctamente.",
                     data: user,
                 });
-                return;
             }
 
             const yearDeliveries = await sequelize.query(
                 `
-                    SELECT 
-                        MONTH(orders.order_date) AS month, 
-                        YEAR(orders.order_date) AS anio, 
-                        COUNT(*) AS shippings_quantity, 
+                    SELECT
+                        MONTH(orders.order_date) AS month,
+                        YEAR(orders.order_date) AS anio,
+                        COUNT(*) AS shippings_quantity,
                         SUM(shipping_details.shipping_cost) AS shipping_money
                     FROM shipping_details
                         INNER JOIN orders ON shipping_details.order_id = orders.order_id
@@ -303,10 +301,10 @@ export default class UserController {
 
             const yearSales = await sequelize.query(
                 `
-                    SELECT 
-                        MONTH(orders.order_date) AS month, 
-                        YEAR(orders.order_date) AS anio, 
-                        SUM(order_products.product_quantity) AS total_products, 
+                    SELECT
+                        MONTH(orders.order_date) AS month,
+                        YEAR(orders.order_date) AS anio,
+                        SUM(order_products.product_quantity) AS total_products,
                         SUM(order_products.product_price * order_products.product_quantity) AS total_money
                     FROM order_products
                         INNER JOIN products ON order_products.product_id = products.product_id
@@ -320,10 +318,10 @@ export default class UserController {
 
             const MostSelledProducts = await sequelize.query(
                 `
-                    SELECT 
-                        products.product_id, 
-                        products.product_image_url, 
-                        products.product_name, 
+                    SELECT
+                        products.product_id,
+                        products.product_image_url,
+                        products.product_name,
                         SUM(order_products.product_quantity) AS total_selled
                     FROM order_products
                         INNER JOIN products ON order_products.product_id = products.product_id
@@ -346,13 +344,13 @@ export default class UserController {
                   }
                 : user.toJSON();
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Usuario obtenido correctamente.",
                 data: result,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -390,13 +388,13 @@ export default class UserController {
                     ],
                 },
             });
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Productos obtenidos correctamente.",
                 data: products,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -426,13 +424,13 @@ export default class UserController {
                     },
                 ],
             });
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Ordenes obtenidas correctamente.",
                 data: orders,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -453,13 +451,13 @@ export default class UserController {
                 ],
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Calificaciones obtenidas correctamente.",
                 data: ratings,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -474,13 +472,13 @@ export default class UserController {
                 include: [{ model: models.Product, as: "product" }],
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Carrito obtenido correctamente.",
                 data: cart,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -519,13 +517,13 @@ export default class UserController {
                 product_id: req.body.product_id,
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Carrito creado correctamente.",
                 data: newCart,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -544,13 +542,13 @@ export default class UserController {
                 }
             );
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Carrito actualizado correctamente.",
                 data: cart,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -564,13 +562,13 @@ export default class UserController {
                 where: { cart_id: req.params.id },
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Carrito eliminado correctamente.",
                 data: cart,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -584,13 +582,13 @@ export default class UserController {
                 where: { user_id: req.session.user_id },
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Carrito vaciado correctamente.",
                 data: cart,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -640,13 +638,13 @@ export default class UserController {
                 type: "ingreso",
             }));
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Retiros obtenidos correctamente.",
                 data: [...deliveryEarnings, ...withdrawals, ...sellerEarnings],
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -672,13 +670,13 @@ export default class UserController {
                 }
             );
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Retiro creado correctamente.",
                 data: withdrawal,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -722,13 +720,13 @@ export default class UserController {
                 ),
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Recuperación creada correctamente.",
                 data: recovery,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -758,13 +756,13 @@ export default class UserController {
                 });
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Recuperación obtenida correctamente.",
                 data: recovery,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -792,13 +790,13 @@ export default class UserController {
                 }
             );
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Recuperación actualizada correctamente.",
                 data: { recovery, user },
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
@@ -831,13 +829,13 @@ export default class UserController {
                 ),
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 message: "Recuperación creada correctamente.",
                 data: null,
             });
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 success: false,
                 message: error.message,
                 data: null,
