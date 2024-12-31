@@ -1,11 +1,16 @@
-import React from "react";
-import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
 import { Stack, useLocalSearchParams } from "expo-router";
 
 // Hooks
-import { useGetData } from "../../hooks/useFetchData";
+import { useGetData, usePaginateData } from "../../hooks/useFetchData";
+
+// Components
+import ProductCard from "../../components/productCard";
 
 export default function WorkerProfile() {
+    const [limit, setLimit] = useState(4);
+
     const { id } = useLocalSearchParams();
     const {
         data: worker,
@@ -13,11 +18,24 @@ export default function WorkerProfile() {
         reloading: reloadingWorker,
     } = useGetData(`/users/${id}`);
 
-    if (loadingWorker) return <ActivityIndicator size="large" color="#0000ff" />;
+    const {
+        data: workerProducts,
+        count: countWorkerProducts,
+        loading: loadingWorkerProducts,
+        reloading: reloadingWorkerProducts,
+    } = usePaginateData(`/users/${id}/products?limit=${limit}`);
+
+    if (loadingWorker || loadingWorkerProducts)
+        return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <>
-            <Stack.Screen options={{ headerTitle: `Perfil de ${worker.user_name}`, headerTitleAlign: "center" }} />
-            <View className="w-full">
+            <Stack.Screen
+                options={{
+                    headerTitle: `Perfil de ${worker.user_name}`,
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ScrollView className="w-full">
                 <View className="w-full px-5 py-10 gap-5 items-center">
                     <View className="w-full items-center gap-3">
                         <Image
@@ -41,7 +59,35 @@ export default function WorkerProfile() {
                     </View>
                     <Text>{worker.worker.worker_description}</Text>
                 </View>
-            </View>
+
+                {worker.role_id == 2 && (
+                    <View className="w-full px-5 py-10 gap-8 ">
+                        <Text className="text-3xl font-extrabold">Productos:</Text>
+                        <View className="flex-row justify-between flex-wrap gap-5">
+                            {workerProducts.map((product) => (
+                                <ProductCard key={product.product_id} product={product} />
+                            ))}
+                        </View>
+                        <View className="flex-row justify-between items-center gap-5">
+                            {limit > 4 && countWorkerProducts > 4 && (
+                                <Pressable
+                                    onPress={() => setLimit((prev) => prev - 4)}
+                                    className="bg-gray-300 h-[40px] grow justify-center items-center rounded-md active:bg-gray-200"
+                                >
+                                    <Text className="text-xl font-bold">Ver menos</Text>
+                                </Pressable>
+                            )}
+                            <Pressable
+                                onPress={() => setLimit((prev) => prev + 4)}
+                                disabled={limit >= countWorkerProducts}
+                                className="bg-gray-300 h-[40px] grow justify-center items-center rounded-md active:bg-gray-200 disabled:opacity-50"
+                            >
+                                <Text className="text-xl font-bold">Cargar más</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                )}
+            </ScrollView>
         </>
     );
 }
