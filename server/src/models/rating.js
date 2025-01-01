@@ -18,8 +18,14 @@ const Rating = sequelize.define(
             allowNull: true,
         },
         rating_value: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1,
+            allowNull: false,
+        },
+        rating_date: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
+            allowNull: false,
         },
         user_id: {
             type: DataTypes.UUID,
