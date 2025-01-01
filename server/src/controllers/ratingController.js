@@ -8,11 +8,8 @@ export default class RatingController {
         const t = await sequelize.transaction();
         try {
             const rating = await models.Rating.create({
-                rating_id: crypto.randomUUID(),
-                rating_comment: req.body.rating_comment,
-                rating_image_url: req.body.rating_image_url || "",
-                rating_value: req.body.rating_value,
-                user_id: req.session.user.user_id,
+                ...req.body.rating,
+                user_id: req.session.user_id,
             });
 
             const userRatings = await models.UsersCalifications.create({
@@ -39,11 +36,8 @@ export default class RatingController {
         const t = await sequelize.transaction();
         try {
             const rating = await models.Rating.create({
-                rating_id: crypto.randomUUID(),
-                rating_comment: req.body.rating_comment,
-                rating_image_url: req.body.rating_image_url || "",
-                rating_value: req.body.rating_value,
-                user_id: req.session.user.user_id,
+                ...req.body.rating,
+                user_id: req.session.user_id,
             });
 
             const productRatings = await models.ProductsCalifications.create({
