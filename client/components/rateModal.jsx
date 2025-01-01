@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { router } from "expo-router";
 import { Modal, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Formik } from "formik";
 import { AntDesign } from "@expo/vector-icons";
@@ -7,11 +8,21 @@ import { AntDesign } from "@expo/vector-icons";
 import { usePostData } from "../hooks/useFetchData";
 import { useValidateForm } from "../hooks/useValidateForm";
 
+// Contexts
+import { useAuthContext } from "../contexts/authContext";
+
 export default function RateModal({ isModalOpen, setModalOpen, reload, id, type }) {
+    const { userSession } = useAuthContext();
+
     const [errors, setErrors] = useState([]);
     const [rating, setRating] = useState(0);
 
     const handleSubmit = async (values) => {
+        if (!userSession) {
+            setModalOpen(false);
+            alert("Para calificar debes iniciar sesión");
+            return router.push("/login");
+        }
         const validation = useValidateForm(values, "rate-form");
         setErrors(validation.errors || []);
         console.log(validation.errors);
