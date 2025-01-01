@@ -28,12 +28,12 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
         console.log(validation.errors);
 
         if (validation.success) {
-        //     const response = await usePostData(`/ratings/${type}s/${id}`, values);
+            const response = await usePostData(`/ratings/${type}s/${id}`, { rating: values });
 
-        //     if (response.success) {
-        //         setModalOpen(false);
-        //         reload();
-        //     }
+            if (response.success) {
+                setModalOpen(false);
+                reload();
+            }
         }
     };
 
