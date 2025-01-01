@@ -12,18 +12,18 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
     const [rating, setRating] = useState(0);
 
     const handleSubmit = async (values) => {
-        console.log(values);
-        // const validation = useValidateForm(values, "rate-form");
-        // setErrors(validation.errors || []);
+        const validation = useValidateForm(values, "rate-form");
+        setErrors(validation.errors || []);
+        console.log(validation.errors);
 
-        // if (validation.success) {
+        if (validation.success) {
         //     const response = await usePostData(`/ratings/${type}s/${id}`, values);
 
         //     if (response.success) {
         //         setModalOpen(false);
         //         reload();
         //     }
-        // }
+        }
     };
 
     return (
@@ -58,24 +58,37 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
                                     <Text className="text-2xl font-extrabold">
                                         Deja tu calificación:
                                     </Text>
-                                    <View className="flex-row items-center justify-center">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <Pressable
-                                                key={star}
-                                                onPress={() => setFieldValue("rating_value", star)}
-                                            >
-                                                <AntDesign
-                                                    name={
-                                                        star <= values.rating_value
-                                                            ? "star"
-                                                            : "staro"
+                                    <View className="gap-1">
+                                        <View className="flex-row items-center justify-center">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <Pressable
+                                                    key={star}
+                                                    onPress={() =>
+                                                        setFieldValue("rating_value", star)
                                                     }
-                                                    size={32}
-                                                    color="#7E22CE"
-                                                    className="mx-1"
-                                                />
-                                            </Pressable>
-                                        ))}
+                                                >
+                                                    <AntDesign
+                                                        name={
+                                                            star <= values.rating_value
+                                                                ? "star"
+                                                                : "staro"
+                                                        }
+                                                        size={32}
+                                                        color="#7E22CE"
+                                                        className="mx-1"
+                                                    />
+                                                </Pressable>
+                                            ))}
+                                        </View>
+                                        {errors.find((error) => error.field === "rating_value") && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "rating_value"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
                                     </View>
                                     <View className="flex-row gap-4 justify-between items-center">
                                         <View className="gap-1 grow w-8/12">
@@ -90,12 +103,13 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
                                                 onChangeText={handleChange("rating_comment")}
                                             />
                                             {errors.find(
-                                                (error) => error.field === "user_email"
+                                                (error) => error.field === "rating_comment"
                                             ) && (
                                                 <Text className="text-red-600">
                                                     {
                                                         errors.find(
-                                                            (error) => error.field === "user_email"
+                                                            (error) =>
+                                                                error.field === "rating_comment"
                                                         ).message
                                                     }
                                                 </Text>
