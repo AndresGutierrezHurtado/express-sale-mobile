@@ -25,7 +25,6 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
         }
         const validation = useValidateForm(values, "rate-form");
         setErrors(validation.errors || []);
-        console.log(validation.errors);
 
         if (validation.success) {
             const response = await usePostData(`/ratings/${type}s/${id}`, { rating: values });

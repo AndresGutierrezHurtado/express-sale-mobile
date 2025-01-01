@@ -124,13 +124,12 @@ export default function Product() {
                     <Text className="text-3xl font-bold tracking-tight leading-none">
                         Calificaciones:
                     </Text>
+                    {productRatings.length === 0 && <Text>No hay calificaciones...</Text>}
                     <View>
                         <FlatList
                             data={productRatings}
                             keyExtractor={(rating) => rating.rating_id}
-                            renderItem={({ rating }) => (
-                                <Rating rating={rating} key={rating.rating_id} />
-                            )}
+                            renderItem={({ item }) => <Rating rating={item} />}
                         />
                     </View>
                 </View>
