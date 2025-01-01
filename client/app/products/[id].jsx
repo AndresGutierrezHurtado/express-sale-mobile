@@ -9,15 +9,19 @@ import { useAddCart } from "../../hooks/useCart";
 // Components
 import { CartPlusIcon } from "../../components/icons";
 import Rating from "../../components/rating";
+import RateModal from "../../components/rateModal";
 
 export default function Product() {
     const [currentImage, setCurrentImage] = useState(0);
+    const [ratingModalOpen, setRatingModalOpen] = useState(false);
 
     const { id } = useLocalSearchParams();
     const { data: product, loading: loadingProduct } = useGetData(`/products/${id}`);
-    const { data: productRatings, loading: loadingProductRatings } = useGetData(
-        `/products/${id}/ratings`
-    );
+    const {
+        data: productRatings,
+        loading: loadingProductRatings,
+        reload: reloadProductRatings,
+    } = useGetData(`/products/${id}/ratings`);
 
     if (loadingProduct || loadingProductRatings) {
         return <ActivityIndicator size="large" color="#0000ff" />;
@@ -93,16 +97,26 @@ export default function Product() {
                             <Text className="text-2xl font-extrabold tracking-tight leading-none">
                                 {parseInt(product.product_price).toLocaleString("es-CO")} COP
                             </Text>
-                            <Pressable
-                                onPress={async () => await useAddCart(product.product_id)}
-                                className="w-full bg-purple-700 p-3 rounded-md active:bg-purple-800"
-                            >
-                                <Text className="text-white text-center">
-                                    <CartPlusIcon />
-                                    {"   "}
-                                    Agregar al carrito
-                                </Text>
-                            </Pressable>
+                            <View className="flex-row justify-center">
+                                <Pressable
+                                    onPress={async () => await useAddCart(product.product_id)}
+                                    className="m-1 grow bg-purple-700 py-3 px-5 rounded-md active:bg-purple-800"
+                                >
+                                    <Text className="text-lg text-white text-center">
+                                        <CartPlusIcon size={17} />
+                                        {"   "}
+                                        Agregar al carrito
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setRatingModalOpen(true)}
+                                    className="w-fit m-1 grow bg-gray-300 py-3 px-5 rounded-md active:bg-gray-200"
+                                >
+                                    <Text className="text-lg text-center text-gray-800 font-bold">
+                                        Calificar
+                                    </Text>
+                                </Pressable>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -115,12 +129,19 @@ export default function Product() {
                             data={productRatings}
                             keyExtractor={(rating) => rating.rating_id}
                             renderItem={({ rating }) => (
-                                <Rating rating={rating} key={rating.rating_id} />                                
+                                <Rating rating={rating} key={rating.rating_id} />
                             )}
                         />
                     </View>
                 </View>
             </View>
+            <RateModal
+                isModalOpen={ratingModalOpen}
+                setModalOpen={setRatingModalOpen}
+                reload={reloadProductRatings}
+                id={product.product_id}
+                type="product"
+            />
         </>
     );
 }
