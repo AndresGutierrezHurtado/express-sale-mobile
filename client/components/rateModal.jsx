@@ -60,8 +60,9 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
                             <View className="gap-5">
                                 <View>
                                     <Text className="text-lg leading-tight">
-                                        Ten en cuenta la calidad del producto y su fidelidad con la
-                                        imagen y descripción.
+                                        {type === "product"
+                                            ? `Ten en cuenta la calidad del producto y su fidelidad con la imagen y descripción.`
+                                            : `Ten en cuenta como es su comportamiento y calidad de servicio.`}
                                     </Text>
                                 </View>
                                 <View className="gap-3">
