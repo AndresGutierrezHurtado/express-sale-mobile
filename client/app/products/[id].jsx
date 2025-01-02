@@ -92,7 +92,7 @@ export default function Product() {
                                         href={`worker/${product.user_id}`}
                                         className="italic underline"
                                     >
-                                        @{product.user.user_name}
+                                        @{product.user.user_alias}
                                     </Link>
                                 </Text>
                             </View>

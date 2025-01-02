@@ -7,6 +7,7 @@ import { useGetData, usePaginateData } from "../../hooks/useFetchData";
 
 // Components
 import ProductCard from "../../components/productCard";
+import Rating from "../../components/rating";
 
 export default function WorkerProfile() {
     const [limit, setLimit] = useState(4);
@@ -25,7 +26,14 @@ export default function WorkerProfile() {
         reloading: reloadingWorkerProducts,
     } = usePaginateData(`/users/${id}/products?limit=${limit}`);
 
-    if (loadingWorker || loadingWorkerProducts)
+    const {
+        data: workerRatings,
+        count: countWorkerRatings,
+        loading: loadingWorkerRatings,
+        reloading: reloadingWorkerRatings,
+    } = useGetData(`/users/${id}/ratings`);
+
+    if (loadingWorker || loadingWorkerProducts, loadingWorkerRatings)
         return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <>
@@ -87,6 +95,18 @@ export default function WorkerProfile() {
                         </View>
                     </View>
                 )}
+
+                <View className="w-full p-5 gap-5">
+                    <Text className="text-3xl font-bold tracking-tight leading-none">
+                        Calificaciones:
+                    </Text>
+                    {workerRatings.length === 0 && <Text>No hay calificaciones...</Text>}
+                    <View className="gap-5">
+                        {workerRatings.map((rating) => (
+                            <Rating key={rating.rating_id} rating={rating} />
+                        ))}
+                    </View>
+                </View>
             </ScrollView>
         </>
     );
