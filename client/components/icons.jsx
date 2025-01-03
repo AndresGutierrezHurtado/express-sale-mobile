@@ -27,6 +27,8 @@ const GithubIcon = (props) => <Feather name="github" {...props} />;
 
 const ChevronsLeft = (props) => <Feather name="chevrons-left" {...props} />;
 
+const StarIcon = (props) => <AntDesign name="star" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -39,4 +41,5 @@ export {
     GoogleIcon,
     FacebookIcon,
     GithubIcon,
+    StarIcon,
 };

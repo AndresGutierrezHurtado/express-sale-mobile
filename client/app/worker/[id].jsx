@@ -9,6 +9,7 @@ import { useGetData, usePaginateData } from "../../hooks/useFetchData";
 import ProductCard from "../../components/productCard";
 import Rating from "../../components/rating";
 import RateModal from "../../components/rateModal";
+import { ProfileIcon, StarIcon } from "../../components/icons";
 
 export default function WorkerProfile() {
     const [limit, setLimit] = useState(4);
@@ -18,14 +19,14 @@ export default function WorkerProfile() {
     const {
         data: worker,
         loading: loadingWorker,
-        reload: reloadgWorker,
+        reload: reloadWorker,
     } = useGetData(`/users/${id}`);
 
     const {
         data: workerProducts,
         count: countWorkerProducts,
         loading: loadingWorkerProducts,
-        reload: reloadingWorkerProducts,
+        reload: reloadWorkerProducts,
     } = usePaginateData(`/users/${id}/products?limit=${limit}`);
 
     const {
@@ -35,7 +36,7 @@ export default function WorkerProfile() {
         reload: reloadWorkerRatings,
     } = useGetData(`/users/${id}/ratings`);
 
-    if ((loadingWorker || loadingWorkerProducts || loadingWorkerRatings))
+    if (loadingWorker || loadingWorkerProducts || loadingWorkerRatings)
         return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <>
@@ -60,6 +61,110 @@ export default function WorkerProfile() {
                             <Text className="text-lg text-gray-500 font-medium text-center">
                                 {worker.role.role_name}
                             </Text>
+                            <Text className="text-lg text-center">
+                                {worker.worker.worker_description}
+                            </Text>
+                        </View>
+                    </View>
+                    <View className="flex-row w-full">
+                        <View className="items-center px-5">
+                            <View className="flex-row gap-2 items-center">
+                                <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
+                                    {parseInt(worker.average_rating * 10) / 10}
+                                    <StarIcon size={50} />
+                                </Text>
+                            </View>
+                            <View className="flex-row gap-1 items-center">
+                                <Text className="text-xl font-bold">{worker.ratings_count}</Text>
+                                <ProfileIcon size={20} />
+                            </View>
+                        </View>
+                        <View className="gap-1">
+                            <View className="flex-row items-center gap-4">
+                                <Text>5</Text>
+                                <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View
+                                        className="bg-purple-700 h-2.5 rounded-[10px]"
+                                        style={{
+                                            width: `${
+                                                (workerRatings.filter(
+                                                    (rating) => rating.rating_value == 5
+                                                ).length /
+                                                    worker.ratings_count) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View className="flex-row items-center gap-4">
+                                <Text>4</Text>
+                                <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View
+                                        className="bg-purple-700 h-2.5 rounded-[10px]"
+                                        style={{
+                                            width: `${
+                                                (workerRatings.filter(
+                                                    (rating) => rating.rating_value == 4
+                                                ).length /
+                                                    worker.ratings_count) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View className="flex-row items-center gap-4">
+                                <Text>3</Text>
+                                <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View
+                                        className="bg-purple-700 h-2.5 rounded-[10px]"
+                                        style={{
+                                            width: `${
+                                                (workerRatings.filter(
+                                                    (rating) => rating.rating_value == 3
+                                                ).length /
+                                                    worker.ratings_count) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View className="flex-row items-center gap-4">
+                                <Text>2</Text>
+                                <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View
+                                        className="bg-purple-700 h-2.5 rounded-[10px]"
+                                        style={{
+                                            width: `${
+                                                (workerRatings.filter(
+                                                    (rating) => rating.rating_value == 2
+                                                ).length /
+                                                    worker.ratings_count) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                </View>
+                            </View>
+                            <View className="flex-row items-center gap-4">
+                                <Text>1</Text>
+                                <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View
+                                        className="bg-purple-700 h-2.5 rounded-[10px]"
+                                        style={{
+                                            width: `${
+                                                (workerRatings.filter(
+                                                    (rating) => rating.rating_value == 1
+                                                ).length /
+                                                    worker.ratings_count) *
+                                                100
+                                            }%`,
+                                        }}
+                                    />
+                                </View>
+                            </View>
                         </View>
                     </View>
                     <View className="w-full flex-row gap-4 justify-center items-center">
@@ -70,7 +175,6 @@ export default function WorkerProfile() {
                             <Text className="text-lg text-red-100 font-semibold">Calificar</Text>
                         </Pressable>
                     </View>
-                    <Text>{worker.worker.worker_description}</Text>
                 </View>
 
                 {worker.role_id == 2 && (
@@ -102,10 +206,8 @@ export default function WorkerProfile() {
                 )}
 
                 <View className="w-full p-5 gap-5">
-                    <Text className="text-3xl font-bold tracking-tight leading-none">
-                        Calificaciones:
-                    </Text>
-                    {workerRatings.length === 0 && <Text>No hay calificaciones...</Text>}
+                    {worker.ratings_count === 0 && <Text>No hay calificaciones...</Text>}
+                    <Text className="text-2xl font-bold">Comentarios:</Text>
                     <View className="gap-7">
                         {workerRatings.map((rating) => (
                             <Rating key={rating.rating_id} rating={rating} />
@@ -116,7 +218,10 @@ export default function WorkerProfile() {
             <RateModal
                 isModalOpen={ratingModalOpen}
                 setModalOpen={setRatingModalOpen}
-                reload={reloadWorkerRatings}
+                reload={() => {
+                    reloadWorkerRatings();
+                    reloadWorker();
+                }}
                 id={id}
                 type="user"
             />
