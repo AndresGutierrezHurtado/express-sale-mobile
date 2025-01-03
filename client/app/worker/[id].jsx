@@ -8,32 +8,34 @@ import { useGetData, usePaginateData } from "../../hooks/useFetchData";
 // Components
 import ProductCard from "../../components/productCard";
 import Rating from "../../components/rating";
+import RateModal from "../../components/rateModal";
 
 export default function WorkerProfile() {
     const [limit, setLimit] = useState(4);
+    const [ratingModalOpen, setRatingModalOpen] = useState(false);
 
     const { id } = useLocalSearchParams();
     const {
         data: worker,
         loading: loadingWorker,
-        reloading: reloadingWorker,
+        reload: reloadgWorker,
     } = useGetData(`/users/${id}`);
 
     const {
         data: workerProducts,
         count: countWorkerProducts,
         loading: loadingWorkerProducts,
-        reloading: reloadingWorkerProducts,
+        reload: reloadingWorkerProducts,
     } = usePaginateData(`/users/${id}/products?limit=${limit}`);
 
     const {
         data: workerRatings,
         count: countWorkerRatings,
         loading: loadingWorkerRatings,
-        reloading: reloadingWorkerRatings,
+        reload: reloadWorkerRatings,
     } = useGetData(`/users/${id}/ratings`);
 
-    if (loadingWorker || loadingWorkerProducts, loadingWorkerRatings)
+    if ((loadingWorker || loadingWorkerProducts || loadingWorkerRatings))
         return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <>
@@ -61,7 +63,10 @@ export default function WorkerProfile() {
                         </View>
                     </View>
                     <View className="w-full flex-row gap-4 justify-center items-center">
-                        <Pressable className="px-3 py-1 bg-purple-700 rounded-lg">
+                        <Pressable
+                            onPress={() => setRatingModalOpen(true)}
+                            className="px-5 py-2 bg-purple-700 rounded-lg"
+                        >
                             <Text className="text-lg text-red-100 font-semibold">Calificar</Text>
                         </Pressable>
                     </View>
@@ -101,13 +106,20 @@ export default function WorkerProfile() {
                         Calificaciones:
                     </Text>
                     {workerRatings.length === 0 && <Text>No hay calificaciones...</Text>}
-                    <View className="gap-5">
+                    <View className="gap-7">
                         {workerRatings.map((rating) => (
                             <Rating key={rating.rating_id} rating={rating} />
                         ))}
                     </View>
                 </View>
             </ScrollView>
+            <RateModal
+                isModalOpen={ratingModalOpen}
+                setModalOpen={setRatingModalOpen}
+                reload={reloadWorkerRatings}
+                id={id}
+                type="user"
+            />
         </>
     );
 }
