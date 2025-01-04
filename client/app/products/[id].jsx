@@ -15,7 +15,7 @@ import { useGetData } from "../../hooks/useFetchData";
 import { useAddCart } from "../../hooks/useCart";
 
 // Components
-import { CartPlusIcon } from "../../components/icons";
+import { CartPlusIcon, ProfileIcon, StarIcon } from "../../components/icons";
 import Rating from "../../components/rating";
 import RateModal from "../../components/rateModal";
 
@@ -132,6 +132,112 @@ export default function Product() {
                     <View className="w-full p-5 gap-5">
                         <Text className="text-3xl font-bold tracking-tight leading-none">
                             Calificaciones:
+                        </Text>
+                        <View className="flex-row w-full">
+                            <View className="items-center px-5">
+                                <View className="flex-row gap-2 items-center">
+                                    <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
+                                        {parseInt(product.average_rating * 10) / 10}
+                                        <StarIcon size={50} />
+                                    </Text>
+                                </View>
+                                <View className="flex-row gap-1 items-center">
+                                    <Text className="text-xl font-bold">
+                                        {product.ratings_count}
+                                    </Text>
+                                    <ProfileIcon size={20} />
+                                </View>
+                            </View>
+                            <View className="gap-1">
+                                <View className="flex-row items-center gap-4">
+                                    <Text>5</Text>
+                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                        <View
+                                            className="bg-purple-700 h-2.5 rounded-[10px]"
+                                            style={{
+                                                width: `${
+                                                    (productRatings.filter(
+                                                        (rating) => rating.rating_value == 5
+                                                    ).length /
+                                                        product.ratings_count) *
+                                                        100 || 0
+                                                }%`,
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                                <View className="flex-row items-center gap-4">
+                                    <Text>4</Text>
+                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                        <View
+                                            className="bg-purple-700 h-2.5 rounded-[10px]"
+                                            style={{
+                                                width: `${
+                                                    (productRatings.filter(
+                                                        (rating) => rating.rating_value == 4
+                                                    ).length /
+                                                        product.ratings_count) *
+                                                        100 || 0
+                                                }%`,
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                                <View className="flex-row items-center gap-4">
+                                    <Text>3</Text>
+                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                        <View
+                                            className="bg-purple-700 h-2.5 rounded-[10px]"
+                                            style={{
+                                                width: `${
+                                                    (productRatings.filter(
+                                                        (rating) => rating.rating_value == 3
+                                                    ).length /
+                                                        product.ratings_count) *
+                                                        100 || 0
+                                                }%`,
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                                <View className="flex-row items-center gap-4">
+                                    <Text>2</Text>
+                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                        <View
+                                            className="bg-purple-700 h-2.5 rounded-[10px]"
+                                            style={{
+                                                width: `${
+                                                    (productRatings.filter(
+                                                        (rating) => rating.rating_value == 2
+                                                    ).length /
+                                                        product.ratings_count) *
+                                                        100 || 0
+                                                }%`,
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                                <View className="flex-row items-center gap-4">
+                                    <Text>1</Text>
+                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                        <View
+                                            className="bg-purple-700 h-2.5 rounded-[10px]"
+                                            style={{
+                                                width: `${
+                                                    (productRatings.filter(
+                                                        (rating) => rating.rating_value == 1
+                                                    ).length /
+                                                        product.ratings_count) *
+                                                        100 || 0
+                                                }%`,
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <Text className="text-2xl font-bold tracking-tight leading-none">
+                            Comentarios:
                         </Text>
                         {productRatings.length === 0 && <Text>No hay calificaciones...</Text>}
                         <View className="gap-5">
