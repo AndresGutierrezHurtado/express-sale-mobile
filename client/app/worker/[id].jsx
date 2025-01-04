@@ -91,7 +91,7 @@ export default function WorkerProfile() {
                                                     (rating) => rating.rating_value == 5
                                                 ).length /
                                                     worker.ratings_count) *
-                                                100
+                                                    100 || 0
                                             }%`,
                                         }}
                                     />
@@ -108,7 +108,7 @@ export default function WorkerProfile() {
                                                     (rating) => rating.rating_value == 4
                                                 ).length /
                                                     worker.ratings_count) *
-                                                100
+                                                    100 || 0
                                             }%`,
                                         }}
                                     />
@@ -125,7 +125,7 @@ export default function WorkerProfile() {
                                                     (rating) => rating.rating_value == 3
                                                 ).length /
                                                     worker.ratings_count) *
-                                                100
+                                                    100 || 0
                                             }%`,
                                         }}
                                     />
@@ -142,7 +142,7 @@ export default function WorkerProfile() {
                                                     (rating) => rating.rating_value == 2
                                                 ).length /
                                                     worker.ratings_count) *
-                                                100
+                                                    100 || 0
                                             }%`,
                                         }}
                                     />
@@ -159,7 +159,7 @@ export default function WorkerProfile() {
                                                     (rating) => rating.rating_value == 1
                                                 ).length /
                                                     worker.ratings_count) *
-                                                100
+                                                    100 || 0
                                             }%`,
                                         }}
                                     />
