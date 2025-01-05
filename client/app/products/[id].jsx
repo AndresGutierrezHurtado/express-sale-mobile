@@ -24,7 +24,11 @@ export default function Product() {
     const [ratingModalOpen, setRatingModalOpen] = useState(false);
 
     const { id } = useLocalSearchParams();
-    const { data: product, loading: loadingProduct } = useGetData(`/products/${id}`);
+    const {
+        data: product,
+        loading: loadingProduct,
+        reload: reloadProduct,
+    } = useGetData(`/products/${id}`);
     const {
         data: productRatings,
         loading: loadingProductRatings,
@@ -251,7 +255,10 @@ export default function Product() {
             <RateModal
                 isModalOpen={ratingModalOpen}
                 setModalOpen={setRatingModalOpen}
-                reload={reloadProductRatings}
+                reload={() => {
+                    reloadProduct();
+                    reloadProductRatings();
+                }}
                 id={product.product_id}
                 type="product"
             />
