@@ -70,7 +70,7 @@ export default function WorkerProfile() {
                         <View className="items-center px-5">
                             <View className="flex-row gap-2 items-center">
                                 <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
-                                {(parseInt(worker.average_rating * 10) / 10).toFixed(1)}
+                                    {(parseInt(worker.average_rating * 10) / 10).toFixed(1)}
                                     <StarIcon size={50} />
                                 </Text>
                             </View>
@@ -210,7 +210,14 @@ export default function WorkerProfile() {
                     <Text className="text-2xl font-bold">Comentarios:</Text>
                     <View className="gap-7">
                         {workerRatings.map((rating) => (
-                            <Rating key={rating.rating_id} rating={rating} />
+                            <Rating
+                                key={rating.rating_id}
+                                rating={rating}
+                                reload={() => {
+                                    reloadWorkerRatings();
+                                    reloadWorker();
+                                }}
+                            />
                         ))}
                     </View>
                 </View>

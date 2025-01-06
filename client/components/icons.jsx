@@ -5,6 +5,8 @@ import Octicons from "@expo/vector-icons/Octicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const HomeIcon = (props) => <Octicons name="home" {...props} />;
 
@@ -34,6 +36,12 @@ const DotsIcon = (props) => <Entypo name="dots-three-vertical" {...props} />;
 
 const XIcon = (props) => <Feather name="x" {...props} />;
 
+const PencilIcon = (props) => <MaterialCommunityIcons name="pencil" {...props} />;
+
+const TrashIcon = (props) => <FontAwesome6 name="trash-can" {...props} />;
+
+const ReportIcon = (props) => <MaterialIcons name="report-problem" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -49,4 +57,7 @@ export {
     StarIcon,
     DotsIcon,
     XIcon,
+    PencilIcon,
+    TrashIcon,
+    ReportIcon,
 };

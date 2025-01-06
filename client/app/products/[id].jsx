@@ -246,7 +246,14 @@ export default function Product() {
                         {productRatings.length === 0 && <Text>No hay calificaciones...</Text>}
                         <View className="gap-5">
                             {productRatings.map((rating) => (
-                                <Rating key={rating.rating_id} rating={rating} />
+                                <Rating
+                                    key={rating.rating_id}
+                                    rating={rating}
+                                    reload={() => {
+                                        reloadProductRatings();
+                                        reloadProduct();
+                                    }}
+                                />
                             ))}
                         </View>
                     </View>

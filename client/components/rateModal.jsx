@@ -18,7 +18,6 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
     const { userSession } = useAuthContext();
 
     const [errors, setErrors] = useState([]);
-    const [rating, setRating] = useState(0);
 
     const handleSubmit = async (values) => {
         if (!userSession) {
