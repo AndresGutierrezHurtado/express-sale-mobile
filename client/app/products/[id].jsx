@@ -137,7 +137,7 @@ export default function Product() {
                         <Text className="text-3xl font-bold tracking-tight leading-none">
                             Calificaciones:
                         </Text>
-                        <View className="flex-row w-full">
+                        <View className="flex-row w-6/12">
                             <View className="items-center px-5">
                                 <View className="flex-row gap-2 items-center">
                                     <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
@@ -155,7 +155,7 @@ export default function Product() {
                             <View className="gap-1">
                                 <View className="flex-row items-center gap-4">
                                     <Text>5</Text>
-                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
                                         <View
                                             className="bg-purple-700 h-2.5 rounded-[10px]"
                                             style={{
@@ -172,7 +172,7 @@ export default function Product() {
                                 </View>
                                 <View className="flex-row items-center gap-4">
                                     <Text>4</Text>
-                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
                                         <View
                                             className="bg-purple-700 h-2.5 rounded-[10px]"
                                             style={{
@@ -189,7 +189,7 @@ export default function Product() {
                                 </View>
                                 <View className="flex-row items-center gap-4">
                                     <Text>3</Text>
-                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
                                         <View
                                             className="bg-purple-700 h-2.5 rounded-[10px]"
                                             style={{
@@ -206,7 +206,7 @@ export default function Product() {
                                 </View>
                                 <View className="flex-row items-center gap-4">
                                     <Text>2</Text>
-                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
                                         <View
                                             className="bg-purple-700 h-2.5 rounded-[10px]"
                                             style={{
@@ -223,7 +223,7 @@ export default function Product() {
                                 </View>
                                 <View className="flex-row items-center gap-4">
                                     <Text>1</Text>
-                                    <View className="w-9/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
+                                    <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
                                         <View
                                             className="bg-purple-700 h-2.5 rounded-[10px]"
                                             style={{
