@@ -141,7 +141,7 @@ export default function Product() {
                             <View className="items-center px-5">
                                 <View className="flex-row gap-2 items-center">
                                     <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
-                                        {parseInt(product.average_rating * 10) / 10}
+                                        {(parseInt(product.average_rating * 10) / 10).toFixed(1)}
                                         <StarIcon size={50} />
                                     </Text>
                                 </View>
