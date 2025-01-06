@@ -4,6 +4,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Octicons from "@expo/vector-icons/Octicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Entypo from "@expo/vector-icons/Entypo";
 
 const HomeIcon = (props) => <Octicons name="home" {...props} />;
 
@@ -29,6 +30,10 @@ const ChevronsLeft = (props) => <Feather name="chevrons-left" {...props} />;
 
 const StarIcon = (props) => <AntDesign name="star" {...props} />;
 
+const DotsIcon = (props) => <Entypo name="dots-three-vertical" {...props} />;
+
+const XIcon = (props) => <Feather name="x" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -42,4 +47,6 @@ export {
     FacebookIcon,
     GithubIcon,
     StarIcon,
+    DotsIcon,
+    XIcon,
 };
