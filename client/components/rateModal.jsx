@@ -11,6 +11,9 @@ import { useValidateForm } from "../hooks/useValidateForm";
 // Contexts
 import { useAuthContext } from "../contexts/authContext";
 
+// Components
+import { XIcon } from "./icons";
+
 export default function RateModal({ isModalOpen, setModalOpen, reload, id, type }) {
     const { userSession } = useAuthContext();
 
@@ -38,18 +41,17 @@ export default function RateModal({ isModalOpen, setModalOpen, reload, id, type 
 
     return (
         <Modal visible={isModalOpen} animationType="slide" transparent>
-            <View className="flex-1"></View>
-            <ScrollView className="w-full h-[0px] bg-white rounded-t-[30px] border border-gray-400">
+            <ScrollView className="flex-1 mt-[55vh] w-full bg-white rounded-t-[30px] border border-gray-400">
                 <View className="gap-5 px-5 pt-10 pb-[50px]">
                     <View className="flex-row justify-between items-center pr-5">
                         <Text className="text-3xl font-extrabold">
                             Calificar {type === "product" ? "producto" : "usuario"}
                         </Text>
                         <Pressable
-                            className="bg-gray-300 w-fit p-3 py-2 rounded-full active:bg-gray-200 z-50"
                             onPress={() => setModalOpen(false)}
+                            className="active:bg-gray-300 w-9 h-9 rounded-full flex items-center justify-center"
                         >
-                            <Text className="text-gray-800 text-center">X</Text>
+                            <XIcon size={25} />
                         </Pressable>
                     </View>
                     <Formik

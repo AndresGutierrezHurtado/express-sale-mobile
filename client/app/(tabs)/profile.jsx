@@ -21,6 +21,7 @@ import { useValidateForm } from "../../hooks/useValidateForm.js";
 
 // Components
 import GuestProfile from "../../components/guestProfile.jsx";
+import { XIcon } from "../../components/icons.jsx";
 
 // Middlewares
 import { useRouteMiddleware } from "../../middlewares/useRouteMiddleware.js";
@@ -32,10 +33,10 @@ export default function Profile() {
     const [showEditUserModal, setShowEditUserModal] = useState(false);
     const [errors, setErrors] = useState([]);
 
-    useRouteMiddleware([
-        id && !userSession,
-        id && id !== userSession?.user_id && userSession?.role_id != 4,
-    ], "Acceso denegado");
+    useRouteMiddleware(
+        [id && !userSession, id && id !== userSession?.user_id && userSession?.role_id != 4],
+        "Acceso denegado"
+    );
 
     const {
         data: user,
@@ -132,10 +133,10 @@ export default function Profile() {
                         <View className="flex-row justify-between items-center pt-5 pr-5">
                             <Text className="text-3xl font-extrabold">Editar perfil</Text>
                             <Pressable
-                                className="bg-gray-300 w-fit p-3 py-2 rounded-full active:bg-gray-200 z-50"
                                 onPress={() => setShowEditUserModal(false)}
+                                className="active:bg-gray-300 w-9 h-9 rounded-full flex items-center justify-center"
                             >
-                                <Text className="text-gray-800 text-center">X</Text>
+                                <XIcon size={25} />
                             </Pressable>
                         </View>
                         <Formik initialValues={user} onSubmit={handleSubmit}>

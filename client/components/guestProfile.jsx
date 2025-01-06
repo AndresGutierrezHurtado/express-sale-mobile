@@ -2,7 +2,7 @@ import react, { useState } from "react";
 import { Link } from "expo-router";
 import { View, Modal, Text, Pressable } from "react-native";
 
-import { AtIcon, FacebookIcon, GithubIcon, GoogleIcon, ProfileIcon } from "./icons.jsx";
+import { AtIcon, FacebookIcon, GithubIcon, GoogleIcon, ProfileIcon, XIcon } from "./icons.jsx";
 
 export default function GuestProfile() {
     const [showModal, setShowModal] = useState(false);
@@ -36,10 +36,10 @@ export default function GuestProfile() {
                 >
                     <View className="items-end pt-5 pr-5">
                         <Pressable
-                            className="bg-gray-300 w-fit p-3 py-2 rounded-full active:bg-gray-200 z-50"
                             onPress={() => setShowModal(false)}
+                            className="active:bg-gray-300 w-9 h-9 rounded-full flex items-center justify-center"
                         >
-                            <Text className="text-gray-800 text-center">X</Text>
+                            <XIcon size={25} />
                         </Pressable>
                     </View>
                     <View className="w-full p-5 gap-6 grow">
