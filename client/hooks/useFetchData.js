@@ -49,15 +49,20 @@ export const usePaginateData = (endpoint) => {
     const [loading, setLoading] = useState(true);
     const [trigger, setTrigger] = useState(0);
 
-    useEffect(() => {
-        const getData = async () => {
-            const response = await useFetchData(endpoint);
-            setLoading(false);
-            setData(response.data);
-        };
+    const pathname = usePathname();
 
-        getData();
-    }, [endpoint, trigger]);
+    useFocusEffect(
+        useCallback(() => {
+            const getData = async () => {
+                const response = await useFetchData(endpoint);
+                setLoading(false);
+                setData(response.data);
+            };
+
+            getData();
+            return () => {};
+        }, [endpoint, trigger, pathname])
+    );
 
     const reload = () => setTrigger((prev) => prev + 1);
 
