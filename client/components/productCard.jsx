@@ -45,14 +45,16 @@ export default function ProductCard({ product }) {
             <View
                 className={`p-2.5 rounded-lg ${
                     product.average_rating < 2
-                        ? "bg-red-500"
+                        ? product.average_rating == 0
+                            ? "bg-gray-500"
+                            : "bg-red-500"
                         : product.average_rating < 4
                         ? "bg-yellow-500"
                         : "bg-green-500"
                 } aspect-square absolute top-[-10px] right-[-10px]`}
             >
                 <Text className="font-bold text-white text-sm">
-                    {((parseInt(product.average_rating * 10) / 10).toFixed(1)) + " "}
+                    {(parseInt(product.average_rating * 10) / 10).toFixed(1) + " "}
                     <StarIcon size={12} />
                 </Text>
             </View>
