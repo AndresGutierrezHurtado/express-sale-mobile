@@ -207,7 +207,7 @@ export default class ProductController {
                                 INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
                                 WHERE product_ratings.product_id = Product.product_id
                             )`),
-                            "rating_count",
+                            "ratings_count",
                         ],
                     ],
                 },
@@ -254,7 +254,7 @@ export default class ProductController {
                                 INNER JOIN product_ratings ON ratings.rating_id = product_ratings.rating_id
                                 WHERE product_ratings.product_id = Product.product_id
                             )`),
-                            "rating_count",
+                            "ratings_count",
                         ],
                     ],
                 },
