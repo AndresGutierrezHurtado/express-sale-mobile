@@ -61,17 +61,9 @@ export default class RatingController {
 
     static updateRating = async (req, res) => {
         try {
-            const rating = await models.Rating.update(
-                {
-                    rating_comment: req.body.rating_comment,
-                    rating_image_url:
-                        req.body.rating_image_url || "",
-                    rating_value: req.body.rating_value,
-                },
-                {
-                    where: { rating_id: req.params.id },
-                }
-            );
+            const rating = await models.Rating.update(req.body.rating, {
+                where: { rating_id: req.params.id },
+            });
 
             res.status(200).json({
                 success: true,

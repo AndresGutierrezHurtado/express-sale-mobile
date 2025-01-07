@@ -33,7 +33,12 @@ export default function Rating({ rating, reload, type }) {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            console.log(values);
+            const response = await usePutData(`/ratings/${rating.rating_id}`, { rating: values });
+
+            if (response.success) {
+                setShowEditRating(false);
+                reload();
+            }
         }
     };
 
@@ -147,13 +152,14 @@ export default function Rating({ rating, reload, type }) {
                                 <XIcon size={25} />
                             </Pressable>
                         </View>
-                        <Formik initialValues={{ rating_value: rating.rating_value, rating_comment: rating.rating_comment }} onSubmit={handleSubmitEdit}>
-                            {({
-                                handleChange,
-                                handleSubmit,
-                                setFieldValue,
-                                values,
-                            }) => (
+                        <Formik
+                            initialValues={{
+                                rating_value: rating.rating_value,
+                                rating_comment: rating.rating_comment,
+                            }}
+                            onSubmit={handleSubmitEdit}
+                        >
+                            {({ handleChange, handleSubmit, setFieldValue, values }) => (
                                 <View className="gap-5">
                                     <View>
                                         <Text className="text-lg leading-tight">
