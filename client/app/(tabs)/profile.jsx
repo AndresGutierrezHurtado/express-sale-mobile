@@ -50,7 +50,7 @@ export default function Profile() {
         return <GuestProfile />;
     }
 
-    const handleSubmit = async (values) => {
+    const handleSubmitEdit = async (values) => {
         const data = {
             user: {
                 user_name: values.user_name,
@@ -88,7 +88,12 @@ export default function Profile() {
                 <View className="w-full px-5 py-10 gap-5 items-center">
                     <View className="w-full items-center gap-3">
                         <Image
-                            source={{ uri: user.user_image_url }}
+                            source={{
+                                uri:
+                                    user.user_image_url == "/images/default.jpg"
+                                        ? process.env.EXPO_PUBLIC_APP_DOMAIN + user.user_image_url
+                                        : user.user_image_url,
+                            }}
                             className="w-20 h-20 rounded-full"
                             style={{ width: 120, height: 120, objectFit: "cover" }}
                         />
@@ -123,7 +128,7 @@ export default function Profile() {
                             </Pressable>
                         )}
                     </View>
-                    <Text>{user.worker.worker_description}</Text>
+                    {user.worker && <Text>{user.worker.worker_description}</Text>}
                 </View>
             </View>
             <Modal visible={showEditUserModal} animationType="slide" transparent>
@@ -139,7 +144,7 @@ export default function Profile() {
                                 <XIcon size={25} />
                             </Pressable>
                         </View>
-                        <Formik initialValues={user} onSubmit={handleSubmit}>
+                        <Formik initialValues={user} onSubmit={handleSubmitEdit}>
                             {({ handleChange, handleBlur, handleSubmit, values }) => (
                                 <View className="gap-3">
                                     <View className="gap-1">

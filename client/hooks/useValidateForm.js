@@ -119,7 +119,6 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                         regex(/^(?:\d{0}|\d{10})$/, "El telefono debe tener 10 digitos")
                     ),
                     worker_description: pipe(
-                        string("La descripción no es valida"),
                         regex(
                             /^(?:$|.{10,})$/,
                             "La descripción debe tener al menos 10 caracteres alfanuméricos"

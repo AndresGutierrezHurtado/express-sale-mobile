@@ -206,8 +206,8 @@ export default function WorkerProfile() {
                 )}
 
                 <View className="w-full p-5 gap-5">
-                    {worker.ratings_count === 0 && <Text>No hay calificaciones...</Text>}
                     <Text className="text-2xl font-bold">Comentarios:</Text>
+                    {worker.ratings_count === 0 && <Text>No hay calificaciones...</Text>}
                     <View className="gap-7">
                         {workerRatings.map((rating) => (
                             <Rating
