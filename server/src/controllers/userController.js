@@ -360,10 +360,55 @@ export default class UserController {
 
     static getUserProducts = async (req, res) => {
         try {
+            const limit = parseInt(req.query.limit || 5);
+            const page = parseInt(req.query.page || 1);
+            const offset = (page - 1) * limit;
+
+            const where = {
+                [Op.and]: [
+                    {
+                        product_status: "publico",
+                    },
+                    {
+                        user_id: req.params.id,
+                    },
+                    {
+                        [Op.or]: [
+                            {
+                                product_name: {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                            {
+                                product_description: {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        product_price: {
+                            [Op.gte]: req.query.min || 0,
+                        },
+                    },
+                    {
+                        product_price: {
+                            [Op.lte]: req.query.max || 9999999999,
+                        },
+                    },
+                    {
+                        category_id: {
+                            [Op.in]: req.query.category_id ? [req.query.category_id] : [1, 2, 3, 4],
+                        },
+                    },
+                ],
+            };
+
+            const order = req.query.sort
+                ? req.query.sort.split(":")
+                : [sequelize.literal("`average_rating`"), "DESC"];
+
             const products = await models.Product.findAndCountAll({
-                limit: parseInt(req.query.limit || 5),
-                offset: req.query.page ? (req.query.page - 1) * 5 : 0,
-                where: { user_id: req.params.id },
                 include: ["category"],
                 attributes: {
                     include: [
@@ -387,13 +432,20 @@ export default class UserController {
                         ],
                     ],
                 },
+                where,
+                limit,
+                offset,
+                distinct: true,
+                order: [order],
             });
+
             return res.status(200).json({
                 success: true,
                 message: "Productos obtenidos correctamente.",
-                data: products,
+                data: { ...products, limit, page, offset },
             });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({
                 success: false,
                 message: error.message,

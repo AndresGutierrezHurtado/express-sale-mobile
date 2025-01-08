@@ -227,10 +227,9 @@ export default class ProductController {
             res.status(200).json({
                 success: true,
                 message: "Listado de productos.",
-                data: products,
+                data: { ...products, limit, page, offset },
             });
         } catch (error) {
-            console.log(error);
             res.status(500).json({
                 success: false,
                 message: error.message,
