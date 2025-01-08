@@ -142,46 +142,52 @@ export default class ProductController {
 
     static getProducts = async (req, res) => {
         try {
+            const limit = parseInt(req.query.limit || 5);
+            const page = parseInt(req.query.page || 1);
+            const offset = (page - 1) * limit;
+
+            const where = {
+                [Op.and]: [
+                    {
+                        product_status: "publico",
+                    },
+                    {
+                        [Op.or]: [
+                            {
+                                product_name: {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                            {
+                                product_description: {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        product_price: {
+                            [Op.gte]: req.query.min || 0,
+                        },
+                    },
+                    {
+                        product_price: {
+                            [Op.lte]: req.query.max || 9999999999,
+                        },
+                    },
+                    {
+                        category_id: {
+                            [Op.in]: req.query.category_id ? [req.query.category_id] : [1, 2, 3, 4],
+                        },
+                    },
+                ],
+            };
+
+            const order = req.query.sort
+                ? req.query.sort.split(":")
+                : [sequelize.literal("`average_rating`"), "DESC"];
+
             const products = await models.Product.findAndCountAll({
-                where: {
-                    [Op.and]: [
-                        {
-                            product_status: "publico",
-                        },
-                        {
-                            [Op.or]: [
-                                {
-                                    product_name: {
-                                        [Op.like]: `%${req.query.search || ""}%`,
-                                    },
-                                },
-                                {
-                                    product_description: {
-                                        [Op.like]: `%${req.query.search || ""}%`,
-                                    },
-                                },
-                            ],
-                        },
-                        {
-                            product_price: {
-                                [Op.gte]: req.query.min || 0,
-                            },
-                        },
-                        {
-                            product_price: {
-                                [Op.lte]: req.query.max || 9999999999,
-                            },
-                        },
-                        {
-                            category_id: {
-                                [Op.in]: req.query.category_id ? [req.query.category_id] : [1, 2, 3, 4],
-                            },
-                        },
-                    ],
-                },
-                limit: parseInt(req.query.limit || 5),
-                offset: req.query.page ? (req.query.page - 1) * 5 : 0,
-                distinct: true,
                 include: [
                     "category",
                     {
@@ -211,11 +217,11 @@ export default class ProductController {
                         ],
                     ],
                 },
-                order: [
-                    [
-                        req.query.sort ? req.query.sort.split(":") : [sequelize.literal("`average_rating`"), "DESC"],
-                    ],
-                ],
+                where,
+                limit,
+                offset,
+                distinct: true,
+                order: [order],
             });
 
             res.status(200).json({
