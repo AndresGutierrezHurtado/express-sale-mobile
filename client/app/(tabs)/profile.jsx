@@ -193,7 +193,7 @@ export default function Profile() {
                                     </Pressable>
                                 </Link>
                                 {user.role_id == 2 && (
-                                    <Link asChild href={`/worker/products/${user.user_id}`}>
+                                    <Link asChild href="/worker/products">
                                         <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
                                             <Text className="text-gray-600">
                                                 <GearIcon />
@@ -205,7 +205,7 @@ export default function Profile() {
                                     </Link>
                                 )}
                                 {user.role_id == 3 && (
-                                    <Link asChild href={`/worker/shippings/${user.user_id}`}>
+                                    <Link asChild href="/worker/shippings">
                                         <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
                                             <Text className="text-gray-600">
                                                 <TruckIcon />
