@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import {
     View,
     Modal,
@@ -106,7 +106,7 @@ export default function Profile() {
                             </Text>
                         </View>
                     </View>
-                    <View className="w-full flex-row gap-4 justify-center items-center">
+                    <View className="w-full flex-row flex-wrap gap-4 justify-center items-center">
                         {(user.user_id === userSession.user_id || userSession.role_id == 4) && (
                             <Pressable
                                 onPress={() => setShowEditUserModal(true)}
@@ -116,6 +116,15 @@ export default function Profile() {
                                     Editar Perfil
                                 </Text>
                             </Pressable>
+                        )}
+                        {(userSession.role_id == 2 || userSession.role_id == 3) && (
+                            <Link asChild href={`/worker/${user.user_id}`}>
+                                <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                    <Text className="text-lg text-gray-600 font-semibold">
+                                        Ver Perfil
+                                    </Text>
+                                </Pressable>
+                            </Link>
                         )}
                         {user.user_id === userSession.user_id && (
                             <Pressable
