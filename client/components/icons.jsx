@@ -1,12 +1,14 @@
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Octicons from "@expo/vector-icons/Octicons";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { FontAwesome6 } from "@expo/vector-icons";
+import {
+    FontAwesome,
+    FontAwesome5,
+    FontAwesome6,
+    Feather,
+    AntDesign,
+    MaterialIcons,
+    MaterialCommunityIcons,
+    Entypo,
+    Octicons,
+} from "@expo/vector-icons";
 
 const HomeIcon = (props) => <Octicons name="home" {...props} />;
 
