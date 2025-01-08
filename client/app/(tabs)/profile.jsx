@@ -21,7 +21,15 @@ import { useValidateForm } from "../../hooks/useValidateForm.js";
 
 // Components
 import GuestProfile from "../../components/guestProfile.jsx";
-import { XIcon } from "../../components/icons.jsx";
+import {
+    GearIcon,
+    LogoutIcon,
+    PencilIcon,
+    StatsIcon,
+    TruckIcon,
+    WebIcon,
+    XIcon,
+} from "../../components/icons.jsx";
 
 // Middlewares
 import { useRouteMiddleware } from "../../middlewares/useRouteMiddleware.js";
@@ -110,8 +118,11 @@ export default function Profile() {
                         {(user.user_id === userSession.user_id || userSession.role_id == 4) && (
                             <Pressable
                                 onPress={() => setShowEditUserModal(true)}
-                                className="px-3 py-1 bg-gray-200 rounded-lg"
+                                className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300"
                             >
+                                <Text className="text-gray-600">
+                                    <PencilIcon size={18} />
+                                </Text>
                                 <Text className="text-lg text-gray-600 font-semibold">
                                     Editar Perfil
                                 </Text>
@@ -119,18 +130,24 @@ export default function Profile() {
                         )}
                         {(user.role_id == 2 || user.role_id == 3) && (
                             <Link asChild href={`/worker/${user.user_id}`}>
-                                <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                    <Text className="text-gray-600">
+                                        <WebIcon size={18} />
+                                    </Text>
                                     <Text className="text-lg text-gray-600 font-semibold">
-                                        Ver Perfil
+                                        Ver Pefil
                                     </Text>
                                 </Pressable>
                             </Link>
                         )}
                         {user.user_id === userSession.user_id && (
                             <Pressable
-                                className="px-3 py-1 bg-red-600 rounded-lg"
+                                className="px-3 py-1 bg-red-500 rounded-lg flex-row items-center gap-2 active:bg-red-600"
                                 onPress={async () => await handleLogout()}
                             >
+                                <Text className="text-red-100">
+                                    <LogoutIcon size={16} />
+                                </Text>
                                 <Text className="text-lg text-red-100 font-semibold">
                                     Cerrar Sesión
                                 </Text>
@@ -141,19 +158,64 @@ export default function Profile() {
                         {userSession.role_id == 4 && (
                             <>
                                 <Link asChild href={`/admin/users`}>
-                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                        <Text className="text-gray-600">
+                                            <GearIcon />
+                                        </Text>
                                         <Text className="text-lg text-gray-600 font-semibold">
                                             Administrar usuarios
                                         </Text>
                                     </Pressable>
                                 </Link>
                                 <Link asChild href={`/admin/products`}>
-                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                        <Text className="text-gray-600">
+                                            <GearIcon />
+                                        </Text>
                                         <Text className="text-lg text-gray-600 font-semibold">
-                                            Administrar usuarios
+                                            Administrar productos
                                         </Text>
                                     </Pressable>
                                 </Link>
+                            </>
+                        )}
+
+                        {(user.role_id == 2 || user.role_id == 3) && (
+                            <>
+                                <Link asChild href={`/worker/stats/${user.user_id}`}>
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                        <Text className="text-gray-600">
+                                            <StatsIcon />
+                                        </Text>
+                                        <Text className="text-lg text-gray-600 font-semibold">
+                                            Estadisticas
+                                        </Text>
+                                    </Pressable>
+                                </Link>
+                                {user.role_id == 2 && (
+                                    <Link asChild href={`/worker/products/${user.user_id}`}>
+                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                            <Text className="text-gray-600">
+                                                <GearIcon />
+                                            </Text>
+                                            <Text className="text-lg text-gray-600 font-semibold">
+                                                Administrar productos
+                                            </Text>
+                                        </Pressable>
+                                    </Link>
+                                )}
+                                {user.role_id == 3 && (
+                                    <Link asChild href={`/worker/shippings/${user.user_id}`}>
+                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                            <Text className="text-gray-600">
+                                                <TruckIcon />
+                                            </Text>
+                                            <Text className="text-lg text-gray-600 font-semibold">
+                                                Envios
+                                            </Text>
+                                        </Pressable>
+                                    </Link>
+                                )}
                             </>
                         )}
                     </View>

@@ -8,6 +8,7 @@ import {
     MaterialCommunityIcons,
     Entypo,
     Octicons,
+    Ionicons,
 } from "@expo/vector-icons";
 
 const HomeIcon = (props) => <Octicons name="home" {...props} />;
@@ -44,6 +45,16 @@ const TrashIcon = (props) => <FontAwesome6 name="trash-can" {...props} />;
 
 const ReportIcon = (props) => <MaterialIcons name="report-problem" {...props} />;
 
+const StatsIcon = (props) => <Ionicons name="stats-chart" {...props} />;
+
+const GearIcon = (props) => <FontAwesome6 name="gear" {...props} />;
+
+const WebIcon = (props) => <MaterialCommunityIcons name="web" {...props} />;
+
+const LogoutIcon = (props) => <Feather name="log-out" {...props} />;
+
+const TruckIcon = (props) => <FontAwesome5 name="truck-loading" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -62,4 +73,9 @@ export {
     PencilIcon,
     TrashIcon,
     ReportIcon,
+    StatsIcon,
+    GearIcon,
+    WebIcon,
+    LogoutIcon,
+    TruckIcon,
 };
