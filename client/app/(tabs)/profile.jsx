@@ -117,7 +117,7 @@ export default function Profile() {
                                 </Text>
                             </Pressable>
                         )}
-                        {(userSession.role_id == 2 || userSession.role_id == 3) && (
+                        {(user.role_id == 2 || user.role_id == 3) && (
                             <Link asChild href={`/worker/${user.user_id}`}>
                                 <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
                                     <Text className="text-lg text-gray-600 font-semibold">
@@ -135,6 +135,26 @@ export default function Profile() {
                                     Cerrar Sesión
                                 </Text>
                             </Pressable>
+                        )}
+                    </View>
+                    <View className="w-full flex-row flex-wrap gap-4 justify-center items-center">
+                        {userSession.role_id == 4 && (
+                            <>
+                                <Link asChild href={`/admin/users`}>
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                        <Text className="text-lg text-gray-600 font-semibold">
+                                            Administrar usuarios
+                                        </Text>
+                                    </Pressable>
+                                </Link>
+                                <Link asChild href={`/admin/products`}>
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg">
+                                        <Text className="text-lg text-gray-600 font-semibold">
+                                            Administrar usuarios
+                                        </Text>
+                                    </Pressable>
+                                </Link>
+                            </>
                         )}
                     </View>
                     {user.worker && <Text>{user.worker.worker_description}</Text>}
