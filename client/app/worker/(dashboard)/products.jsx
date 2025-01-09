@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Stack } from "expo-router";
-import { ActivityIndicator, Modal, Pressable, Text, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View,
+} from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
 import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
+import { useValidateForm } from "../../../hooks/useValidateForm";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
@@ -34,7 +43,10 @@ export default function WorkerProducts() {
     };
 
     const handleCreateProduct = async (values) => {
-        console.log(values);
+        const validation = useValidateForm(values, "create-product-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) console.log(values);
     };
 
     if (loadingProducts) return <ActivityIndicator size="large" color="#0000ff" />;
@@ -117,7 +129,7 @@ export default function WorkerProducts() {
 
             <Modal visible={showCreate} animationType="slide" transparent>
                 <View className="flex-1 bg-black/40">
-                    <View className="bg-white h-full mt-[300px] rounded-t-[20px]">
+                    <ScrollView className="bg-white h-full mt-[300px] rounded-t-[20px]">
                         <View className="p-5 gap-8">
                             <View className="flex-row items-center justify-between">
                                 <Text className="text-2xl font-bold">Crear Producto</Text>
@@ -133,9 +145,10 @@ export default function WorkerProducts() {
                                 initialValues={{
                                     product_name: "",
                                     product_description: "",
-                                    product_price: "",
-                                    product_quantity: "",
-                                    category_id: 4,
+                                    product_price: 0,
+                                    product_quantity: 0,
+                                    product_status: "privado",
+                                    category_id: "4",
                                 }}
                                 onSubmit={handleCreateProduct}
                             >
@@ -192,6 +205,52 @@ export default function WorkerProducts() {
                                         </View>
 
                                         <View className="gap-1">
+                                            <Text className="text-lg font-semibold">Precio:</Text>
+                                            <TextInput
+                                                placeholder="Ingresa el precio del producto"
+                                                className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                                value={values.product_price}
+                                                onChangeText={handleChange("product_price")}
+                                                keyboardType="decimal-pad"
+                                            />
+                                            {errors.find(
+                                                (error) => error.field === "product_price"
+                                            ) && (
+                                                <Text className="text-red-600">
+                                                    {
+                                                        errors.find(
+                                                            (error) =>
+                                                                error.field === "product_price"
+                                                        ).message
+                                                    }
+                                                </Text>
+                                            )}
+                                        </View>
+
+                                        <View className="gap-1">
+                                            <Text className="text-lg font-semibold">Cantidad:</Text>
+                                            <TextInput
+                                                placeholder="Ingresa la cantidad del producto"
+                                                className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                                value={values.product_quantity}
+                                                onChangeText={handleChange("product_quantity")}
+                                                keyboardType="decimal-pad"
+                                            />
+                                            {errors.find(
+                                                (error) => error.field === "product_quantity"
+                                            ) && (
+                                                <Text className="text-red-600">
+                                                    {
+                                                        errors.find(
+                                                            (error) =>
+                                                                error.field === "product_quantity"
+                                                        ).message
+                                                    }
+                                                </Text>
+                                            )}
+                                        </View>
+
+                                        <View className="gap-1">
                                             <Text className="text-lg font-semibold">
                                                 Categoria:
                                             </Text>
@@ -220,29 +279,33 @@ export default function WorkerProducts() {
                                         </View>
 
                                         <View className="gap-1">
-                                            <Text className="text-lg font-semibold">Precio:</Text>
-                                            <TextInput
-                                                placeholder="Ingresa el precio del producto"
-                                                className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                                value={values.product_price}
-                                                onChangeText={handleChange("product_price")}
-                                                keyboardType="decimal-pad"
-                                            />
+                                            <Text className="text-lg font-semibold">
+                                                Visibilidad:
+                                            </Text>
+                                            <View className="border border-gray-600 rounded">
+                                                <Picker
+                                                    selectedValue={values.product_status}
+                                                    onValueChange={handleChange("product_status")}
+                                                >
+                                                    <Picker.Item label="Publico" value="publico" />
+                                                    <Picker.Item label="Privado" value="privado" />
+                                                </Picker>
+                                            </View>
                                             {errors.find(
-                                                (error) => error.field === "product_price"
+                                                (error) => error.field === "product_status"
                                             ) && (
                                                 <Text className="text-red-600">
                                                     {
                                                         errors.find(
                                                             (error) =>
-                                                                error.field === "product_price"
+                                                                error.field === "product_status"
                                                         ).message
                                                     }
                                                 </Text>
                                             )}
                                         </View>
 
-                                        <View className="pt-5">
+                                        <View className="py-5">
                                             <Pressable
                                                 onPress={handleSubmit}
                                                 className="bg-purple-700 w-full px-3 py-2 rounded-md active:bg-purple-800"
@@ -256,7 +319,7 @@ export default function WorkerProducts() {
                                 )}
                             </Formik>
                         </View>
-                    </View>
+                    </ScrollView>
                 </View>
             </Modal>
         </>
