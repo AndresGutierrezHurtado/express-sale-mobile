@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
 
 // Hooks
 import { usePaginateData } from "../../../hooks/useFetchData";
@@ -25,7 +26,7 @@ export default function WorkerProducts() {
         <>
             <Stack.Screen options={{ headerTitle: "Tus Productos" }} />
             <View className="w-full">
-                <View className="w-full p-5">
+                <View className="w-full p-5 gap-8">
                     <TextInput
                         placeholder="Buscar producto"
                         className="bg-white border border-gray-400 rounded-md p-2 mb-2"
@@ -35,15 +36,25 @@ export default function WorkerProducts() {
                         }}
                     />
 
-                    <View>
-                        {products.map((product, index) => (
-                            <View key={index} className="w-full p-5 gap-5">
-                                <View className="w-full flex-row items-center justify-between">
-                                    <Text className="font-extrabold">{product.product_name}</Text>
-                                </View>
-                            </View>
-                        ))}
-                    </View>
+                    <Table
+                        borderStyle={{ borderWidth: 1, borderColor: "black" }}
+                        style={{ backgroundColor: "white" }}
+                    >
+                        <Row
+                            data={["ID", "Nombre", "Precio", "Stock", "Editar", "Eliminar"]}
+                            style={{ backgroundColor: "lightgray" }}
+                        />
+                        <Rows
+                            data={products.map((product) => [
+                                product.product_id.split("-")[1],
+                                product.product_name,
+                                parseInt(product.product_price).toLocaleString("es-CO") + " COP",
+                                product.product_quantity,
+                                "",
+                                "",
+                            ])}
+                        />
+                    </Table>
 
                     <View className="flex-row items-center justify-between w-full bg-white p-3 rounded-lg border border-gray-200">
                         <Text className="m-0.5">
