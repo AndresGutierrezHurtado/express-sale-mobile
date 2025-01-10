@@ -4,7 +4,7 @@ import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-nativ
 import { Table, Row, Rows } from "react-native-table-component";
 
 // Hooks
-import { usePaginateData } from "../../../hooks/useFetchData";
+import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
@@ -21,6 +21,12 @@ export default function WorkerProducts() {
         reload: reloadProducts,
         count: countProducts,
     } = usePaginateData(`/users/${userSession.user_id}/products?search=${search}&page=${page}`);
+
+    const handleDeleteProduct = async (id) => {
+        const response = await useDeleteData(`/products/${id}`);
+
+        if (response.success) reloadProducts();
+    };
 
     if (loadingProducts) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
@@ -54,7 +60,10 @@ export default function WorkerProducts() {
                                 <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
                                     <PencilIcon size={18} color="#fff" />
                                 </Pressable>,
-                                <Pressable className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700">
+                                <Pressable
+                                    className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
+                                    onPress={() => handleDeleteProduct(product.product_id)}
+                                >
                                     <TrashIcon size={17} color="#fff" />
                                 </Pressable>,
                             ])}
