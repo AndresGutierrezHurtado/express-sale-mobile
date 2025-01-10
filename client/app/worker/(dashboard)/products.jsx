@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { Stack } from "expo-router";
-import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
+import { Formik } from "formik";
 
 // Hooks
 import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
-import { PencilIcon, TrashIcon } from "../../../components/icons";
+import { PencilIcon, TrashIcon, XIcon } from "../../../components/icons";
 
 export default function WorkerProducts() {
     const { userSession } = useAuthContext();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
+
+    const [showCreate, setShowCreate] = useState(false);
 
     const {
         data: products,
@@ -61,8 +64,8 @@ export default function WorkerProducts() {
                                     <PencilIcon size={18} color="#fff" />
                                 </Pressable>,
                                 <Pressable
-                                    className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
                                     onPress={() => handleDeleteProduct(product.product_id)}
+                                    className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
                                 >
                                     <TrashIcon size={17} color="#fff" />
                                 </Pressable>,
@@ -71,7 +74,10 @@ export default function WorkerProducts() {
                         />
                     </Table>
 
-                    <Pressable className="bg-purple-700 rounded-lg px-3 py-2 active:bg-purple-800">
+                    <Pressable
+                        onPress={() => setShowCreate(true)}
+                        className="bg-purple-700 rounded-lg px-3 py-2 active:bg-purple-800"
+                    >
                         <Text className="mx-0.5 text-lg font-bold text-center text-white">
                             + Agregar Producto
                         </Text>
@@ -102,6 +108,25 @@ export default function WorkerProducts() {
                     </View>
                 </View>
             </View>
+
+            <Modal visible={showCreate} animationType="slide" transparent>
+                <View className="flex-1 bg-black/40">
+                    <View className="bg-white h-full mt-[300px] rounded-t-[20px]">
+                        <View className="p-5">
+                            <View className="flex-row items-center justify-between">
+                                <Text className="text-2xl font-bold">Crear Producto</Text>
+                                <Pressable
+                                    onPress={() => setShowCreate(false)}
+                                    className="border p-1 rounded-[10px] size-[35px] items-center justify-center active:bg-gray-300"
+                                >
+                                    <XIcon size={20} />
+                                </Pressable>
+                            </View>
+                            <Formik>{({ handleSubmit, values }) => <View></View>}</Formik>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </>
     );
 }
