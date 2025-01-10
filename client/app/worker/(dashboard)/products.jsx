@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Stack } from "expo-router";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from "react-native-table-component";
+import { Table, Row, Rows } from "react-native-table-component";
 
 // Hooks
 import { usePaginateData } from "../../../hooks/useFetchData";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
+import { PencilIcon, TrashIcon } from "../../../components/icons";
 
 export default function WorkerProducts() {
     const { userSession } = useAuthContext();
@@ -41,20 +42,31 @@ export default function WorkerProducts() {
                         style={{ backgroundColor: "white" }}
                     >
                         <Row
-                            data={["ID", "Nombre", "Precio", "Stock", "Editar", "Eliminar"]}
+                            data={["ID", "Nombre", "Stock", "Editar", "Eliminar"]}
                             style={{ backgroundColor: "lightgray" }}
+                            textStyle={{ padding: 5 }}
                         />
                         <Rows
                             data={products.map((product) => [
                                 product.product_id.split("-")[1],
                                 product.product_name,
-                                parseInt(product.product_price).toLocaleString("es-CO") + " COP",
                                 product.product_quantity,
-                                "",
-                                "",
+                                <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
+                                    <PencilIcon size={18} color="#fff" />
+                                </Pressable>,
+                                <Pressable className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700">
+                                    <TrashIcon size={17} color="#fff" />
+                                </Pressable>,
                             ])}
+                            textStyle={{ padding: 5 }}
                         />
                     </Table>
+
+                    <Pressable className="bg-purple-700 rounded-lg px-3 py-2 active:bg-purple-800">
+                        <Text className="mx-0.5 text-lg font-bold text-center text-white">
+                            + Agregar Producto
+                        </Text>
+                    </Pressable>
 
                     <View className="flex-row items-center justify-between w-full bg-white p-3 rounded-lg border border-gray-200">
                         <Text className="m-0.5">
