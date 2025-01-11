@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
 import {
     ActivityIndicator,
     Modal,
@@ -105,9 +105,11 @@ export default function WorkerProducts() {
                                 product.product_id.split("-")[1],
                                 product.product_name,
                                 product.product_quantity,
-                                <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
-                                    <PencilIcon size={18} color="#fff" />
-                                </Pressable>,
+                                <Link asChild href={`/worker/products/${product.product_id}`}>
+                                    <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
+                                        <PencilIcon size={18} color="#fff" />
+                                    </Pressable>
+                                </Link>,
                                 <Pressable
                                     onPress={() => handleDeleteProduct(product.product_id)}
                                     className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
