@@ -15,7 +15,7 @@ import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
-import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
+import { useDeleteData, usePaginateData, usePostData } from "../../../hooks/useFetchData";
 import { useValidateForm } from "../../../hooks/useValidateForm";
 import { usePickImage } from "../../../hooks/usePickImage";
 
@@ -50,13 +50,29 @@ export default function WorkerProducts() {
         const validation = useValidateForm(values, "create-product-form");
         setErrors(validation.errors || []);
 
-        if (validation.success) {
-            // const response = await usePostData(`/products`, { product: values });
+        if (!values.product_image) {
+            return alert("Debes subir una imagen");
+        }
 
-            // if (response.success) {
-            //     setShowCreate(false);
-            //     reloadProducts();
-            // }
+        if (validation.success) {
+            const data = {
+                product: {
+                    product_name: values.product_name,
+                    product_description: values.product_description,
+                    product_price: values.product_price,
+                    product_quantity: values.product_quantity,
+                    product_status: values.product_status,
+                    category_id: values.category_id,
+                },
+                product_image: values.product_image,
+            };
+
+            const response = await usePostData(`/products`, data);
+
+            if (response.success) {
+                setShowCreate(false);
+                reloadProducts();
+            }
         }
     };
 
