@@ -10,7 +10,7 @@ import { useAddCart } from "../hooks/useCart";
 
 export default function ProductCard({ product }) {
     return (
-        <View className="bg-white p-4 shadow-xl rounded-md w-[175px] min-h-[205px]">
+        <View className="bg-white p-4 shadow-xl rounded-md w-[175px] min-h-[200px] gap-2">
             <Link asChild href={`/products/${product.product_id}`}>
                 <Pressable className="items-center">
                     <Image
