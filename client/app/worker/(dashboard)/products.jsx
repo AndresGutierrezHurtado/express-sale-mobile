@@ -13,7 +13,6 @@ import {
 import { Table, Row, Rows } from "react-native-table-component";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
 
 // Hooks
 import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
@@ -22,6 +21,7 @@ import { useValidateForm } from "../../../hooks/useValidateForm";
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
 import { PencilIcon, TrashIcon, XIcon } from "../../../components/icons";
+import { usePickImage } from "../../../hooks/usePickImage";
 
 export default function WorkerProducts() {
     const { userSession } = useAuthContext();
@@ -54,27 +54,6 @@ export default function WorkerProducts() {
             //     setShowCreate(false);
             //     reloadProducts();
             // }
-        }
-    };
-
-    const handlePickImage = async (setFieldValue) => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (!permissionResult.granted) {
-            alert("Se requiere permiso para acceder a la galería.");
-            return;
-        }
-
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
-            base64: true,
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        console.log(result.assets[0].base64.slice(0, 20));
-        if (!result.canceled) {
-            setFieldValue("product_image", `data:image/jpeg;base64,${result.assets[0].base64}`);
         }
     };
 
@@ -338,7 +317,9 @@ export default function WorkerProducts() {
                                         <View className="gap-1">
                                             <Text className="text-lg font-semibold">Imagen:</Text>
                                             <Pressable
-                                                onPress={() => handlePickImage(setFieldValue)}
+                                                onPress={() =>
+                                                    usePickImage(setFieldValue, "product_image")
+                                                }
                                                 className="bg-gray-300 rounded-lg px-3 py-2 active:bg-gray-500"
                                             >
                                                 <Text className="text-center">
