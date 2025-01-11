@@ -18,6 +18,7 @@ import { useAuthContext } from "../../contexts/authContext.jsx";
 // Hooks
 import { useGetData, usePutData } from "../../hooks/useFetchData.js";
 import { useValidateForm } from "../../hooks/useValidateForm.js";
+import { usePickImage } from "../../hooks/usePickImage.js";
 
 // Components
 import GuestProfile from "../../components/guestProfile.jsx";
@@ -72,8 +73,12 @@ export default function Profile() {
 
         if (user.worker) {
             data.worker = {
-                worker_description: values.worker.worker_description,
+                worker_description: values.worker_description,
             };
+        }
+
+        if (values.user_image) {
+            data.user_image = values.user_image;
         }
 
         const validation = useValidateForm({ ...data.user, ...data.worker }, "user-edit-form");
@@ -235,8 +240,20 @@ export default function Profile() {
                                 <XIcon size={25} />
                             </Pressable>
                         </View>
-                        <Formik initialValues={user} onSubmit={handleSubmitEdit}>
-                            {({ handleChange, handleBlur, handleSubmit, values }) => (
+                        <Formik
+                            initialValues={{
+                                user_name: user.user_name,
+                                user_lastname: user.user_lastname,
+                                user_alias: user.user_alias,
+                                user_phone: user.user_phone,
+                                user_address: user.user_address,
+                                worker_description: user?.worker?.worker_description,
+                                role_id: user.role_id,
+                                user_image: null,
+                            }}
+                            onSubmit={handleSubmitEdit}
+                        >
+                            {({ handleSubmit, values, handleChange, setFieldValue }) => (
                                 <View className="gap-3">
                                     <View className="gap-1">
                                         <Text className="text-lg font-semibold">Nombre: </Text>
@@ -338,10 +355,8 @@ export default function Profile() {
                                             <TextInput
                                                 placeholder="Ingresa una descripcion para tu perfil de trabajador"
                                                 className="w-full bg-white border px-3 py-1 rounded text-lg h-32"
-                                                value={values.worker.worker_description}
-                                                onChangeText={handleChange(
-                                                    "worker.worker_description"
-                                                )}
+                                                value={values.worker_description}
+                                                onChangeText={handleChange("worker_description")}
                                                 multiline
                                             />
                                             {errors.find(
@@ -384,6 +399,46 @@ export default function Profile() {
                                             )}
                                         </View>
                                     )}
+
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">Imagen:</Text>
+                                        <Pressable
+                                            onPress={() =>
+                                                usePickImage(setFieldValue, "user_image")
+                                            }
+                                            className="bg-gray-300 rounded-lg px-3 py-2 active:bg-gray-500"
+                                        >
+                                            <Text className="text-center">Seleccionar Imagen</Text>
+                                        </Pressable>
+                                        {values.user_image && (
+                                            <View className="pt-4">
+                                                <Text className="text-center font-bold leading-loose">
+                                                    Imagen seleccionada:
+                                                </Text>
+                                                <Image
+                                                    source={{ uri: values.user_image }}
+                                                    style={{
+                                                        width: 250,
+                                                        height: 150,
+                                                        alignSelf: "center",
+                                                        objectFit: "contain",
+                                                    }}
+                                                    className="border bg-gray-300 rounded-lg"
+                                                />
+                                            </View>
+                                        )}
+                                        {errors.find(
+                                            (error) => error.field === "product_image"
+                                        ) && (
+                                            <Text className="text-red-600">
+                                                {
+                                                    errors.find(
+                                                        (error) => error.field === "product_image"
+                                                    ).message
+                                                }
+                                            </Text>
+                                        )}
+                                    </View>
 
                                     <View className="gap-1 pt-5">
                                         <Pressable

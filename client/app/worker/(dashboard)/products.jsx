@@ -17,11 +17,13 @@ import { Picker } from "@react-native-picker/picker";
 // Hooks
 import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
 import { useValidateForm } from "../../../hooks/useValidateForm";
+import { usePickImage } from "../../../hooks/usePickImage";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
+
+// Components
 import { PencilIcon, TrashIcon, XIcon } from "../../../components/icons";
-import { usePickImage } from "../../../hooks/usePickImage";
 
 export default function WorkerProducts() {
     const { userSession } = useAuthContext();
@@ -50,6 +52,7 @@ export default function WorkerProducts() {
 
         if (validation.success) {
             // const response = await usePostData(`/products`, { product: values });
+
             // if (response.success) {
             //     setShowCreate(false);
             //     reloadProducts();
