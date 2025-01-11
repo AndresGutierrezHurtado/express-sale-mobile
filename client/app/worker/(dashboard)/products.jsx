@@ -8,10 +8,12 @@ import {
     Text,
     TextInput,
     View,
+    Image,
 } from "react-native";
 import { Table, Row, Rows } from "react-native-table-component";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
 
 // Hooks
 import { useDeleteData, usePaginateData } from "../../../hooks/useFetchData";
@@ -46,7 +48,34 @@ export default function WorkerProducts() {
         const validation = useValidateForm(values, "create-product-form");
         setErrors(validation.errors || []);
 
-        if (validation.success) console.log(values);
+        if (validation.success) {
+            // const response = await usePostData(`/products`, { product: values });
+            // if (response.success) {
+            //     setShowCreate(false);
+            //     reloadProducts();
+            // }
+        }
+    };
+
+    const handlePickImage = async (setFieldValue) => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissionResult.granted) {
+            alert("Se requiere permiso para acceder a la galería.");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images"],
+            base64: true,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        console.log(result.assets[0].base64.slice(0, 20));
+        if (!result.canceled) {
+            setFieldValue("product_image", `data:image/jpeg;base64,${result.assets[0].base64}`);
+        }
     };
 
     if (loadingProducts) return <ActivityIndicator size="large" color="#0000ff" />;
@@ -148,11 +177,12 @@ export default function WorkerProducts() {
                                     product_price: 0,
                                     product_quantity: 0,
                                     product_status: "privado",
+                                    product_image: null,
                                     category_id: "4",
                                 }}
                                 onSubmit={handleCreateProduct}
                             >
-                                {({ handleSubmit, handleChange, values }) => (
+                                {({ handleSubmit, handleChange, setFieldValue, values }) => (
                                     <View className="gap-3">
                                         <View className="gap-1">
                                             <Text className="text-lg font-semibold">Nombre:</Text>
@@ -299,6 +329,47 @@ export default function WorkerProducts() {
                                                         errors.find(
                                                             (error) =>
                                                                 error.field === "product_status"
+                                                        ).message
+                                                    }
+                                                </Text>
+                                            )}
+                                        </View>
+
+                                        <View className="gap-1">
+                                            <Text className="text-lg font-semibold">Imagen:</Text>
+                                            <Pressable
+                                                onPress={() => handlePickImage(setFieldValue)}
+                                                className="bg-gray-300 rounded-lg px-3 py-2 active:bg-gray-500"
+                                            >
+                                                <Text className="text-center">
+                                                    Seleccionar Imagen
+                                                </Text>
+                                            </Pressable>
+                                            {values.product_image && (
+                                                <View className="pt-4">
+                                                    <Text className="text-center font-bold leading-loose">
+                                                        Imagen seleccionada:
+                                                    </Text>
+                                                    <Image
+                                                        source={{ uri: values.product_image }}
+                                                        style={{
+                                                            width: 250,
+                                                            height: 150,
+                                                            alignSelf: "center",
+                                                            objectFit: "contain",
+                                                        }}
+                                                        className="border bg-gray-300 rounded-lg"
+                                                    />
+                                                </View>
+                                            )}
+                                            {errors.find(
+                                                (error) => error.field === "product_image"
+                                            ) && (
+                                                <Text className="text-red-600">
+                                                    {
+                                                        errors.find(
+                                                            (error) =>
+                                                                error.field === "product_image"
                                                         ).message
                                                     }
                                                 </Text>

@@ -1,4 +1,5 @@
 import {
+    base64,
     email,
     length,
     maxValue,
@@ -210,6 +211,14 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                         string("La categoría no es valida"),
                         minLength(1, "La categoría es requerida"),
                         regex(/^[0-9]*$/, "La categoría debe tener solo números")
+                    ),
+                    product_image: pipe(
+                        nonEmpty("La imagen es requerida"),
+                        string("La imagen no es válida"),
+                        regex(
+                            /^data:image\/(jpeg);base64,.*$/,
+                            "El formato de la imagen no es válido"
+                        )
                     ),
                 });
                 break;
