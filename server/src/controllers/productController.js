@@ -7,17 +7,12 @@ import { deleteFile, uploadFile } from "../configs/uploadImage.js";
 export default class ProductController {
     static createProduct = async (req, res) => {
         try {
-            const product = await models.Product.create({
-                ...req.body.product,
-                user_id: req.session.user_id,
-            });
+            const productId = crypto.randomUUID();
 
             if (req.body.product_image) {
-                const response = await uploadFile(
-                    req.body.product_image,
-                    product.product_id,
-                    "/products"
-                );
+                const response = await uploadFile(req.body.product_image, productId, "/products");
+
+                req.body.product.product_image_url = response.data;
 
                 if (!response.success)
                     return res.status(500).json({
@@ -25,26 +20,13 @@ export default class ProductController {
                         message: response.message || "Error al subir a la nube la imagen",
                         data: null,
                     });
-
-                const responseUpdate = await models.Product.update(
-                    {
-                        product_image_url: response.data || response.data,
-                    },
-                    {
-                        where: {
-                            product_id: product.product_id,
-                        },
-                    }
-                );
-
-                if (responseUpdate[0] < 1) {
-                    return res.status(500).json({
-                        success: false,
-                        message: responseUpdate.message || "Error al guardar en la nube la imagen",
-                        data: null,
-                    });
-                }
             }
+
+            const product = await models.Product.create({
+                ...req.body.product,
+                product_id: productId,
+                user_id: req.session.user_id,
+            });
 
             res.status(200).json({
                 success: true,
@@ -127,6 +109,7 @@ export default class ProductController {
                     product_id: req.params.id,
                 },
             });
+
             res.status(200).json({
                 success: true,
                 message: "Producto eliminado correctamente",
