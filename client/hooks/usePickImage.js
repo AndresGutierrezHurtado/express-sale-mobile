@@ -12,11 +12,14 @@ export const usePickImage = async (setFieldValue, field, multiple = false) => {
         mediaTypes: ["images"],
         base64: true,
         allowsMultipleSelection: multiple,
+        selectionLimit: multiple ? 6 : 1,
         allowsEditing: true,
         quality: 1,
     });
 
     if (!result.canceled) {
-        setFieldValue(field, `data:image/jpeg;base64,${result.assets[0].base64}`);
+        const images = result.assets.map((a) => `data:image/jpeg;base64,${a.base64}`);
+
+        setFieldValue(field, multiple ? images : images[0]);
     }
 };
