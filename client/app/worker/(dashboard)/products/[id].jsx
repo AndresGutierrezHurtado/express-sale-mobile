@@ -32,7 +32,7 @@ export default function ProductProfile() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            console.log(values);
+            console.log("validacion exitosa");
         }
     };
 
@@ -52,6 +52,7 @@ export default function ProductProfile() {
                                 product_status: product.product_status,
                                 product_image: null,
                                 category_id: parseInt(product.category_id).toString(),
+                                product_multimedias: [],
                             }}
                             onSubmit={handleUpdate}
                         >
@@ -221,18 +222,55 @@ export default function ProductProfile() {
                                                 />
                                             </View>
                                         )}
-                                        {errors.find(
-                                            (error) => error.field === "product_image"
-                                        ) && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "product_image"
-                                                    ).message
-                                                }
+                                    </View>
+
+                                    <View className="gap-1">
+                                        <View className="py-3">
+                                            <Text className="text-lg font-semibold">
+                                                Multimedias:
                                             </Text>
+                                            <Pressable
+                                                onPress={() =>
+                                                    usePickImage(
+                                                        setFieldValue,
+                                                        "product_multimedias",
+                                                        true
+                                                    )
+                                                }
+                                                className="bg-gray-300 rounded-lg px-3 py-2 active:bg-gray-500"
+                                            >
+                                                <Text className="text-center">
+                                                    Seleccionar Imagenes extras
+                                                </Text>
+                                            </Pressable>
+                                        </View>
+                                        {values.product_multimedias.length > 0 && (
+                                            <View className="py-3">
+                                                <Text className="text-center font-bold leading-loose">
+                                                    Imagenes seleccionadas:
+                                                </Text>
+                                                <ScrollView horizontal={true}>
+                                                    {values.product_multimedias.map(
+                                                        (image, index) => (
+                                                            <View key={index} className="pt-4">
+                                                                <Image
+                                                                    source={{ uri: image }}
+                                                                    style={{
+                                                                        width: 250,
+                                                                        height: 150,
+                                                                        alignSelf: "center",
+                                                                        objectFit: "contain",
+                                                                    }}
+                                                                    className="border bg-gray-300 rounded-lg mr-5"
+                                                                />
+                                                            </View>
+                                                        )
+                                                    )}
+                                                </ScrollView>
+                                            </View>
                                         )}
                                     </View>
+
                                     <View className="py-5">
                                         <Pressable
                                             onPress={handleSubmit}
