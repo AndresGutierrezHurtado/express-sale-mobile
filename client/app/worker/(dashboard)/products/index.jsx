@@ -87,6 +87,7 @@ export default function WorkerProducts() {
                         className="bg-white border border-gray-400 rounded-md p-2 mb-2"
                         value={search}
                         onChangeText={(value) => {
+                            setPage(1);
                             setSearch(value);
                         }}
                     />
@@ -146,7 +147,7 @@ export default function WorkerProducts() {
                             </Pressable>
                             <Pressable
                                 onPress={() => setPage(page + 1)}
-                                disabled={page == Math.ceil(products.length / 5)}
+                                disabled={page == Math.ceil(countProducts / 5)}
                                 className="bg-gray-300 rounded-lg px-3 py-2 active:bg-gray-500 disabled:opacity-50"
                             >
                                 <Text className="mx-0.5">Next</Text>
