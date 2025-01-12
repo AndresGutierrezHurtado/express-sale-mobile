@@ -13,7 +13,7 @@ import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
-import { useGetData, usePutData } from "../../../../hooks/useFetchData";
+import { useDeleteData, useGetData, usePutData } from "../../../../hooks/useFetchData";
 import { useValidateForm } from "../../../../hooks/useValidateForm";
 import { usePickImage } from "../../../../hooks/usePickImage";
 
@@ -32,18 +32,16 @@ export default function ProductProfile() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            const response = usePutData(`/products/${id}`, {
+            const response = await usePutData(`/products/${id}`, {
                 product: values,
                 product_image: values.product_image,
                 product_medias: values.product_medias,
             });
 
-            if (response.success) {
-                reloadProduct();
-                router.back();
-            }
+            if (response.success) reloadProduct();
         }
     };
+
 
     if (loadingProduct) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
@@ -51,6 +49,38 @@ export default function ProductProfile() {
             <Stack.Screen options={{ headerTitle: "Editar producto" }} />
             <ScrollView>
                 <View className="w-full">
+                    <View className="w-full p-5 gap-8">
+                        <Text className="text-2xl font-bold">Perfil de {product.product_name}</Text>
+                        <View className="gap-3 items-center">
+                            <Image
+                                source={{ uri: product.product_image_url }}
+                                style={{ width: 300, height: 200, objectFit: "contain" }}
+                                className="border rounded-lg bg-black/50"
+                            />
+                            <ScrollView horizontal>
+                                {product.medias.map((media) => (
+                                    <View key={media.media_id} className="relative mr-10">
+                                        <Image
+                                            source={{ uri: media.media_url }}
+                                            style={{
+                                                width: 100,
+                                                height: 100,
+                                                objectFit: "contain",
+                                            }}
+                                            className="border rounded-lg bg-black/50"
+                                        />
+                                        <Pressable
+                                            className="absolute top-1 right-1 bg-red-600 rounded p-1"
+                                        >
+                                            <Text className="text-white text-center text-xs">
+                                                Eliminar
+                                            </Text>
+                                        </Pressable>
+                                    </View>
+                                ))}
+                            </ScrollView>
+                        </View>
+                    </View>
                     <View className="w-full p-5">
                         <Formik
                             initialValues={{
