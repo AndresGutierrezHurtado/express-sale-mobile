@@ -27,6 +27,15 @@ export default function ProductProfile() {
         reload: reloadProduct,
     } = useGetData(`/products/${id}`);
 
+    const handleUpdate = async (values) => {
+        const validation = useValidateForm(values, "update-product-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) {
+            console.log(values);
+        }
+    };
+
     if (loadingProduct) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
         <>
@@ -44,6 +53,7 @@ export default function ProductProfile() {
                                 product_image: null,
                                 category_id: parseInt(product.category_id).toString(),
                             }}
+                            onSubmit={handleUpdate}
                         >
                             {({ handleSubmit, handleChange, setFieldValue, values }) => (
                                 <View className="gap-3">

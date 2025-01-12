@@ -144,33 +144,33 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                 break;
             case "update-product-form":
                 schema = object({
-                    producto_nombre: pipe(
+                    product_name: pipe(
                         nonEmpty("El nombre es requerido"),
                         string("El nombre no es valido"),
                         minLength(3, "El nombre debe tener al menos 3 caracteres")
                     ),
-                    producto_precio: pipe(
+                    product_price: pipe(
                         nonEmpty("El precio es requerido"),
                         string("El precio no es valido"),
                         minLength(3, "El precio debe tener al menos 3 digitos"),
                         regex(/^[0-9]*$/, "El precio debe tener solo números")
                     ),
-                    producto_descripcion: pipe(
+                    product_description: pipe(
                         nonEmpty("La descripción es requerida"),
                         string("La descripción no es valida"),
                         minLength(10, "La descripción debe tener al menos 10 caracteres")
                     ),
-                    producto_cantidad: pipe(
+                    product_quantity: pipe(
                         nonEmpty("La cantidad es requerida"),
                         string("La cantidad no es valida"),
                         minLength(1, "La cantidad debe tener al menos 1 caracter"),
                         regex(/^[0-9]*$/, "La cantidad debe tener solo números")
                     ),
-                    producto_estado: pipe(
+                    product_status: pipe(
                         nonEmpty("El estado es requerido"),
                         string("El estado no es valido")
                     ),
-                    categoria_id: pipe(
+                    category_id: pipe(
                         nonEmpty("La categoría es requerida"),
                         string("La categoría no es valida"),
                         minLength(1, "La categoría debe tener al menos 1 caracter"),
