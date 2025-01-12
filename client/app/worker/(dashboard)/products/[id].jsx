@@ -42,6 +42,11 @@ export default function ProductProfile() {
         }
     };
 
+    const handleDeleteMedia = async (id) => {
+        const response = await useDeleteData(`/medias/${id}`);
+
+        if (response.success) reloadProduct();
+    };
 
     if (loadingProduct) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
@@ -70,6 +75,7 @@ export default function ProductProfile() {
                                             className="border rounded-lg bg-black/50"
                                         />
                                         <Pressable
+                                            onPress={() => handleDeleteMedia(media.media_id)}
                                             className="absolute top-1 right-1 bg-red-600 rounded p-1"
                                         >
                                             <Text className="text-white text-center text-xs">

@@ -310,13 +310,14 @@ export default class ProductController {
     };
 
     static deleteMultimedia = async (req, res) => {
-        const t = await sequelize.transaction();
+        const transaction = await sequelize.transaction();
+
         try {
             await models.Media.destroy({
                 where: {
                     media_id: req.params.id,
                 },
-                transaction: t,
+                transaction,
             });
 
             const response = await deleteFile(`express-sale/products/multimedia/${req.params.id}`);
@@ -325,14 +326,16 @@ export default class ProductController {
                 throw new Error(response.message);
             }
 
-            await t.commit();
+            await transaction.commit();
+
             res.status(200).json({
                 success: true,
                 message: "Imagen eliminada correctamente",
                 data: null,
             });
         } catch (error) {
-            await t.rollback();
+            await transaction.rollback();
+
             res.status(404).json({
                 success: false,
                 message: error.message,
