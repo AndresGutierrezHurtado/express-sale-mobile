@@ -68,24 +68,7 @@ export default function Home() {
                             <Text className="w-fit text-xl font-bold">Moda</Text>
                         </Pressable>
                     </Link>
-                    <Link asChild href={{ pathname: "/products", params: { category_id: 2 } }}>
-                        <Pressable className="w-fit items-center gap-1">
-                            <View className="w-fit rounded-full overflow-hidden border-2">
-                                <Image
-                                    source={{
-                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/tecnologia.jpg`,
-                                    }}
-                                    style={{
-                                        width: 70,
-                                        aspectRatio: 1,
-                                        objectFit: "cover",
-                                    }}
-                                />
-                            </View>
-                            <Text className="text-center text-xl font-bold">Tecnologia</Text>
-                        </Pressable>
-                    </Link>
-                    <Link asChild href={{ pathname: "/products", params: { category_id: 3 } }}>
+                    <Link asChild href="/products?category_id=2">
                         <Pressable className="w-fit gap-1">
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image
@@ -102,7 +85,24 @@ export default function Home() {
                             <Text className="text-center text-xl font-bold">Comida</Text>
                         </Pressable>
                     </Link>
-                    <Link asChild href={{ pathname: "/products", params: { category_id: 4 } }}>
+                    <Link asChild href="/products?category_id=3">
+                        <Pressable className="w-fit items-center gap-1">
+                            <View className="w-fit rounded-full overflow-hidden border-2">
+                                <Image
+                                    source={{
+                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/tecnologia.jpg`,
+                                    }}
+                                    style={{
+                                        width: 70,
+                                        aspectRatio: 1,
+                                        objectFit: "cover",
+                                    }}
+                                />
+                            </View>
+                            <Text className="text-center text-xl font-bold">Tecnologia</Text>
+                        </Pressable>
+                    </Link>
+                    <Link asChild href="/products?category_id=4">
                         <Pressable className="w-fit gap-1">
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image

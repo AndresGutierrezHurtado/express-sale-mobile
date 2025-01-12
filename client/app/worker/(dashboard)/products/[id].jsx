@@ -8,12 +8,12 @@ import {
     Pressable,
     ScrollView,
 } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
-import { useGetData } from "../../../../hooks/useFetchData";
+import { useGetData, usePutData } from "../../../../hooks/useFetchData";
 import { useValidateForm } from "../../../../hooks/useValidateForm";
 import { usePickImage } from "../../../../hooks/usePickImage";
 
@@ -32,7 +32,16 @@ export default function ProductProfile() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            console.log("validacion exitosa");
+            const response = usePutData(`/products/${id}`, {
+                product: values,
+                product_image: values.product_image,
+                product_medias: values.product_medias,
+            });
+
+            if (response.success) {
+                reloadProduct();
+                router.back();
+            }
         }
     };
 
@@ -52,7 +61,7 @@ export default function ProductProfile() {
                                 product_status: product.product_status,
                                 product_image: null,
                                 category_id: parseInt(product.category_id).toString(),
-                                product_multimedias: [],
+                                product_medias: [],
                             }}
                             onSubmit={handleUpdate}
                         >
@@ -155,8 +164,8 @@ export default function ProductProfile() {
                                                 onValueChange={handleChange("category_id")}
                                             >
                                                 <Picker.Item label="Moda" value="1" />
-                                                <Picker.Item label="Tecnologia" value="2" />
-                                                <Picker.Item label="Comida" value="3" />
+                                                <Picker.Item label="Comida" value="2" />
+                                                <Picker.Item label="Tecnologia" value="3" />
                                                 <Picker.Item label="Otros" value="4" />
                                             </Picker>
                                         </View>
@@ -233,7 +242,7 @@ export default function ProductProfile() {
                                                 onPress={() =>
                                                     usePickImage(
                                                         setFieldValue,
-                                                        "product_multimedias",
+                                                        "product_medias",
                                                         true
                                                     )
                                                 }
@@ -244,28 +253,26 @@ export default function ProductProfile() {
                                                 </Text>
                                             </Pressable>
                                         </View>
-                                        {values.product_multimedias.length > 0 && (
+                                        {values.product_medias.length > 0 && (
                                             <View className="py-3">
                                                 <Text className="text-center font-bold leading-loose">
                                                     Imagenes seleccionadas:
                                                 </Text>
                                                 <ScrollView horizontal={true}>
-                                                    {values.product_multimedias.map(
-                                                        (image, index) => (
-                                                            <View key={index} className="pt-4">
-                                                                <Image
-                                                                    source={{ uri: image }}
-                                                                    style={{
-                                                                        width: 250,
-                                                                        height: 150,
-                                                                        alignSelf: "center",
-                                                                        objectFit: "contain",
-                                                                    }}
-                                                                    className="border bg-gray-300 rounded-lg mr-5"
-                                                                />
-                                                            </View>
-                                                        )
-                                                    )}
+                                                    {values.product_medias.map((image, index) => (
+                                                        <View key={index} className="pt-4">
+                                                            <Image
+                                                                source={{ uri: image }}
+                                                                style={{
+                                                                    width: 250,
+                                                                    height: 150,
+                                                                    alignSelf: "center",
+                                                                    objectFit: "contain",
+                                                                }}
+                                                                className="border bg-gray-300 rounded-lg mr-5"
+                                                            />
+                                                        </View>
+                                                    ))}
                                                 </ScrollView>
                                             </View>
                                         )}

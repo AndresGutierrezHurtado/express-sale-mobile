@@ -290,8 +290,8 @@ export default function WorkerProducts() {
                                                     onValueChange={handleChange("category_id")}
                                                 >
                                                     <Picker.Item label="Moda" value="1" />
-                                                    <Picker.Item label="Tecnologia" value="2" />
-                                                    <Picker.Item label="Comida" value="3" />
+                                                    <Picker.Item label="Comida" value="2" />
+                                                    <Picker.Item label="Tecnologia" value="3" />
                                                     <Picker.Item label="Otros" value="4" />
                                                 </Picker>
                                             </View>
