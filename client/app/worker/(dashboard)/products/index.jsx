@@ -15,15 +15,15 @@ import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
-import { useDeleteData, usePaginateData, usePostData } from "../../../hooks/useFetchData";
-import { useValidateForm } from "../../../hooks/useValidateForm";
-import { usePickImage } from "../../../hooks/usePickImage";
+import { useDeleteData, usePaginateData, usePostData } from "../../../../hooks/useFetchData";
+import { useValidateForm } from "../../../../hooks/useValidateForm";
+import { usePickImage } from "../../../../hooks/usePickImage";
 
 // Contexts
-import { useAuthContext } from "../../../contexts/authContext";
+import { useAuthContext } from "../../../../contexts/authContext";
 
 // Components
-import { PencilIcon, TrashIcon, XIcon } from "../../../components/icons";
+import { PencilIcon, TrashIcon, XIcon } from "../../../../components/icons";
 
 export default function WorkerProducts() {
     const { userSession } = useAuthContext();
