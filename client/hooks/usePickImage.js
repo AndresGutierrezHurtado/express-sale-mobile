@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 
-export const usePickImage = async (setFieldValue, field) => {
+export const usePickImage = async (setFieldValue, field, multiple = false) => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
@@ -11,6 +11,7 @@ export const usePickImage = async (setFieldValue, field) => {
     const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ["images"],
         base64: true,
+        allowsMultipleSelection: multiple,
         allowsEditing: true,
         quality: 1,
     });
