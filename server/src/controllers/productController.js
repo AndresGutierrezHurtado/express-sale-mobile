@@ -54,6 +54,7 @@ export default class ProductController {
 
                 if (response.success) req.body.product.product_image_url = response.data;
                 else {
+                    await transaction.rollback();
                     return res.status(500).json({
                         success: false,
                         message: response.message || "Error al subir la imagen",
@@ -63,7 +64,7 @@ export default class ProductController {
             }
 
             if (req.body.product_medias.length > 0) {
-                req.body.product_medias.forEach(async (multimedia) => {
+                for (const multimedia of req.body.product_medias) {
                     const multimediaId = crypto.randomUUID();
 
                     const response = await uploadFile(
@@ -81,13 +82,15 @@ export default class ProductController {
                             },
                             { transaction }
                         );
-                    else
+                    else {
+                        await transaction.rollback();
                         return res.status(500).json({
                             success: false,
                             message: response.message || "Error al subir la imagen",
                             data: null,
                         });
-                });
+                    }
+                }
             }
 
             const product = await models.Product.update(req.body.product, {
