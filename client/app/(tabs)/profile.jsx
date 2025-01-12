@@ -11,6 +11,7 @@ import {
     ScrollView,
 } from "react-native";
 import { Formik } from "formik";
+import { Picker } from "@react-native-picker/picker";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext.jsx";
@@ -160,6 +161,46 @@ export default function Profile() {
                         )}
                     </View>
                     <View className="w-full flex-row flex-wrap gap-4 justify-center items-center">
+                        {(user.role_id == 2 || user.role_id == 3) && (
+                            <>
+                                <Link asChild href={`/worker/stats/${user.user_id}`}>
+                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                        <Text className="text-gray-600">
+                                            <StatsIcon />
+                                        </Text>
+                                        <Text className="text-lg text-gray-600 font-semibold">
+                                            Estadisticas
+                                        </Text>
+                                    </Pressable>
+                                </Link>
+                                {userSession.role_id == 2 && (
+                                    <Link asChild href="/worker/products">
+                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                            <Text className="text-gray-600">
+                                                <GearIcon />
+                                            </Text>
+                                            <Text className="text-lg text-gray-600 font-semibold">
+                                                Administrar productos
+                                            </Text>
+                                        </Pressable>
+                                    </Link>
+                                )}
+                                {userSession.role_id == 3 && (
+                                    <Link asChild href="/worker/shippings">
+                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
+                                            <Text className="text-gray-600">
+                                                <TruckIcon />
+                                            </Text>
+                                            <Text className="text-lg text-gray-600 font-semibold">
+                                                Envios
+                                            </Text>
+                                        </Pressable>
+                                    </Link>
+                                )}
+                            </>
+                        )}
+                    </View>
+                    <View className="w-full flex-row flex-wrap gap-4 justify-center items-center">
                         {userSession.role_id == 4 && (
                             <>
                                 <Link asChild href={`/admin/users`}>
@@ -182,45 +223,6 @@ export default function Profile() {
                                         </Text>
                                     </Pressable>
                                 </Link>
-                            </>
-                        )}
-
-                        {(user.role_id == 2 || user.role_id == 3) && (
-                            <>
-                                <Link asChild href={`/worker/stats/${user.user_id}`}>
-                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
-                                        <Text className="text-gray-600">
-                                            <StatsIcon />
-                                        </Text>
-                                        <Text className="text-lg text-gray-600 font-semibold">
-                                            Estadisticas
-                                        </Text>
-                                    </Pressable>
-                                </Link>
-                                {user.role_id == 2 && (
-                                    <Link asChild href="/worker/products">
-                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
-                                            <Text className="text-gray-600">
-                                                <GearIcon />
-                                            </Text>
-                                            <Text className="text-lg text-gray-600 font-semibold">
-                                                Administrar productos
-                                            </Text>
-                                        </Pressable>
-                                    </Link>
-                                )}
-                                {user.role_id == 3 && (
-                                    <Link asChild href="/worker/shippings">
-                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300">
-                                            <Text className="text-gray-600">
-                                                <TruckIcon />
-                                            </Text>
-                                            <Text className="text-lg text-gray-600 font-semibold">
-                                                Envios
-                                            </Text>
-                                        </Pressable>
-                                    </Link>
-                                )}
                             </>
                         )}
                     </View>
@@ -248,7 +250,7 @@ export default function Profile() {
                                 user_phone: user.user_phone,
                                 user_address: user.user_address,
                                 worker_description: user?.worker?.worker_description,
-                                role_id: user.role_id,
+                                role_id: parseInt(user.role_id).toString(),
                                 user_image: null,
                             }}
                             onSubmit={handleSubmitEdit}
@@ -377,6 +379,7 @@ export default function Profile() {
                                         <View className="gap-1">
                                             <Text className="text-lg font-semibold">Rol: </Text>
                                             <View className="border rounded">
+                                                {console.log(values.role_id)}
                                                 <Picker
                                                     style={{ height: 50 }}
                                                     className="w-full bg-white border px-3 py-1 rounded"
