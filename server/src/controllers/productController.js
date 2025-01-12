@@ -43,26 +43,29 @@ export default class ProductController {
 
     static updateProduct = async (req, res) => {
         try {
-            let productData = req.body.product;
+            const transaction = await sequelize.transaction();
+
             if (req.body.product_image) {
                 const response = await uploadFile(
                     req.body.product_image,
                     req.params.id,
                     "/products"
                 );
-                if (response.success)
-                    productData.product_image_url = response.data || response.data.url;
-                else
+
+                if (response.success) req.body.product.product_image_url = response.data;
+                else {
                     return res.status(500).json({
                         success: false,
                         message: response.message || "Error al subir la imagen",
                         data: null,
                     });
+                }
             }
 
-            if (req.body.multimedias.length > 0) {
-                req.body.multimedias.forEach(async (multimedia) => {
+            if (req.body.product_medias.length > 0) {
+                req.body.product_medias.forEach(async (multimedia) => {
                     const multimediaId = crypto.randomUUID();
+
                     const response = await uploadFile(
                         multimedia,
                         multimediaId,
@@ -70,11 +73,14 @@ export default class ProductController {
                     );
 
                     if (response.success)
-                        await models.Media.create({
-                            media_id: multimediaId,
-                            media_url: response.data || response.data.url,
-                            product_id: req.params.id,
-                        });
+                        await models.Media.create(
+                            {
+                                media_id: multimediaId,
+                                media_url: response.data,
+                                product_id: req.params.id,
+                            },
+                            { transaction }
+                        );
                     else
                         return res.status(500).json({
                             success: false,
@@ -84,17 +90,23 @@ export default class ProductController {
                 });
             }
 
-            const product = await models.Product.update(productData, {
+            const product = await models.Product.update(req.body.product, {
                 where: {
                     product_id: req.params.id,
                 },
+                transaction,
             });
+
+            await transaction.commit();
             res.status(200).json({
                 success: true,
                 message: "Producto actualizado correctamente",
                 data: product,
             });
         } catch (error) {
+            await transaction.rollback();
+            console.log(error);
+
             res.status(404).json({
                 success: false,
                 message: error.message,
