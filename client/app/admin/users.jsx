@@ -53,7 +53,6 @@ export default function Users() {
                             <Text className="font-bold p-1">Eliminar</Text>
                         ]}
                         style={{ backgroundColor: "lightgray" }}
-                        textStyle={{ padding: 5 }}
                     />
                     <Rows
                         data={users.map((user) => [

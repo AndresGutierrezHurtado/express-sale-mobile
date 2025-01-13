@@ -1,6 +1,6 @@
 import React from "react";
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 
 // Hooks
 import { useGetData } from "../../hooks/useFetchData";
@@ -61,7 +61,11 @@ export default function Cart() {
                                     {" COP"}
                                 </Text>
                             </View>
-                            <Pressable className="mt-5 py-2 px-10 bg-purple-700 rounded-lg active:opacity-50">
+                            <Pressable
+                                onPress={() => router.push("/pay/form")}
+                                disabled={carts.length === 0}
+                                className="mt-5 py-2 px-10 bg-purple-700 rounded-lg active:opacity-50"
+                            >
                                 <Text className="text-white text-lg text-center font-bold">
                                     Pagar
                                 </Text>
