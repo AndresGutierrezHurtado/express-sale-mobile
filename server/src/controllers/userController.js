@@ -384,21 +384,6 @@ export default class UserController {
                                     [Op.like]: `%${req.query.search || ""}%`,
                                 },
                             },
-                            {
-                                "$user.user_name$": {
-                                    [Op.like]: `%${req.query.search || ""}%`,
-                                },
-                            },
-                            {
-                                "$user.user_lastname$": {
-                                    [Op.like]: `%${req.query.search || ""}%`,
-                                },
-                            },
-                            {
-                                "$user.user_alias$": {
-                                    [Op.like]: `%${req.query.search || ""}%`,
-                                },
-                            },
                         ],
                     },
                     {
