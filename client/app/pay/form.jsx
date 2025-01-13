@@ -9,6 +9,7 @@ import { useGetData } from "../../hooks/useFetchData";
 
 // Contexts
 import { useAuthContext } from "../../contexts/authContext";
+import { useValidateForm } from "../../hooks/useValidateForm";
 
 export default function Form() {
     const { userSession } = useAuthContext();
@@ -41,7 +42,13 @@ export default function Form() {
                 shippingCoordinates: values.shippingCoordinates,
             }),
         };
-        console.log(data);
+
+        const validation = useValidateForm(values, "pay-form");
+        setErrors(validation.errors || []);
+
+        if (validation.success) {
+            console.log(data);
+        }
     };
 
     if (loadingCarts) return <ActivityIndicator size="large" color="#0000ff" />;

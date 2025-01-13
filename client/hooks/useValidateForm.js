@@ -1,7 +1,5 @@
 import {
-    base64,
     email,
-    length,
     maxValue,
     minLength,
     minValue,
