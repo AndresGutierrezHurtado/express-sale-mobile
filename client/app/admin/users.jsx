@@ -12,13 +12,14 @@ import { PencilIcon, TrashIcon } from "../../components/icons";
 export default function Users() {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [sort, setSort] = useState("user_date:asc");
 
     const {
         data: users,
         loading: loadingUsers,
         reload: reloadUsers,
         count: countUsers,
-    } = usePaginateData(`/users?search=${search}&page=${page}`);
+    } = usePaginateData(`/users?search=${search}&page=${page}&sort=${sort}`);
 
     const handleDeleteUser = async (id) => {
         const response = await useDeleteData(`/users/${id}`);
@@ -44,15 +45,21 @@ export default function Users() {
                     style={{ backgroundColor: "white" }}
                 >
                     <Row
-                        data={["ID", "Nombre", "Usuario", "Editar", "Eliminar"]}
+                        data={[
+                            <Text className="font-bold p-1" onPress={() => setSort("user_id:asc")}>ID</Text>, 
+                            <Text className="font-bold p-1" onPress={() => setSort("user_name:asc")}>Nombre</Text>, 
+                            <Text className="font-bold p-1" onPress={() => setSort("user_alias:asc")}>Usuario</Text>, 
+                            <Text className="font-bold p-1">Editar</Text>, 
+                            <Text className="font-bold p-1">Eliminar</Text>
+                        ]}
                         style={{ backgroundColor: "lightgray" }}
                         textStyle={{ padding: 5 }}
                     />
                     <Rows
                         data={users.map((user) => [
-                            user.user_id,
-                            `${user.user_name} ${user.user_lastname}`,
-                            user.user_alias,
+                            <Text className="p-1">{user.user_id.split("-")[1]}</Text>,
+                            <Text className="p-1">{`${user.user_name} ${user.user_lastname}`}</Text>,
+                            <Text className="p-1">{user.user_alias}</Text>,
                             <Link asChild href={`/profile?id=${user.user_id}`}>
                                 <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
                                     <PencilIcon size={18} color="#fff" />
@@ -60,12 +67,11 @@ export default function Users() {
                             </Link>,
                             <Pressable
                                 onPress={() => handleDeleteUser(user.user_id)}
-                                className="bg-red-700 px-2 py-2 rounded-md w-10 m-auto active:bg-red-800"
+                                className="bg-red-600 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
                             >
                                 <TrashIcon size={18} color="#fff" />
                             </Pressable>,
                         ])}
-                        textStyle={{ padding: 5 }}
                     />
                 </Table>
 

@@ -29,6 +29,7 @@ export default function WorkerProducts() {
     const { userSession } = useAuthContext();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
+    const [sort, setSort] = useState("product_id:asc");
 
     const [showCreate, setShowCreate] = useState(false);
     const [errors, setErrors] = useState([]);
@@ -38,7 +39,7 @@ export default function WorkerProducts() {
         loading: loadingProducts,
         reload: reloadProducts,
         count: countProducts,
-    } = usePaginateData(`/users/${userSession.user_id}/products?search=${search}&page=${page}`);
+    } = usePaginateData(`/users/${userSession.user_id}/products?search=${search}&page=${page}&sort=${sort}`);
 
     const handleDeleteProduct = async (id) => {
         const response = await useDeleteData(`/products/${id}`);
@@ -97,28 +98,47 @@ export default function WorkerProducts() {
                         style={{ backgroundColor: "white" }}
                     >
                         <Row
-                            data={["ID", "Nombre", "Stock", "Editar", "Eliminar"]}
+                            data={[
+                                <Text
+                                    className="font-bold p-1"
+                                    onPress={() => setSort("product_id:asc")}
+                                >
+                                    Id
+                                </Text>,
+                                <Text
+                                    className="font-bold p-1"
+                                    onPress={() => setSort("product_name:asc")}
+                                >
+                                    Nombre
+                                </Text>,
+                                <Text
+                                    className="font-bold p-1"
+                                    onPress={() => setSort("user_alias:asc")}
+                                >
+                                    Vendedor
+                                </Text>,
+                                <Text className="font-bold p-1">Editar</Text>,
+                                <Text className="font-bold p-1">Eliminar</Text>,
+                            ]}
                             style={{ backgroundColor: "lightgray" }}
-                            textStyle={{ padding: 5 }}
                         />
                         <Rows
                             data={products.map((product) => [
-                                product.product_id.split("-")[1],
-                                product.product_name,
-                                product.product_quantity,
+                                <Text className="p-1">{product.product_id.split("-")[1]}</Text>,
+                                <Text className="p-1">{product.product_name}</Text>,
+                                <Text className="p-1">{product.product_quantity}</Text>,
                                 <Link asChild href={`/worker/products/${product.product_id}`}>
-                                    <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-auto active:bg-purple-800">
+                                    <Pressable className="bg-purple-700 px-2 py-2 rounded-md w-10 m-1 mx-auto active:bg-purple-800">
                                         <PencilIcon size={18} color="#fff" />
                                     </Pressable>
                                 </Link>,
                                 <Pressable
                                     onPress={() => handleDeleteProduct(product.product_id)}
-                                    className="bg-red-500 px-2 py-2 rounded-md w-10 m-auto active:bg-red-700"
+                                    className="bg-red-500 px-2 py-2 rounded-md w-10 m-1 mx-auto active:bg-red-700"
                                 >
                                     <TrashIcon size={17} color="#fff" />
                                 </Pressable>,
                             ])}
-                            textStyle={{ padding: 5 }}
                         />
                     </Table>
 
