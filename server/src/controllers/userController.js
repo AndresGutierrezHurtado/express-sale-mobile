@@ -384,6 +384,21 @@ export default class UserController {
                                     [Op.like]: `%${req.query.search || ""}%`,
                                 },
                             },
+                            {
+                                "$user.user_name$": {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                            {
+                                "$user.user_lastname$": {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
+                            {
+                                "$user.user_alias$": {
+                                    [Op.like]: `%${req.query.search || ""}%`,
+                                },
+                            },
                         ],
                     },
                     {
@@ -404,9 +419,8 @@ export default class UserController {
                 ],
             };
 
-            const order = req.query.sort
-                ? req.query.sort.split(":")
-                : [sequelize.literal("`average_rating`"), "DESC"];
+            const querySort = req.query?.sort?.split(":") || ["`average_rating`", "DESC"];
+            const order = [sequelize.literal(querySort[0]), querySort[1]];
 
             const products = await models.Product.findAndCountAll({
                 include: ["category"],
