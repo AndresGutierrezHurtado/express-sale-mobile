@@ -13,7 +13,13 @@ import productRoutes from "./routes/product.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import ratingRoutes from "./routes/rating.routes.js";
 
+// Socket
+import { createServer } from "http";
+import { initSocket } from "./configs/socket.js";
+
 const app = express();
+const httpServer = createServer(app);
+const io = initSocket(httpServer);
 
 const SequelizeStore = new sequelizeStore(session.Store);
 
@@ -26,7 +32,7 @@ const store = new SequelizeStore({
 await store.sync();
 
 // Middlewares
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "20mb" }));
 app.use(morgan("dev"));
 app.use(
     cors({
@@ -67,4 +73,4 @@ app.use("/api/v1", productRoutes);
 app.use("/api/v1", orderRoutes);
 app.use("/api/v1", ratingRoutes);
 
-app.listen(process.env.PORT, () => console.log("server running on port", process.env.PORT));
+httpServer.listen(process.env.PORT, () => console.log("server running on port", process.env.PORT));
