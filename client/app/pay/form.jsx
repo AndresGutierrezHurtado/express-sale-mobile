@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 
 import { Stack } from "expo-router";
 import { stringMd5 } from "react-native-quick-md5";
 import { Formik } from "formik";
+import { Picker } from "@react-native-picker/picker";
 
 // Hooks
 import { useGetData } from "../../hooks/useFetchData";
@@ -71,13 +72,14 @@ export default function Form() {
                                 test: process.env.EXPO_PUBLIC_PAYU_TEST_MODE,
                                 tax: "0",
                                 taxReturnBase: "0",
-                                buyerEmail: "",
-                                buyerFullName: "",
-                                payerPhone: "",
-                                payerDocumentType: "",
+                                buyerEmail: userSession.user_email,
+                                buyerFullName:
+                                    userSession.user_name + " " + userSession.user_lastname,
+                                payerPhone: userSession.user_phone,
+                                payerDocumentType: "CC",
                                 payerDocument: "",
                                 payerMessage: "",
-                                confirmationUrl: "http://www.test.com/confirmation",
+                                confirmationUrl: process.env.EXPO_PUBLIC_API_URL + "/payu/callback",
                             }}
                             onSubmit={handleSubmit}
                         >
@@ -126,49 +128,39 @@ export default function Form() {
                                         )}
                                     </View>
                                     <View className="gap-1">
-                                        <Text className="text-lg font-semibold">
-                                            Tipo de Documento:
-                                        </Text>
-                                        <TextInput
-                                            placeholder="Ingresa el tipo de documento"
-                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                            value={values.payerDocumentType}
-                                            onChangeText={handleChange("payerDocumentType")}
-                                        />
-                                        {errors.find(
-                                            (error) => error.field === "payerDocumentType"
-                                        ) && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) =>
-                                                            error.field === "payerDocumentType"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
-                                    </View>
-                                    <View className="gap-1">
-                                        <Text className="text-lg font-semibold">
-                                            Número de Documento:
-                                        </Text>
-                                        <TextInput
-                                            placeholder="Ingresa tu número de documento"
-                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
-                                            value={values.payerDocument}
-                                            onChangeText={handleChange("payerDocument")}
-                                        />
-                                        {errors.find(
-                                            (error) => error.field === "payerDocument"
-                                        ) && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "payerDocument"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
+                                        <Text className="text-lg font-semibold">Documento:</Text>
+                                        <View className="flex-row gap-2">
+                                            <View className="border rounded w-1/3">
+                                                <Picker
+                                                    selectedValue={values.payerDocumentType}
+                                                    onValueChange={(itemValue) =>
+                                                        setFieldValue(
+                                                            "payerDocumentType",
+                                                            itemValue
+                                                        )
+                                                    }
+                                                >
+                                                    {["CC", "TI", "CE", "PS"].map((item) => (
+                                                        <Picker.Item label={item} value={item} />
+                                                    ))}
+                                                </Picker>
+                                            </View>
+                                            <View className="w-1/3 grow">
+                                                <TextInput
+                                                    placeholder="Ingresa tu número de documento"
+                                                    className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                                    value={values.payerDocument}
+                                                    onChangeText={handleChange("payerDocument")}
+                                                />
+                                            </View>
+                                        </View>
+                                        {errors
+                                            .filter((error) => error.field === "payerDocument")
+                                            .map((error) => (
+                                                <Text className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
                                     </View>
                                     <View className="gap-1">
                                         <Text className="text-lg font-semibold">
