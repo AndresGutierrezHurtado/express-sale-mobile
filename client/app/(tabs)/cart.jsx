@@ -64,7 +64,7 @@ export default function Cart() {
                             <Pressable
                                 onPress={() => router.push("/pay/form")}
                                 disabled={carts.length === 0}
-                                className="mt-5 py-2 px-10 bg-purple-700 rounded-lg active:opacity-50"
+                                className="mt-5 py-2 px-10 bg-purple-700 rounded-lg active:bg-purple-800 disabled:opacity-50"
                             >
                                 <Text className="text-white text-lg text-center font-bold">
                                     Pagar
@@ -72,7 +72,10 @@ export default function Cart() {
                             </Pressable>
                         </View>
                     </View>
-                    <Text className="text-4xl font-extrabold tracking-tight">Productos:</Text>
+                    {carts.length === 0 && <Text>No tienes productos en el carrito.</Text>}
+                    {carts.length > 0 && (
+                        <Text className="text-4xl font-extrabold tracking-tight">Productos:</Text>
+                    )}
                     <View className="gap-5">
                         {carts.map((cart) => (
                             <View
