@@ -224,8 +224,8 @@ export const useValidateForm = (data = {}, form = "", extra = null) => {
                 schema = object({
                     amount: pipe(
                         nonEmpty("La cantidad es requerida"),
-                        string("La cantidad no es valida"),
-                        minLength(1, "La cantidad debe tener al menos 1 caracter"),
+                        number("La cantidad no es valida"),
+                        minValue(1000, "La cantidad debe tener al menos 1 caracter"),
                         regex(/^[0-9]*$/, "La cantidad debe tener solo números")
                     ),
                     buyerEmail: pipe(

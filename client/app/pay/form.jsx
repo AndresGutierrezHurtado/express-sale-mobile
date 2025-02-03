@@ -95,17 +95,13 @@ export default function Form() {
                                             value={values.buyerFullName}
                                             onChangeText={handleChange("buyerFullName")}
                                         />
-                                        {errors.find(
-                                            (error) => error.field === "buyerFullName"
-                                        ) && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "buyerFullName"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
+                                        {errors
+                                            .filter((error) => error.field === "buyerFullName")
+                                            .map((error) => (
+                                                <Text key={error.field} className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
                                     </View>
                                     <View className="gap-1">
                                         <Text className="text-lg font-semibold">
@@ -117,15 +113,13 @@ export default function Form() {
                                             value={values.buyerEmail}
                                             onChangeText={handleChange("buyerEmail")}
                                         />
-                                        {errors.find((error) => error.field === "buyerEmail") && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "buyerEmail"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
+                                        {errors
+                                            .filter((error) => error.field === "buyerEmail")
+                                            .map((error) => (
+                                                <Text key={error.field} className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
                                     </View>
                                     <View className="gap-1">
                                         <Text className="text-lg font-semibold">Documento:</Text>
@@ -141,7 +135,11 @@ export default function Form() {
                                                     }
                                                 >
                                                     {["CC", "TI", "CE", "PS"].map((item) => (
-                                                        <Picker.Item label={item} value={item} />
+                                                        <Picker.Item
+                                                            key={item}
+                                                            label={item}
+                                                            value={item}
+                                                        />
                                                     ))}
                                                 </Picker>
                                             </View>
@@ -157,7 +155,7 @@ export default function Form() {
                                         {errors
                                             .filter((error) => error.field === "payerDocument")
                                             .map((error) => (
-                                                <Text className="text-red-600">
+                                                <Text key={error.field} className="text-red-600">
                                                     {error.message}
                                                 </Text>
                                             ))}
@@ -172,15 +170,31 @@ export default function Form() {
                                             value={values.payerPhone}
                                             onChangeText={handleChange("payerPhone")}
                                         />
-                                        {errors.find((error) => error.field === "payerPhone") && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "payerPhone"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
+                                        {errors
+                                            .filter((error) => error.field === "payerPhone")
+                                            .map((error) => (
+                                                <Text key={error.field} className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
+                                    </View>
+                                    <View className="gap-1">
+                                        <Text className="text-lg font-semibold">
+                                            Dirección de envío:
+                                        </Text>
+                                        <TextInput
+                                            placeholder="Ingresa la dirección de envío"
+                                            className="w-full bg-white border px-3 py-1 rounded text-lg"
+                                            value={values.shippingAddress}
+                                            onChangeText={handleChange("shippingAddress")}
+                                        />
+                                        {errors
+                                            .filter((error) => error.field === "shippingAddress")
+                                            .map((error) => (
+                                                <Text key={error.field} className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
                                     </View>
                                     <View className="gap-1">
                                         <Text className="text-lg font-semibold">
@@ -195,15 +209,13 @@ export default function Form() {
                                             textAlignVertical="top"
                                             numberOfLines={4}
                                         />
-                                        {errors.find((error) => error.field === "payerMessage") && (
-                                            <Text className="text-red-600">
-                                                {
-                                                    errors.find(
-                                                        (error) => error.field === "payerMessage"
-                                                    ).message
-                                                }
-                                            </Text>
-                                        )}
+                                        {errors
+                                            .filter((error) => error.field === "payerMessage")
+                                            .map((error) => (
+                                                <Text key={error.field} className="text-red-600">
+                                                    {error.message}
+                                                </Text>
+                                            ))}
                                     </View>
                                     <View className="gap-4 pt-5">
                                         <View className="gap-1">
