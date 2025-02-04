@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { stringMd5 } from "react-native-quick-md5";
 import { Formik } from "formik";
 import { Picker } from "@react-native-picker/picker";
@@ -40,7 +40,7 @@ export default function Form() {
             }),
             extra2: JSON.stringify({
                 shippingAddress: values.shippingAddress,
-                shippingCoordinates: values.shippingCoordinates,
+                shippingCoordinates: values.shippingCoordinates || { lat: 0, lng: 0 },
             }),
         };
 
@@ -48,7 +48,10 @@ export default function Form() {
         setErrors(validation.errors || []);
 
         if (validation.success) {
-            console.log(data);
+            router.push({
+                pathname: "/pay/gateway",
+                params: data,
+            });
         }
     };
 
@@ -220,9 +223,9 @@ export default function Form() {
                                     <View className="gap-4 pt-5">
                                         <View className="gap-1">
                                             <Text className="text-gray-600 font-medium leading-none">
-                                                Debes tener en cuenta que a la hora de realizar el
-                                                pago no se guardará hasta que la transacción se
-                                                complete correctamente.
+                                                Debes tener en cuenta que al realizar el pago no se
+                                                guardará hasta que la transacción se complete
+                                                correctamente.
                                             </Text>
                                             <Text className="text-gray-600 font-medium leading-none">
                                                 Además al recibir la alerta de que ya se pagó,
