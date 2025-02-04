@@ -64,7 +64,7 @@ export default class OrderController {
             const shippingDetails = await models.ShippingDetails.create({
                 order_id: order.order_id,
                 shipping_address: extraInfo.shippingAddress,
-                shipping_coordinates: extraInfo.shippingCoordinates,
+                shipping_coordinates: JSON.stringify(extraInfo.shippingCoordinates),
                 shipping_cost: 7500,
                 shipping_message: extraInfo.payerMessage,
             });
@@ -151,7 +151,7 @@ export default class OrderController {
 
             io.emit("sale", soldProducts);
 
-            res.redirect(`${process.env.EXPO_PUBLIC_APP_DOMAIN}/order/${order.order_id}`);
+            res.redirect(`${process.env.EXPO_PUBLIC_DEEP_LINK}/pay/order/${order.order_id}`);
         } catch (error) {
             await t.rollback();
             res.status(500).json({
