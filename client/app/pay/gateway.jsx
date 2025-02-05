@@ -5,29 +5,6 @@ import WebView from "react-native-webview";
 
 export default function Gateway() {
     const formdata = useLocalSearchParams();
-    console.log("formdata", formdata.extra2);
-    //    {
-    //         accountId: "512321",
-    //         amount: "304900",
-    //         buyerEmail: "andres52885241@gmail.com",
-    //         buyerFullName: "Andrés Gutiérrez Hurtado",
-    //         confirmationUrl: "http://192.168.1.11:8080/api/v1/payu/callback",
-    //         currency: "COP",
-    //         description: "Compra de 2 productos",
-    //         extra1: '{"payerFullname":"Andrés Gutiérrez Hurtado","payerDocumentType":"CC","payerDocument":"1033707596","payerPhone":"3209202177","payerMessage":"sapo"}',
-    //         extra2: '{"shippingAddress":"sapo"}',
-    //         merchantId: "508029",
-    //         payerDocument: "1033707596",
-    //         payerDocumentType: "CC",
-    //         payerMessage: "sapo",
-    //         payerPhone: "3209202177",
-    //         referenceCode: "compra-1997e4d2-fa0d-4cdd-b7a1-f970570a813e-1738707407320",
-    //         shippingAddress: "sapo",
-    //         signature: "a89afe0d60597e85c17f38a410723e54",
-    //         tax: "0",
-    //         taxReturnBase: "0",
-    //         test: "1",
-    //     };
 
     return (
         <>
