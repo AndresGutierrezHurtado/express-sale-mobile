@@ -54,7 +54,60 @@ export default function Profile() {
         loading: loadingUser,
     } = useGetData(`/users/${id || userSession?.user_id}`);
 
-    if (loadingUser) return <ActivityIndicator size="large" color="#0000ff" />;
+    const {
+        data: userOrders,
+        reload: reloadUserOrders,
+        loading: loadingUserOrders,
+    } = useGetData(`/users/${id || userSession?.user_id}/orders`);
+
+    // {
+    //     orderProducts: [
+    //         {
+    //             order_id: "dbb6fb9a-628c-4b02-93b9-d81c47d20ca2",
+    //             product: [Object],
+    //             product_id: "09fd4c7b-cd37-4e6d-a7f6-ae8f93734005",
+    //             product_price: "15000",
+    //             product_quantity: 1,
+    //         },
+    //         {
+    //             order_id: "dbb6fb9a-628c-4b02-93b9-d81c47d20ca2",
+    //             product: [Object],
+    //             product_id: "10014419-f396-4639-925f-2b0814aa81f3",
+    //             product_price: "289900",
+    //             product_quantity: 1,
+    //         },
+    //     ],
+    //     order_date: "2025-02-05T04:47:46.000Z",
+    //     order_id: "dbb6fb9a-628c-4b02-93b9-d81c47d20ca2",
+    //     order_status: "pendiente",
+    //     paymentDetails: {
+    //         buyer_document_number: "1033707596",
+    //         buyer_document_type: "CC",
+    //         buyer_email: "andres52885241@gmail.com",
+    //         buyer_name: "APPROVED",
+    //         buyer_phone: "3209202177",
+    //         order_id: "dbb6fb9a-628c-4b02-93b9-d81c47d20ca2",
+    //         payment_amount: "304900",
+    //         payment_id: "3206a2b8-5f57-4b4a-972d-ac3f15fb3630",
+    //         payment_method: "VISA",
+    //         payu_reference: "compra-1997e4d2-fa0d-4cdd-b7a1-f970570a813e-1738730819218",
+    //     },
+    //     shippingDetails: {
+    //         order_id: "dbb6fb9a-628c-4b02-93b9-d81c47d20ca2",
+    //         shipping_address: "casa",
+    //         shipping_coordinates: '{"lat":0,"lng":0}',
+    //         shipping_cost: "7500",
+    //         shipping_end: "2025-02-05T04:47:46.000Z",
+    //         shipping_id: "8b115cc4-fc91-4f44-a2bb-4cfaedc40eb3",
+    //         shipping_message: "rapido",
+    //         shipping_start: "2025-02-05T04:47:46.000Z",
+    //         worker: null,
+    //         worker_id: null,
+    //     },
+    //     user_id: "1997e4d2-fa0d-4cdd-b7a1-f970570a813e",
+    // };
+
+    if (loadingUser || loadingUserOrders) return <ActivityIndicator size="large" color="#0000ff" />;
 
     if (!user || !userSession) {
         return <GuestProfile />;
@@ -98,7 +151,7 @@ export default function Profile() {
     return (
         <>
             <Stack.Screen options={{ headerTitle: `Perfil de ${user.user_name}` }} />
-            <View className="w-full">
+            <ScrollView className="w-full">
                 <View className="w-full px-5 py-10 gap-5 items-center">
                     <View className="w-full items-center gap-3">
                         <Image
@@ -228,7 +281,7 @@ export default function Profile() {
                     </View>
                     {user.worker && <Text>{user.worker.worker_description}</Text>}
                 </View>
-                <View className="w-full px-5 py-5 gap-5">
+                <View className="w-full px-5 py-5 gap-5 pb-[100px]">
                     <Text className="text-3xl font-extrabold ">Mis compras:</Text>
                     <View className="flex-row flex-wrap gap-3">
                         <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
@@ -247,8 +300,39 @@ export default function Profile() {
                             <Text className="text-lg font-medium">Recibidos</Text>
                         </Pressable>
                     </View>
+                    <View className="gap-4">
+                        {userOrders.map((order) => (
+                            <View
+                                key={order.order_id}
+                                className="w-full bg-white border border-gray-300 rounded-xl p-4"
+                            >
+                                <View className=" items-center justify-between py-2">
+                                    <Text className="text-lg font-medium">
+                                        Precio: {parseInt(order.paymentDetails.payment_amount).toLocaleString("es-CO")} COP
+                                    </Text>
+                                    <Text className="text-lg font-medium">
+                                        Fecha: {new Date(order.order_date).toLocaleDateString()}
+                                    </Text>
+                                </View>
+                                <View className="w-full flex-row items-center gap-2 justify-between">
+                                    <Link asChild href={`/orders/${order.order_id}`}>
+                                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 mt-2 w-[120px]">
+                                            <Text className="text-lg font-medium text-center w-full">
+                                                Ver detalles
+                                            </Text>
+                                        </Pressable>
+                                    </Link>
+                                    <View className="px-5 py-1.5 rounded-full bg-green-500/60">
+                                        <Text className="text-sm font-medium text-green-900 capitalize">
+                                            {order.order_status}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        ))}
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
             <Modal visible={showEditUserModal} animationType="slide" transparent>
                 <View className="flex-1"></View>
                 <ScrollView className="w-full h-[70%] bg-white rounded-t-[30px] border border-gray-400">
