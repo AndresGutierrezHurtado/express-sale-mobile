@@ -1,16 +1,23 @@
-import React, { useState } from "react";
-import { Link, router } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { router, useFocusEffect, useGlobalSearchParams } from "expo-router";
 import { View, Text, Image, TextInput, Pressable } from "react-native";
 import { SearchIcon } from "../components/icons";
 
 export default function Header() {
     const [search, setSearch] = useState("");
+    const { search: searchParam } = useGlobalSearchParams();
 
     const handleSearch = () => {
         const query = search.trim();
         setSearch("");
         router.push(`/products?search=${query}`);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            setSearch(searchParam || "");
+        }, [searchParam])
+    );
 
     return (
         <View
@@ -42,6 +49,11 @@ export default function Header() {
                 {search && (
                     <Pressable onPress={handleSearch}>
                         <Text className="text-black">Buscar</Text>
+                    </Pressable>
+                )}
+                {searchParam && (
+                    <Pressable onPress={() => router.push("/products")}>
+                        <Text className="text-black">Limpiar</Text>
                     </Pressable>
                 )}
             </View>
