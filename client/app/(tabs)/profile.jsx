@@ -335,7 +335,7 @@ export default function Profile() {
                                             </Text>
                                         </View>
                                         <View className="w-full flex-row items-center gap-2 justify-between">
-                                            <Link asChild href={`/orders/${order.order_id}`}>
+                                            <Link asChild href={`/pay/orders/${order.order_id}`}>
                                                 <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 mt-2 w-[120px]">
                                                     <Text className="text-lg font-medium text-center w-full">
                                                         Ver detalles
