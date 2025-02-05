@@ -228,6 +228,26 @@ export default function Profile() {
                     </View>
                     {user.worker && <Text>{user.worker.worker_description}</Text>}
                 </View>
+                <View className="w-full px-5 py-5 gap-5">
+                    <Text className="text-3xl font-extrabold ">Mis compras:</Text>
+                    <View className="flex-row flex-wrap gap-3">
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
+                            <Text className="text-lg font-medium">Todas</Text>
+                        </Pressable>
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
+                            <Text className="text-lg font-medium">Pendientes</Text>
+                        </Pressable>
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
+                            <Text className="text-lg font-medium">Enviando</Text>
+                        </Pressable>
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
+                            <Text className="text-lg font-medium">Entregados</Text>
+                        </Pressable>
+                        <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300">
+                            <Text className="text-lg font-medium">Recibidos</Text>
+                        </Pressable>
+                    </View>
+                </View>
             </View>
             <Modal visible={showEditUserModal} animationType="slide" transparent>
                 <View className="flex-1"></View>
