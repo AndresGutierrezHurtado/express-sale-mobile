@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from "react-native";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
 
 // Hooks
@@ -14,6 +14,15 @@ export default function Products() {
     const [sort, setSort] = useState(null);
     const [category, setCategory] = useState(null);
     const [limit, setLimit] = useState(4);
+
+    useFocusEffect(
+        useCallback(() => {
+            setCategory(parseInt(params.category_id, 10));
+            return () => {
+                router.setParams({});
+            };
+        }, [params.category_id])
+    );
 
     const {
         data: products,
