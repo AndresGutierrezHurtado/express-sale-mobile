@@ -74,12 +74,18 @@ export default function Product() {
                                     <Pressable key={item.id} onPress={() => setCurrentImage(index)}>
                                         <Image
                                             source={{ uri: item.url }}
-                                            style={{ width: 90, height: 90, objectFit: "contain" }}
-                                            className={`${
-                                                currentImage === index
-                                                    ? "border-2 border-purple-700"
-                                                    : "border border-gray-500 opacity-50 scale-[0.8]"
-                                            }`}
+                                            style={{
+                                                width: 90,
+                                                height: 90,
+                                                objectFit: "contain",
+                                                borderWidth: 2,
+                                                borderColor:
+                                                    currentImage === index ? "#7e00e6" : "#e5e5e5",
+                                                opacity: currentImage === index ? 1 : 0.5,
+                                                transform: [
+                                                    { scale: currentImage === index ? 1 : 0.8 },
+                                                ],
+                                            }}
                                         />
                                     </Pressable>
                                 )}
