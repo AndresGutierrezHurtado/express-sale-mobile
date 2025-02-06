@@ -113,9 +113,9 @@ export default function WorkerProducts() {
                                 </Text>,
                                 <Text
                                     className="font-bold p-1"
-                                    onPress={() => setSort("user_alias:asc")}
+                                    onPress={() => setSort("product_quantity:asc")}
                                 >
-                                    Vendedor
+                                    Cantidad
                                 </Text>,
                                 <Text className="font-bold p-1">Editar</Text>,
                                 <Text className="font-bold p-1">Eliminar</Text>,
