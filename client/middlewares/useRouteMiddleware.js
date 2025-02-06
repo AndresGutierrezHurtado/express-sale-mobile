@@ -9,7 +9,7 @@ export const useRouteMiddleware = (conditions, message) => {
         useCallback(() => {
             if (conditions.some((condition) => condition)) {
                 alert(message || "Para continuar debes iniciar sesión");
-                router.replace("/profile");
+                router.push("/profile");
             }
         }, [conditions, message, router])
     );
