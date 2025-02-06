@@ -235,124 +235,131 @@ export default function Profile() {
                     </View>
                     {user.worker && <Text>{user.worker.worker_description}</Text>}
                 </View>
-                <View className="w-full px-5 py-5 gap-5 pb-[100px]">
-                    <Text className="text-3xl font-extrabold ">Mis compras:</Text>
-                    <View className="flex-row flex-wrap gap-3">
-                        <Pressable
-                            onPress={() => setOrderType(null)}
-                            className={`px-3 py-1 ${
-                                !orderType ? "bg-purple-700" : "bg-gray-200"
-                            } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                        >
-                            <Text className={`text-lg font-medium ${!orderType && "text-white"}`}>
-                                Todas
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => setOrderType("pendiente")}
-                            className={`px-3 py-1 ${
-                                orderType == "pendiente" ? "bg-purple-700" : "bg-gray-200"
-                            } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                        >
-                            <Text
-                                className={`text-lg font-medium ${
-                                    orderType == "pendiente" && "text-white"
-                                }`}
+                {user.user_id == userSession.user_id && (
+                    <View className="w-full px-5 py-5 gap-5 pb-[100px]">
+                        <Text className="text-3xl font-extrabold ">Mis compras:</Text>
+                        <View className="flex-row flex-wrap gap-3">
+                            <Pressable
+                                onPress={() => setOrderType(null)}
+                                className={`px-3 py-1 ${
+                                    !orderType ? "bg-purple-700" : "bg-gray-200"
+                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                             >
-                                Pendientes
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => setOrderType("enviando")}
-                            className={`px-3 py-1 ${
-                                orderType == "enviando" ? "bg-purple-700" : "bg-gray-200"
-                            } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                        >
-                            <Text
-                                className={`text-lg font-medium ${
-                                    orderType == "enviando" && "text-white"
-                                }`}
-                            >
-                                Enviando
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => setOrderType("entregado")}
-                            className={`px-3 py-1 ${
-                                orderType == "entregado" ? "bg-purple-700" : "bg-gray-200"
-                            } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                        >
-                            <Text
-                                className={`text-lg font-medium ${
-                                    orderType == "entregado" && "text-white"
-                                }`}
-                            >
-                                Entregados
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => setOrderType("recibido")}
-                            className={`px-3 py-1 ${
-                                orderType == "recibido" ? "bg-purple-700" : "bg-gray-200"
-                            } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                        >
-                            <Text
-                                className={`text-lg font-medium ${
-                                    orderType == "recibido" && "text-white"
-                                }`}
-                            >
-                                Recibidos
-                            </Text>
-                        </Pressable>
-                    </View>
-                    <View className="gap-4">
-                        {userOrders
-                            .filter((order) => order.order_status == orderType || !orderType)
-                            .map((order) => (
-                                <View
-                                    key={order.order_id}
-                                    className="w-full bg-white border border-gray-300 rounded-xl p-4 gap-5"
+                                <Text
+                                    className={`text-lg font-medium ${!orderType && "text-white"}`}
                                 >
-                                    <View className="flex-row justify-between items-center">
-                                        <Text className="text-xl font-extrabold">
-                                            Pedido No° {order.order_id.split("-")[1]}:
-                                        </Text>
-                                        <Text className="text-lg font-medium">
-                                            {new Date(order.order_date).toLocaleString("es-CO")}
-                                        </Text>
-                                    </View>
-                                    <View className="gap-1">
+                                    Todas
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setOrderType("pendiente")}
+                                className={`px-3 py-1 ${
+                                    orderType == "pendiente" ? "bg-purple-700" : "bg-gray-200"
+                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
+                            >
+                                <Text
+                                    className={`text-lg font-medium ${
+                                        orderType == "pendiente" && "text-white"
+                                    }`}
+                                >
+                                    Pendientes
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setOrderType("enviando")}
+                                className={`px-3 py-1 ${
+                                    orderType == "enviando" ? "bg-purple-700" : "bg-gray-200"
+                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
+                            >
+                                <Text
+                                    className={`text-lg font-medium ${
+                                        orderType == "enviando" && "text-white"
+                                    }`}
+                                >
+                                    Enviando
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setOrderType("entregado")}
+                                className={`px-3 py-1 ${
+                                    orderType == "entregado" ? "bg-purple-700" : "bg-gray-200"
+                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
+                            >
+                                <Text
+                                    className={`text-lg font-medium ${
+                                        orderType == "entregado" && "text-white"
+                                    }`}
+                                >
+                                    Entregados
+                                </Text>
+                            </Pressable>
+                            <Pressable
+                                onPress={() => setOrderType("recibido")}
+                                className={`px-3 py-1 ${
+                                    orderType == "recibido" ? "bg-purple-700" : "bg-gray-200"
+                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
+                            >
+                                <Text
+                                    className={`text-lg font-medium ${
+                                        orderType == "recibido" && "text-white"
+                                    }`}
+                                >
+                                    Recibidos
+                                </Text>
+                            </Pressable>
+                        </View>
+                        <View className="gap-4">
+                            {userOrders
+                                .filter((order) => order.order_status == orderType || !orderType)
+                                .map((order) => (
+                                    <View
+                                        key={order.order_id}
+                                        className="w-full bg-white border border-gray-300 rounded-xl p-4 gap-5"
+                                    >
                                         <View className="flex-row justify-between items-center">
-                                            <Text className="text-lg">
-                                                {order.orderProducts.length} producto
-                                                {order.orderProducts.length > 1 && "s"}
+                                            <Text className="text-xl font-extrabold">
+                                                Pedido No° {order.order_id.split("-")[1]}:
                                             </Text>
                                             <Text className="text-lg font-medium">
-                                                {parseInt(
-                                                    order.paymentDetails.payment_amount
-                                                ).toLocaleString("es-CO")}{" "}
-                                                COP
+                                                {new Date(order.order_date).toLocaleString("es-CO")}
                                             </Text>
                                         </View>
-                                        <View className="w-full flex-row items-center gap-2 justify-between">
-                                            <Link asChild href={`/pay/orders/${order.order_id}`}>
-                                                <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 mt-2 w-[120px]">
-                                                    <Text className="text-lg font-medium text-center w-full">
-                                                        Ver detalles
-                                                    </Text>
-                                                </Pressable>
-                                            </Link>
-                                            <View className="px-5 py-1.5 rounded-full bg-green-500/60">
-                                                <Text className="text-sm font-medium text-green-900 capitalize">
-                                                    {order.order_status}
+                                        <View className="gap-1">
+                                            <View className="flex-row justify-between items-center">
+                                                <Text className="text-lg">
+                                                    {order.orderProducts.length} producto
+                                                    {order.orderProducts.length > 1 && "s"}
                                                 </Text>
+                                                <Text className="text-lg font-medium">
+                                                    {parseInt(
+                                                        order.paymentDetails.payment_amount
+                                                    ).toLocaleString("es-CO")}{" "}
+                                                    COP
+                                                </Text>
+                                            </View>
+                                            <View className="w-full flex-row items-center gap-2 justify-between">
+                                                <Link
+                                                    asChild
+                                                    href={`/pay/orders/${order.order_id}`}
+                                                >
+                                                    <Pressable className="px-3 py-1 bg-gray-200 rounded-lg flex-row items-center gap-2 active:bg-gray-300 mt-2 w-[120px]">
+                                                        <Text className="text-lg font-medium text-center w-full">
+                                                            Ver detalles
+                                                        </Text>
+                                                    </Pressable>
+                                                </Link>
+                                                <View className="px-5 py-1.5 rounded-full bg-green-500/60">
+                                                    <Text className="text-sm font-medium text-green-900 capitalize">
+                                                        {order.order_status}
+                                                    </Text>
+                                                </View>
                                             </View>
                                         </View>
                                     </View>
-                                </View>
-                            ))}
+                                ))}
+                        </View>
                     </View>
-                </View>
+                )}
             </ScrollView>
             <Modal visible={showEditUserModal} animationType="slide" transparent>
                 <View className="flex-1"></View>
