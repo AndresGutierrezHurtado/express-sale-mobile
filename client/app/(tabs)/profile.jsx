@@ -238,76 +238,85 @@ export default function Profile() {
                 {user.user_id == userSession.user_id && (
                     <View className="w-full px-5 py-5 gap-5 pb-[100px]">
                         <Text className="text-3xl font-extrabold ">Mis compras:</Text>
-                        <View className="flex-row flex-wrap gap-3">
-                            <Pressable
-                                onPress={() => setOrderType(null)}
-                                className={`px-3 py-1 ${
-                                    !orderType ? "bg-purple-700" : "bg-gray-200"
-                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                            >
-                                <Text
-                                    className={`text-lg font-medium ${!orderType && "text-white"}`}
+                        {userOrders?.length > 0 && (
+                            <View className="flex-row flex-wrap gap-3">
+                                <Pressable
+                                    onPress={() => setOrderType(null)}
+                                    className={`px-3 py-1 ${
+                                        !orderType ? "bg-purple-700" : "bg-gray-200"
+                                    } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                                 >
-                                    Todas
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                onPress={() => setOrderType("pendiente")}
-                                className={`px-3 py-1 ${
-                                    orderType == "pendiente" ? "bg-purple-700" : "bg-gray-200"
-                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                            >
-                                <Text
-                                    className={`text-lg font-medium ${
-                                        orderType == "pendiente" && "text-white"
-                                    }`}
+                                    <Text
+                                        className={`text-lg font-medium ${
+                                            !orderType && "text-white"
+                                        }`}
+                                    >
+                                        Todas
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setOrderType("pendiente")}
+                                    className={`px-3 py-1 ${
+                                        orderType == "pendiente" ? "bg-purple-700" : "bg-gray-200"
+                                    } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                                 >
-                                    Pendientes
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                onPress={() => setOrderType("enviando")}
-                                className={`px-3 py-1 ${
-                                    orderType == "enviando" ? "bg-purple-700" : "bg-gray-200"
-                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                            >
-                                <Text
-                                    className={`text-lg font-medium ${
-                                        orderType == "enviando" && "text-white"
-                                    }`}
+                                    <Text
+                                        className={`text-lg font-medium ${
+                                            orderType == "pendiente" && "text-white"
+                                        }`}
+                                    >
+                                        Pendientes
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setOrderType("enviando")}
+                                    className={`px-3 py-1 ${
+                                        orderType == "enviando" ? "bg-purple-700" : "bg-gray-200"
+                                    } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                                 >
-                                    Enviando
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                onPress={() => setOrderType("entregado")}
-                                className={`px-3 py-1 ${
-                                    orderType == "entregado" ? "bg-purple-700" : "bg-gray-200"
-                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                            >
-                                <Text
-                                    className={`text-lg font-medium ${
-                                        orderType == "entregado" && "text-white"
-                                    }`}
+                                    <Text
+                                        className={`text-lg font-medium ${
+                                            orderType == "enviando" && "text-white"
+                                        }`}
+                                    >
+                                        Enviando
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setOrderType("entregado")}
+                                    className={`px-3 py-1 ${
+                                        orderType == "entregado" ? "bg-purple-700" : "bg-gray-200"
+                                    } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                                 >
-                                    Entregados
-                                </Text>
-                            </Pressable>
-                            <Pressable
-                                onPress={() => setOrderType("recibido")}
-                                className={`px-3 py-1 ${
-                                    orderType == "recibido" ? "bg-purple-700" : "bg-gray-200"
-                                } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
-                            >
-                                <Text
-                                    className={`text-lg font-medium ${
-                                        orderType == "recibido" && "text-white"
-                                    }`}
+                                    <Text
+                                        className={`text-lg font-medium ${
+                                            orderType == "entregado" && "text-white"
+                                        }`}
+                                    >
+                                        Entregados
+                                    </Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setOrderType("recibido")}
+                                    className={`px-3 py-1 ${
+                                        orderType == "recibido" ? "bg-purple-700" : "bg-gray-200"
+                                    } rounded-lg flex-row items-center gap-2 active:bg-gray-300 border border-gray-300`}
                                 >
-                                    Recibidos
-                                </Text>
-                            </Pressable>
-                        </View>
+                                    <Text
+                                        className={`text-lg font-medium ${
+                                            orderType == "recibido" && "text-white"
+                                        }`}
+                                    >
+                                        Recibidos
+                                    </Text>
+                                </Pressable>
+                            </View>
+                        )}
+                        {userOrders && userOrders.length == 0 && !loadingUserOrders && (
+                            <Text className="text-2xl font-medium">
+                                No tienes ningun pedido...
+                            </Text>
+                        )}
                         <View className="gap-4">
                             {userOrders
                                 .filter((order) => order.order_status == orderType || !orderType)
