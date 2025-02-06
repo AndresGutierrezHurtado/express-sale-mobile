@@ -40,55 +40,54 @@ export const useGenerateReceipt = async (order, userSession) => {
                     <p><b>Dirección:</b> ${order.shippingDetails.shipping_address}</p>
                 </div>
             </div>
-            <div style="width: 100%; height: 1px; background-color: #ccc;"></div>
-                <h2>Productos:</h2>
-                <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
-                    <tr style="border-bottom: 1px solid #aaa;">
-                        <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Producto</th>
-                        <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Cantidad</th>
-                        <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Precio Unitario</th>
-                        <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Total</th>
-                    </tr>
-                    ${order.orderProducts
-                        .map(
-                            (item) => `
-                                <tr style="border-bottom: 1px solid #aaa;">
-                                    <td style="padding: 8px;">
-                                        ${item.product.product_name}
-                                    </td>
-                                    <td style="padding: 8px;">
-                                        ${item.product_quantity}
-                                    </td>
-                                    <td style="padding: 8px;">
-                                        ${parseInt(item.product_price).toLocaleString("es-CO")} COP
-                                    </td>
-                                    <td style="padding: 8px;">
-                                        ${(
-                                            parseInt(item.product_price) * item.product_quantity
-                                        ).toLocaleString("es-CO")} COP
-                                    </td>
-                                </tr>
-                            `
-                        ).join("")}
-                    <tr>
-                        <td style="text-align: right; padding: 8px;" colspan="2"></td>
-                        <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">Total:</td>
-                        <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">
-                            ${parseInt(order.paymentDetails.payment_amount).toLocaleString("es-CO")} COP
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right; padding: 8px;" colspan="2"></td>
-                        <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">Firma:</td>
-                        <td style="padding: 5px; font-weight: bold; border-bottom: 1px solid #aaa;">
-                            <img
-                                style="width: 100px; height: auto; object-fit: contain;"
-                                src="${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/firma.png"
-                            />
-                        </td>
-                    </tr>
-                </table>
-            </div>
+            <div style="width: 100%; height: 1px; background-color: #ccc; margin: 20px 0 10px;"></div>
+            <h2>Productos:</h2>
+            <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid #aaa;">
+                    <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Producto</th>
+                    <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Cantidad</th>
+                    <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Precio Unitario</th>
+                    <th style="padding: 8px; text-align: left; background-color: #f2f2f2;">Total</th>
+                </tr>
+                ${order.orderProducts
+                    .map(
+                        (item) => `
+                            <tr style="border-bottom: 1px solid #aaa;">
+                                <td style="padding: 8px;">
+                                    ${item.product.product_name}
+                                </td>
+                                <td style="padding: 8px;">
+                                    ${item.product_quantity}
+                                </td>
+                                <td style="padding: 8px;">
+                                    ${parseInt(item.product_price).toLocaleString("es-CO")} COP
+                                </td>
+                                <td style="padding: 8px;">
+                                    ${(
+                                        parseInt(item.product_price) * item.product_quantity
+                                    ).toLocaleString("es-CO")} COP
+                                </td>
+                            </tr>
+                        `
+                    ).join("")}
+                <tr>
+                    <td style="text-align: right; padding: 8px;" colspan="2"></td>
+                    <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">Total:</td>
+                    <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">
+                        ${parseInt(order.paymentDetails.payment_amount).toLocaleString("es-CO")} COP
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; padding: 8px;" colspan="2"></td>
+                    <td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #aaa;">Firma:</td>
+                    <td style="padding: 5px; font-weight: bold; border-bottom: 1px solid #aaa;">
+                        <img
+                            style="width: 100px; height: auto; object-fit: contain;"
+                            src="${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/firma.png"
+                        />
+                    </td>
+                </tr>
+            </table>
             <div style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center;">
                 <p style="font-size: 12px;">&copy; 2023 Express Sale. Todos los derechos reservados.</p>
             </div>

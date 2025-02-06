@@ -1,6 +1,6 @@
 import React from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 
 // Contexts
 import { useAuthContext } from "../../../contexts/authContext";
@@ -51,7 +51,10 @@ export default function Order() {
                             <View className="flex-row gap-2">
                                 <Text className="font-bold text-lg">Total:</Text>
                                 <Text className="text-lg">
-                                    {parseInt(order.paymentDetails.payment_amount).toLocaleString("es-CO")} COP
+                                    {parseInt(order.paymentDetails.payment_amount).toLocaleString(
+                                        "es-CO"
+                                    )}{" "}
+                                    COP
                                 </Text>
                             </View>
                             <View className="flex-row gap-2">
@@ -64,17 +67,51 @@ export default function Order() {
                             </View>
                         </View>
                         <View>
-                            <Pressable onPress={() => {useGenerateReceipt(order, userSession)}} className="bg-gray-200 w-fit px-3 py-2 justify-center border border-gray-300 rounded-md active:bg-gray-300">
-                                <Text className="text-center text-gray-800 font-medium text-xl">Descargar factura</Text>
+                            <Pressable
+                                onPress={() => {
+                                    useGenerateReceipt(order, userSession);
+                                }}
+                                className="bg-gray-200 w-fit px-3 py-2 justify-center border border-gray-300 rounded-md active:bg-gray-300"
+                            >
+                                <Text className="text-center text-gray-800 font-medium text-xl">
+                                    Descargar factura
+                                </Text>
                             </Pressable>
                         </View>
                     </View>
                     <View className="border-b border-gray-300"></View>
-                    <View className="flex-row justify-between items-center mt-5">
-                        <Text className="text-lg font-bold">Costo total</Text>
-                        <Text className="text-lg font-bold">
-                            {order.paymentDetails.payment_amount}
-                        </Text>
+                    <View className="gap-5">
+                        {order.orderProducts.map((product) => (
+                            <View
+                                key={product.product_id}
+                                className="flex-row gap-5 border border-gray-300 rounded-xl p-3"
+                            >
+                                <Link href={`/products/${product.product_id}`}>
+                                    <Image
+                                        source={{ uri: product.product.product_image_url }}
+                                        style={{ width: 100, height: 100, objectFit: "contain" }}
+                                    />
+                                </Link>
+                                <View>
+                                    <Text className="text-xl font-extrabold tracking-tight">{product.product.product_name}</Text>
+                                    <Link asChild href={`/worker/${product.product.user.user_id}`}>
+                                        <Text className="italic underline text-gray-600">
+                                            {product.product.user.user_alias}
+                                        </Text>
+                                    </Link>
+                                    <Text className="text-lg">
+                                        {parseInt(product.product_price * product.product_quantity).toLocaleString("es-CO")}{" "}
+                                        COP
+                                    </Text>
+                                </View>
+                            </View>
+                        ))}
+
+                        <Pressable onPress={() => router.back()} className="bg-gray-200 w-fit px-3 py-2 justify-center border border-gray-300 rounded-md active:bg-gray-300">
+                            <Text className="text-center text-gray-800 font-medium text-xl">
+                                Volver
+                            </Text>
+                        </Pressable>
                     </View>
                 </View>
             </View>
