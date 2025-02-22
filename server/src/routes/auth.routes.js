@@ -119,36 +119,142 @@ passport.use(
 
 const authRoutes = Router();
 
-// Google Auth
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Iniciar sesión con Google
+ *     description: Iniciar sesión con Google
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       302:
+ *         description: Redirecciona a la página de inicio
+ *
+ */
 authRoutes.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
 authRoutes.get("/auth/google/callback", passport.authenticate("google"), (req, res) => {
     req.session.user_id = req.user.user_id;
     console.log("Usuario autenticado:", req.user.user_id);
     res.redirect(process.env.EXPO_PUBLIC_DEEP_LINK);
 });
 
-// Facebook Auth
+/**
+ * @swagger
+ * /auth/facebook:
+ *   get:
+ *     summary: Iniciar sesión con Facebook
+ *     description: Iniciar sesión con Facebook
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       302:
+ *         description: Redirecciona a la página de inicio
+ *
+ */
 authRoutes.get(
     "/auth/facebook",
     passport.authenticate("facebook", {
         scope: ["email"],
     })
 );
+
 authRoutes.get("/auth/facebook/callback", passport.authenticate("facebook"), (req, res) => {
     req.session.user_id = req.user.user_id;
     console.log("Usuario autenticado:", req.user.user_id);
     res.redirect(process.env.EXPO_PUBLIC_DEEP_LINK);
 });
 
-// Github Auth
+/**
+ * @swagger
+ * /auth/github:
+ *   get:
+ *     summary: Iniciar sesión con GitHub
+ *     description: Iniciar sesión con GitHub
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       302:
+ *         description: Redirecciona a la página de inicio
+ *
+ */
 authRoutes.get("/auth/github", passport.authenticate("github", { scope: ["user:email"] }));
+
 authRoutes.get("/auth/github/callback", passport.authenticate("github"), function (req, res) {
     req.session.user_id = req.user.user_id;
     console.log("Usuario autenticado:", req.user.user_id);
     res.redirect(process.env.EXPO_PUBLIC_DEEP_LINK);
 });
 
-// Normal Auth
+/**
+ * @swagger
+ * /auth/session:
+ *   get:
+ *     summary: Verificar sesión
+ *     description: Verificar si el usuario está autenticado
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       200:
+ *         description: Usuario autenticado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario autenticado"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: number
+ *                     user_name:
+ *                       type: string
+ *                     user_lastname:
+ *                       type: string
+ *                     user_alias:
+ *                       type: string
+ *                     user_email:
+ *                       type: string
+ *                     user_phone:
+ *                       type: number
+ *                     user_address:
+ *                       type: string
+ *                     user_image_url:
+ *                       type: string
+ *                     role_id:
+ *                       type: number
+ *                     worker:
+ *                       type: object
+ *                       properties:
+ *                         worker_id:
+ *                           type: number
+ *                         worker_description:
+ *                           type: string
+ *                         worker_balance:
+ *                           type: number
+ *       401:
+ *         description: Credenciales incorrectas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no autenticado"
+ *                 data:
+ *                   type: object
+ */
 authRoutes.get("/auth/session", async (req, res) => {
     if (!req.session.user_id) {
         res.status(200).json({ success: false, message: "Usuario no autenticado", data: null });
@@ -162,6 +268,88 @@ authRoutes.get("/auth/session", async (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Iniciar sesión
+ *     description: Iniciar sesión con correo y contraseña
+ *     tags:
+ *       - Autenticación
+ *     consumes:
+ *       - application/json
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_email:
+ *                 type: string
+ *               user_password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario autenticado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user_id:
+ *                       type: number
+ *                     user_name:
+ *                       type: string
+ *                     user_lastname:
+ *                       type: string
+ *                     user_alias:
+ *                       type: string
+ *                     user_email:
+ *                       type: string
+ *                     user_image_url:
+ *                       type: string
+ *                     user_password:
+ *                       type: string
+ *                     user_is_active:
+ *                       type: boolean
+ *                     user_is_admin:
+ *                       type: boolean
+ *                     user_is_worker:
+ *                       type: boolean
+ *                     user_is_client:
+ *                       type: boolean
+ *                     created_at:
+ *                       type: string
+ *                     updated_at:
+ *                       type: string
+ *                     deleted_at:
+ *                       type: string
+ *       401:
+ *         description: Credenciales incorrectas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Credenciales incorrectas"
+ *                 data:
+ *                   type: object
+ *                   properties: {}
+ *
+ */
 authRoutes.post("/auth/login", async (req, res) => {
     try {
         const { user_email, user_password } = req.body;
@@ -195,6 +383,29 @@ authRoutes.post("/auth/login", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Cerrar sesión
+ *     description: Cerrar la sesión actual
+ *     tags:
+ *       - Autenticación
+ *     responses:
+ *       200:
+ *         description: Sesión cerrada correctamente
+ *         schema:
+ *           type: object
+ *           properties:
+ *             success:
+ *               type: boolean
+ *             message:
+ *               type: string
+ *             data:
+ *               type: object
+ *               properties: {}
+ *
+ */
 authRoutes.post("/auth/logout", (req, res) => {
     req.session.destroy();
 
