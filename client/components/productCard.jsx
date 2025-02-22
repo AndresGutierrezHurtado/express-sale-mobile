@@ -20,10 +20,10 @@ export default function ProductCard({ product }) {
                 </Pressable>
             </Link>
             <View className="grow pb-2">
-                <Text className="font-extrabold text-xl leading-none line-clamp-2">
+                <Text className="font-extrabold text-xl leading-none line-clamp-2 grow">
                     {product.product_name}
                 </Text>
-                <Text className="">
+                <Text>
                     {parseInt(product.product_price).toLocaleString("es-CO")} COP
                 </Text>
             </View>

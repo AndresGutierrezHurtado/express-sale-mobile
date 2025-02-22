@@ -5,6 +5,8 @@ import session from "express-session";
 import sequelizeStore from "connect-session-sequelize";
 import * as models from "./models/index.js";
 import sequelize from "./configs/database.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
 
 // Routes
 import userRoutes from "./routes/user.routes.js";
@@ -66,7 +68,21 @@ app.use(async (req, res, next) => {
     next();
 });
 
+const swaggerDocument = swaggerJSDoc({
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Express Sale API Documentation",
+            version: "1.0.0",
+            description: "Documentación de la API de Express Sale.",
+        },
+    },
+    apis: ["./src/routes/*.js"],
+});
+
+
 // Routes
+app.use("/api/v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", productRoutes);
