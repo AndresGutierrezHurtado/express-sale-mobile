@@ -5,10 +5,15 @@ import crypto from "crypto";
 import { getSocket } from "../configs/socket.js";
 import { Op } from "sequelize";
 
+import { sendReceipt } from "../hooks/useGenerateReceipt.js";
+
 export default class OrderController {
     static payuCallback = async (req, res) => {
         const t = await sequelize.transaction();
-        const extraInfo = { ...JSON.parse(req.query.extra1), ...JSON.parse(req.query.extra2) };
+        const extraInfo = {
+            ...JSON.parse(req.query.extra1),
+            ...JSON.parse(req.query.extra2),
+        };
 
         try {
             const payuResponse = await fetch(process.env.EXPO_PUBLIC_PAYU_TRANSACTION_REQUEST_URI, {
@@ -52,7 +57,8 @@ export default class OrderController {
             const paymentDetails = await models.PaymentDetails.create({
                 order_id: order.order_id,
                 payment_method: transactionDetailedInfo.paymentMethod,
-                payment_amount: transactionDetailedInfo.additionalValues.PM_PAYER_TOTAL_AMOUNT.value,
+                payment_amount:
+                    transactionDetailedInfo.additionalValues.PM_PAYER_TOTAL_AMOUNT.value,
                 buyer_name: transactionDetailedInfo.payer.fullName,
                 buyer_email: transactionDetailedInfo.payer.emailAddress,
                 buyer_document_type: transactionDetailedInfo.payer.dniType,
@@ -103,8 +109,7 @@ export default class OrderController {
                 // Update product quantity
                 await models.Product.update(
                     {
-                        product_quantity:
-                            product.product_quantity - orderProduct.product_quantity,
+                        product_quantity: product.product_quantity - orderProduct.product_quantity,
                     },
                     {
                         where: { product_id: orderProduct.product_id },
@@ -119,8 +124,7 @@ export default class OrderController {
                 }
 
                 workerBalances[userId] +=
-                    parseInt(orderProduct.product_price) *
-                    parseInt(orderProduct.product_quantity);
+                    parseInt(orderProduct.product_price) * parseInt(orderProduct.product_quantity);
 
                 // Escribir el nuevo saldo en la base de datos
                 await models.Worker.update(
@@ -148,6 +152,33 @@ export default class OrderController {
             const soldProducts = await Promise.all(
                 cartItems.map((cartItem) => models.Product.findByPk(cartItem.product_id))
             );
+
+            const finalOrder = await models.Order.findByPk(req.params.id, {
+                include: [
+                    {
+                        model: models.OrderProduct,
+                        as: "orderProducts",
+                        include: {
+                            model: models.Product,
+                            as: "product",
+                            include: { model: models.User, as: "user" },
+                        },
+                    },
+                    {
+                        model: models.ShippingDetails,
+                        as: "shippingDetails",
+                        include: {
+                            model: models.Worker,
+                            as: "worker",
+                            include: { model: models.User, as: "user" },
+                        },
+                    },
+                    { model: models.PaymentDetails, as: "paymentDetails" },
+                    { model: models.User, as: "user" },
+                ],
+            });
+
+            sendReceipt(finalOrder, req.session.user);
 
             io.emit("sale", soldProducts);
 
@@ -233,8 +264,17 @@ export default class OrderController {
                 ],
             });
 
+            if (!order) {
+                res.status(404).json({
+                    success: false,
+                    message: "Orden no encontrada",
+                    data: null,
+                });
+                return;
+            }
+
             res.status(200).json({
-                success: false,
+                success: true,
                 message: "Orden encontrada correctamente",
                 data: order,
             });
@@ -250,10 +290,11 @@ export default class OrderController {
     static getOrders = async (req, res) => {
         const whereClause = {};
         const whereOrderProductClause = {};
-    
-        if (req.query.order_status) whereClause.order_status = {
-            [Op.in]: req.query.order_status.split(","),
-        };
+
+        if (req.query.order_status)
+            whereClause.order_status = {
+                [Op.in]: req.query.order_status.split(","),
+            };
         if (req.query.user_id) whereOrderProductClause.user_id = req.query.user_id;
 
         try {
@@ -279,7 +320,7 @@ export default class OrderController {
             });
 
             res.status(200).json({
-                success: false,
+                success: true,
                 message: "Orden encontrada correctamente",
                 data: order,
             });
