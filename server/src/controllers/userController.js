@@ -87,6 +87,14 @@ export default class UserController {
                     where: { user_id: req.params.id },
                     transaction,
                 });
+
+                if (user[0] == 0) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "No se pudo actualizar el usuario.",
+                        data: null,
+                    });
+                }
             }
 
             if (workerData) {
@@ -123,7 +131,15 @@ export default class UserController {
         try {
             await deleteFile("express-sale/users/" + req.params.id);
 
-            await models.User.destroy({ where: { user_id: req.params.id } });
+            const user = await models.User.destroy({ where: { user_id: req.params.id } });
+
+            if (user == 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "No se pudo eliminar el usuario.",
+                    data: null,
+                });
+            }
 
             return res.status(200).json({
                 success: true,
@@ -275,6 +291,14 @@ export default class UserController {
                 include: ["role", "worker"],
             });
 
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Usuario no encontrado.",
+                    data: null,
+                });
+            }
+
             if (!user.worker) {
                 return res.status(200).json({
                     success: true,
@@ -287,7 +311,7 @@ export default class UserController {
                 `
                     SELECT
                         MONTH(orders.order_date) AS month,
-                        YEAR(orders.order_date) AS anio,
+                        YEAR(orders.order_date) AS year,
                         COUNT(*) AS shippings_quantity,
                         SUM(shipping_details.shipping_cost) AS shipping_money
                     FROM shipping_details
@@ -303,7 +327,7 @@ export default class UserController {
                 `
                     SELECT
                         MONTH(orders.order_date) AS month,
-                        YEAR(orders.order_date) AS anio,
+                        YEAR(orders.order_date) AS year,
                         SUM(order_products.product_quantity) AS total_products,
                         SUM(order_products.product_price * order_products.product_quantity) AS total_money
                     FROM order_products
@@ -337,7 +361,7 @@ export default class UserController {
                       ...user.toJSON(),
                       worker: {
                           ...user.worker.toJSON(),
-                          total_selled: yearSales[0],
+                          month_sales: yearSales[0],
                           month_deliveries: yearDeliveries[0],
                           most_selled_products: MostSelledProducts[0],
                       },
@@ -388,12 +412,12 @@ export default class UserController {
                     },
                     {
                         product_price: {
-                            [Op.gte]: req.query.min || 0,
+                            [Op.gte]: parseInt(req.query.min || 0),
                         },
                     },
                     {
                         product_price: {
-                            [Op.lte]: req.query.max || 9999999999,
+                            [Op.lte]: parseInt(req.query.max || 9999999999),
                         },
                     },
                     {
@@ -444,7 +468,6 @@ export default class UserController {
                 data: { ...products, limit, page, offset },
             });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({
                 success: false,
                 message: error.message,
@@ -653,6 +676,14 @@ export default class UserController {
                 include: ["worker"],
             });
 
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Usuario no encontrado.",
+                    data: null,
+                });
+            }
+
             const deliveryShippings = await models.ShippingDetails.findAll({
                 where: { worker_id: user.worker.worker_id },
             });
@@ -800,7 +831,7 @@ export default class UserController {
             }
 
             if (new Date().getTime() >= new Date(recovery.recovery_expiration).getTime()) {
-                return res.status(404).json({
+                return res.status(401).json({
                     success: false,
                     message: "La recuperación ha expirado.",
                     data: null,
@@ -882,7 +913,7 @@ export default class UserController {
 
             return res.status(200).json({
                 success: true,
-                message: "Recuperación creada correctamente.",
+                message: "Mensaje de feedback creado correctamente.",
                 data: null,
             });
         } catch (error) {
