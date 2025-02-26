@@ -63,7 +63,7 @@ export default class ProductController {
                 }
             }
 
-            if (req.body.product_medias.length > 0) {
+            if (req.body.product_medias?.length > 0) {
                 for (const multimedia of req.body.product_medias) {
                     const multimediaId = crypto.randomUUID();
 
@@ -108,7 +108,6 @@ export default class ProductController {
             });
         } catch (error) {
             await transaction.rollback();
-            console.log(error);
 
             res.status(404).json({
                 success: false,
@@ -180,12 +179,12 @@ export default class ProductController {
                     },
                     {
                         product_price: {
-                            [Op.gte]: req.query.min || 0,
+                            [Op.gte]: parseInt(req.query.min || 0),
                         },
                     },
                     {
                         product_price: {
-                            [Op.lte]: req.query.max || 9999999999,
+                            [Op.lte]: parseInt(req.query.max || 9999999999),
                         },
                     },
                     {
@@ -197,7 +196,10 @@ export default class ProductController {
             };
 
             const querySort = req.query?.sort?.split(":") || ["`average_rating`", "DESC"];
-            const order = [sequelize.literal(querySort[0]), querySort[1]];
+            const order = [
+                sequelize.literal(querySort[0] || "`average_rating`"),
+                querySort[1] || "DESC",
+            ];
 
             const products = await models.Product.findAndCountAll({
                 include: [
