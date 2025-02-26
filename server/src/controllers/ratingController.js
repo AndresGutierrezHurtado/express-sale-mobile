@@ -5,26 +5,38 @@ import crypto from "crypto";
 
 export default class RatingController {
     static createUserRating = async (req, res) => {
-        const t = await sequelize.transaction();
+        const transaction = await sequelize.transaction();
         try {
-            const rating = await models.Rating.create({
-                ...req.body.rating,
-                user_id: req.session.user_id,
-            });
+            const rating = await models.Rating.create(
+                {
+                    ...req.body.rating,
+                    user_id: req.session.user_id,
+                },
+                {
+                    transaction,
+                }
+            );
 
-            const userRatings = await models.UsersCalifications.create({
-                rating_id: rating.rating_id,
-                user_id: req.params.id,
-            });
+            const userRatings = await models.UsersCalifications.create(
+                {
+                    rating_id: rating.rating_id,
+                    user_id: req.params.id,
+                },
+                {
+                    transaction,
+                }
+            );
 
-            await t.commit();
+            await transaction.commit();
+
             res.status(200).json({
                 success: true,
                 message: "Calificación creada correctamente.",
                 data: rating,
             });
         } catch (error) {
-            await t.rollback();
+            await transaction.rollback();
+
             res.status(404).json({
                 success: false,
                 message: error.message,
@@ -33,25 +45,38 @@ export default class RatingController {
     };
 
     static createProductRating = async (req, res) => {
-        const t = await sequelize.transaction();
+        const transaction = await sequelize.transaction();
         try {
-            const rating = await models.Rating.create({
-                ...req.body.rating,
-                user_id: req.session.user_id,
-            });
+            const rating = await models.Rating.create(
+                {
+                    ...req.body.rating,
+                    user_id: req.session.user_id,
+                },
+                {
+                    transaction,
+                }
+            );
 
-            const productRatings = await models.ProductsCalifications.create({
-                rating_id: rating.rating_id,
-                product_id: req.params.id,
-            });
+            const productRatings = await models.ProductsCalifications.create(
+                {
+                    rating_id: rating.rating_id,
+                    product_id: req.params.id,
+                },
+                {
+                    transaction,
+                }
+            );
 
-            await t.commit();
+            await transaction.commit();
+
             res.status(200).json({
                 success: true,
                 message: "Calificación creada correctamente.",
                 data: rating,
             });
         } catch (error) {
+            await transaction.rollback();
+
             res.status(404).json({
                 success: false,
                 message: error.message,
