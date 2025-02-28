@@ -114,6 +114,7 @@ export const Recovery = sequelize.define(
     {
         recovery_id: {
             type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
         user_id: {
@@ -125,9 +126,14 @@ export const Recovery = sequelize.define(
             defaultValue: "pending",
             allowNull: false,
         },
-        fecha_creacion: {
+        recovery_date: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
+            allowNull: false,
+        },
+        recovery_expiration: {
+            type: DataTypes.DATE,
+            defaultValue: sequelize.literal("NOW() + INTERVAL 1 HOUR"),
             allowNull: false,
         },
     },
