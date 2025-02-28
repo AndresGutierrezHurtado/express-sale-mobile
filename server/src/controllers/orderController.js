@@ -153,7 +153,7 @@ export default class OrderController {
                 cartItems.map((cartItem) => models.Product.findByPk(cartItem.product_id))
             );
 
-            const finalOrder = await models.Order.findByPk(req.params.id, {
+            const finalOrder = await models.Order.findByPk(order.order_id, {
                 include: [
                     {
                         model: models.OrderProduct,
