@@ -78,3 +78,69 @@ export const feedbackTemplate = (asunto, mensaje, nombre, correo, usuario) => {
         </html>
     `;
 };
+
+export const orderTemplate = (order) => {
+    return `
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Confirmación de Pedido</title>
+    </head>
+
+    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; display: flex; justify-content: center;">
+    <div style="max-width: 600px; width: 100%; background: #ffffff; border: 1px solid #ddd; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin: 10px auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+            <div style="font-size: 24px; font-weight: bold; width: 100%;">Express Sale</div>
+            <div style="width: 100%;"></div>
+            <span style="font-size: 16px; font-weight: bold;">Pedido #${
+                order.order_id.split("-")[1]
+            }</span>
+        </div>
+        <div style="text-align: start; margin: 20px 0 10px; font-size: 18px; font-weight: bold;">
+            ¡Gracias por tu compra!
+        </div>
+        <div style="margin-bottom: 20px;">
+            Muchas gracias por confiar en nosotros, puedes ver el estado de tu pedido en tu perfil o dale clic al siguiente boton:
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <a 
+                href="${process.env.EXPO_PUBLIC_APP_DOMAIN}/pay/order/${order.order_id}" 
+                style="background-color: #7E22CE; color: #ffffff; padding: 10px 20px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block;"
+            >
+                Ver Pedido
+            </a>
+        </div>
+        <div style="border-top: 1px solid #ddd; padding-top: 20px;">
+            <h3 style="margin: 0;">Resumen del Pedido</h3>
+            ${order.orderProducts
+                .map(
+                    (p) => `
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0px;">
+                        <div> ${p.product.product_name} x ${p.product_quantity} </div>
+                        <div> ${p.product_price * p.product_quantity} </div>
+                    </div>
+                    `
+                )
+                .join("")}
+            <div style="border-top: 3px solid #ddd;">
+                <div style="display: flex; justify-content: space-between; padding: 10px 0px; gap: 20px; font-size: 18px;">
+                    <div style="width: 100%;"></div>
+                    <div> Total: </div>
+                    <div> $${order.paymentDetails.payment_amount} </div>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #ddd; padding-top: 20px; margin-top: 20px;">
+                <h3 style="margin: 0;">Información del Comprador</h3>
+                <p style="margin: 10px 0 0;">${order.paymentDetails.buyer_name}</p>
+                <p style="margin: 0">${order.paymentDetails.buyer_email}</p>
+                <p style="margin: 0">${order.paymentDetails.buyer_document_number}</p>
+                <p style="margin: 0">${order.shippingDetails.shipping_address}</p>
+            </div>
+        </div>
+    </body>
+
+    </html>
+`;
+};
