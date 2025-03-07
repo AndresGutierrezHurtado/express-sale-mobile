@@ -55,6 +55,10 @@ const LogoutIcon = (props) => <Feather name="log-out" {...props} />;
 
 const TruckIcon = (props) => <FontAwesome5 name="truck-loading" {...props} />;
 
+const SalesIcon = (props) => <FontAwesome6 name="money-bill-trend-up" {...props} />;
+
+const BoxesIcon = (props) => <FontAwesome5 name="boxes" {...props} />;
+
 export {
     HomeIcon,
     ShopIcon,
@@ -78,4 +82,6 @@ export {
     WebIcon,
     LogoutIcon,
     TruckIcon,
+    SalesIcon,
+    BoxesIcon,
 };

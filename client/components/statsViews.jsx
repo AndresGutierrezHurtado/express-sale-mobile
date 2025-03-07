@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Dimensions, ScrollView } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import { Picker } from "@react-native-picker/picker";
 
 // Hooks
 import { useGetData } from "../hooks/useFetchData.js";
 
+// Components
+import { BoxesIcon, SalesIcon, TruckIcon } from "./icons.jsx";
+
 function SellerStats({ user, reloadUser }) {
     const [graphicData, setGraphicData] = useState("all");
-    const [currentMonth, setCurrentMonth] = useState(null);
     const [year, setYear] = useState(new Date().getFullYear());
 
     const {
@@ -33,88 +36,100 @@ function SellerStats({ user, reloadUser }) {
 
     if (pendingOrdersLoading) return <ActivityIndicator size="large" color="#0000ff" />;
     return (
-        <View className="w-full px-3 py-10">
-            <Text>Estadísticas {user.role.role_name}</Text>
-            <SellerGraphic
-                data={yearSales}
-                setCurrentMonth={setCurrentMonth}
-                graphicData={graphicData}
-            />
-            <Text>Envios hechos: {user.shippings_count}</Text>
-            <Text>Envios hechos: {user.shippings_money}</Text>
-            <Text>Envios hechos: {user.sales_count}</Text>
-            <Text>Envios hechos: {parseInt(user.sales_money).toLocaleString("es-CO")}</Text>
+        <View className="w-full px-3 py-10 gap-10">
+            <Text className="text-3xl font-extrabold">Estadísticas del {user.role.role_name}</Text>
+            <View horizontal className="bg-white p-5 rounded border border-gray-300 w-full gap-8">
+                <View className="flex-row justify-between items-center">
+                    <Text className="text-2xl font-bold">Año:</Text>
+                    <View className="border border-gray-400 rounded-lg">
+                        <Picker style={{ width: 150 }}>
+                            <Picker.Item
+                                label={new Date().getFullYear()}
+                                value={new Date().getFullYear()}
+                            />
+                            <Picker.Item
+                                label={new Date().getFullYear() - 1}
+                                value={new Date().getFullYear() - 1}
+                            />
+                            <Picker.Item
+                                label={new Date().getFullYear() - 2}
+                                value={new Date().getFullYear() - 2}
+                            />
+                        </Picker>
+                    </View>
+                </View>
+                <View className="flex-row justify-between items-center">
+                    <Text className="text-2xl font-bold">Elemento:</Text>
+                    <View className="border border-gray-400 rounded-lg">
+                        <Picker
+                            style={{ width: 150 }}
+                            selectedValue={graphicData}
+                            onValueChange={setGraphicData}
+                        >
+                            <Picker.Item label="Dinero" value="money" />
+                            <Picker.Item label="Envios" value="sales" />
+                        </Picker>
+                    </View>
+                </View>
+                <ScrollView horizontal className="w-full">
+                    <SellerGraphic
+                        data={yearSales}
+                        setCurrentMonth={setCurrentMonth}
+                        graphicData={graphicData}
+                    />
+                </ScrollView>
+                <View className="flex-row gap-2">
+                    <View className="p-3 border border-gray-400 rounded-lg flex-1">
+                        <BoxesIcon className="text-center mb-3" size={32} />
+                        <Text className="text-xl font-bold text-center">Ventas hechas</Text>
+                        <Text className="text-4xl font-extrabold text-center">
+                            {user.sales_count}
+                        </Text>
+                    </View>
+                    <View className="p-3 border border-gray-400 rounded-lg flex-1">
+                        <SalesIcon className="text-center mb-3" size={32} />
+                        <Text className="text-xl font-bold text-center">Dinero hecho</Text>
+                        <Text className="text-4xl font-extrabold text-center">
+                            {parseInt(user.sales_money).toLocaleString("es-CO")}
+                        </Text>
+                    </View>
+                </View>
+            </View>
         </View>
     );
 }
-function SellerGraphic({ data, setCurrentMonth, graphicData }) {
+
+function SellerGraphic({ data, graphicData }) {
     const chartData = {
         labels: data.map((el) => el.monthToText.charAt(0).toUpperCase() + el.monthToText.slice(1)),
         datasets: [
             {
                 label: "Dinero recaudado",
                 data: data.map((el) => el.money),
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
-                borderColor: "rgba(126, 34, 206, 1)",
             },
             {
                 label: "Número de productos vendidos",
                 data: data.map((el) => el.sales),
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-                borderColor: "rgba(255, 99, 132, 1)",
             },
         ],
     };
 
-    if (graphicData === "money") chartData.datasets.pop();
     if (graphicData === "sales") chartData.datasets.shift();
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: "top",
-            },
-            title: {
-                display: true,
-                text: `Estadísticas de ventas del año ${data[0].year}`,
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        onClick: (event, elements) => {
-            if (elements.length === 0) return;
-            setCurrentMonth(data[elements[0].index]);
-        },
-        interaction: {
-            mode: "nearest",
-            axis: "x",
-            intersect: false,
-        },
-    };
+    else chartData.datasets.pop();
 
     return (
-        <View className="w-full">
+        <View className="w-full mr-10">
             <View className="w-full">
                 <LineChart
                     data={chartData}
-                    width={350}
+                    width={Dimensions.get("window").width * 1.89}
                     height={220}
-                    chartConfig={{
-                        decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    }}
                     bezier
-                    verticalLabelRotation={90}
-                    style={{
-                        borderRadius: 5,
-                        width: "100%",
-                        height: "100%",
-                        margin: "auto",
+                    chartConfig={{
+                        backgroundGradientFrom: "#fff",
+                        backgroundGradientTo: "#fff",
+                        decimalPlaces: 0,
+                        color: () => (graphicData === "sales" ? "red" : "#7C3AED"),
                     }}
                 />
             </View>
@@ -123,7 +138,7 @@ function SellerGraphic({ data, setCurrentMonth, graphicData }) {
 }
 
 function DeliveryStats({ user, reloadUser }) {
-    const [graphicData, setGraphicData] = useState("all");
+    const [graphicData, setGraphicData] = useState("money");
     const [currentMonth, setCurrentMonth] = useState(null);
     const [year, setYear] = useState(new Date().getFullYear());
 
@@ -143,125 +158,100 @@ function DeliveryStats({ user, reloadUser }) {
     }
 
     return (
-        <View className="w-full px-3 py-10">
-            <Text>Estadísticas {user.role.role_name}</Text>
-            <LineChart
-                data={{
-                    labels: ["January", "February", "March", "April", "May", "June"],
-                    datasets: [
-                        {
-                            data: [
-                                Math.random() * 100,
-                                Math.random() * 100,
-                                Math.random() * 100,
-                                Math.random() * 100,
-                                Math.random() * 100,
-                                Math.random() * 100,
-                            ],
-                        },
-                    ],
-                }}
-                width={350}
-                height={220}
-                chartConfig={{
-                    decimalPlaces: 0,
-                    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                }}
-                bezier
-                verticalLabelRotation={13}
-                style={{
-                    borderRadius: 5,
-                }}
-            />
-            <Text>Envios hechos: {user.shippings_count}</Text>
-            <Text>Envios hechos: {user.shippings_money}</Text>
-            <Text>Envios hechos: {user.sales_count}</Text>
-            <Text>Envios hechos: {parseInt(user.sales_money).toLocaleString("es-CO")}</Text>
+        <View className="w-full px-3 py-10 gap-10">
+            <Text className="text-3xl font-extrabold">Estadísticas del {user.role.role_name}</Text>
+            <View horizontal className="bg-white p-5 rounded border border-gray-300 w-full gap-8">
+                <View className="flex-row justify-between items-center">
+                    <Text className="text-2xl font-bold">Año:</Text>
+                    <View className="border border-gray-400 rounded-lg">
+                        <Picker style={{ width: 150 }}>
+                            <Picker.Item
+                                label={new Date().getFullYear()}
+                                value={new Date().getFullYear()}
+                            />
+                            <Picker.Item
+                                label={new Date().getFullYear() - 1}
+                                value={new Date().getFullYear() - 1}
+                            />
+                            <Picker.Item
+                                label={new Date().getFullYear() - 2}
+                                value={new Date().getFullYear() - 2}
+                            />
+                        </Picker>
+                    </View>
+                </View>
+                <View className="flex-row justify-between items-center">
+                    <Text className="text-2xl font-bold">Elemento:</Text>
+                    <View className="border border-gray-400 rounded-lg">
+                        <Picker
+                            style={{ width: 150 }}
+                            selectedValue={graphicData}
+                            onValueChange={setGraphicData}
+                        >
+                            <Picker.Item label="Dinero" value="money" />
+                            <Picker.Item label="Envios" value="sales" />
+                        </Picker>
+                    </View>
+                </View>
+                <ScrollView horizontal className="w-full">
+                    <SellerGraphic
+                        data={yearSales}
+                        setCurrentMonth={setCurrentMonth}
+                        graphicData={graphicData}
+                    />
+                </ScrollView>
+                <View className="flex-row gap-2">
+                    <View className="p-3 border border-gray-400 rounded-lg flex-1">
+                        <TruckIcon className="text-center mb-3" size={32} />
+                        <Text className="text-xl font-bold text-center">Envios hechos</Text>
+                        <Text className="text-4xl font-extrabold text-center">
+                            {user.shippings_count}
+                        </Text>
+                    </View>
+                    <View className="p-3 border border-gray-400 rounded-lg flex-1">
+                        <SalesIcon className="text-center mb-3" size={32} />
+                        <Text className="text-xl font-bold text-center">Dinero hecho</Text>
+                        <Text className="text-4xl font-extrabold text-center">
+                            {parseInt(user.shippings_money).toLocaleString("es-CO")}
+                        </Text>
+                    </View>
+                </View>
+            </View>
         </View>
     );
 }
 
-function DeliveryGraphic({ data, setCurrentMonth, graphicData }) {
+function DeliveryGraphic({ data, graphicData }) {
     const chartData = {
-        labels: data.map((el) => el.monthToText),
+        labels: data.map((el) => el.monthToText.charAt(0).toUpperCase() + el.monthToText.slice(1)),
         datasets: [
             {
                 label: "Dinero recaudado",
                 data: data.map((el) => el.money),
-                backgroundColor: "rgba(53, 162, 235, 0.5)",
-                borderColor: "rgba(126, 34, 206, 1)",
             },
             {
-                label: "Número de envíos",
+                label: "Número de productos vendidos",
                 data: data.map((el) => el.sales),
-                backgroundColor: "rgba(255, 99, 132, 0.5)",
-                borderColor: "rgba(255, 99, 132, 1)",
             },
         ],
     };
 
-    if (graphicData === "money") chartData.datasets.pop();
     if (graphicData === "sales") chartData.datasets.shift();
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: "top",
-            },
-            title: {
-                display: true,
-                text: `Estadísticas de envíos del año ${data[0].year}`,
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-            },
-        },
-        onClick: (event, elements) => {
-            if (elements.length === 0) return;
-            setCurrentMonth(data[elements[0].index]);
-        },
-        interaction: {
-            mode: "nearest",
-            axis: "x",
-            intersect: false,
-        },
-    };
+    else chartData.datasets.pop();
 
     return (
-        <View className="w-full overflow-x-auto">
-            <View className="w-full h-[400px]">
+        <View className="w-full mr-10">
+            <View className="w-full">
                 <LineChart
-                    data={{
-                        labels: ["January", "February", "March", "April", "May", "June"],
-                        datasets: [
-                            {
-                                data: [
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                    Math.random() * 100,
-                                ],
-                            },
-                        ],
-                    }}
-                    width={350}
+                    data={chartData}
+                    width={Dimensions.get("window").width * 1.89}
                     height={220}
-                    chartConfig={{
-                        decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                    }}
                     bezier
-                    verticalLabelRotation={13}
-                    style={{
-                        borderRadius: 5,
-                        width: "100%",
-                        height: "100%",
+                    chartConfig={{
+                        backgroundGradientFrom: "#fff",
+                        backgroundGradientTo: "#fff",
+                        decimalPlaces: 0,
+                        color: () => (graphicData === "sales" ? "red" : "#7C3AED"),
                     }}
                 />
             </View>
