@@ -10,8 +10,9 @@ import { useGetData } from "../hooks/useFetchData.js";
 import { BoxesIcon, SalesIcon, TruckIcon } from "./icons.jsx";
 
 function SellerStats({ user, reloadUser }) {
-    const [graphicData, setGraphicData] = useState("all");
+    const [graphicData, setGraphicData] = useState("money");
     const [year, setYear] = useState(new Date().getFullYear());
+    const [currentMonth, setCurrentMonth] = useState(null);
 
     const {
         data: pendingOrders,
@@ -42,7 +43,7 @@ function SellerStats({ user, reloadUser }) {
                 <View className="flex-row justify-between items-center">
                     <Text className="text-2xl font-bold">Año:</Text>
                     <View className="border border-gray-400 rounded-lg">
-                        <Picker style={{ width: 150 }}>
+                        <Picker style={{ width: 150 }} selectedValue={year} onValueChange={setYear}>
                             <Picker.Item
                                 label={new Date().getFullYear()}
                                 value={new Date().getFullYear()}
@@ -50,10 +51,6 @@ function SellerStats({ user, reloadUser }) {
                             <Picker.Item
                                 label={new Date().getFullYear() - 1}
                                 value={new Date().getFullYear() - 1}
-                            />
-                            <Picker.Item
-                                label={new Date().getFullYear() - 2}
-                                value={new Date().getFullYear() - 2}
                             />
                         </Picker>
                     </View>
@@ -125,6 +122,9 @@ function SellerGraphic({ data, graphicData }) {
                     width={Dimensions.get("window").width * 1.89}
                     height={220}
                     bezier
+                    yAxisLabel={graphicData === "sales" ? "" : "$"}
+                    formatYLabel={(value) => parseInt(value).toLocaleString("es-CO")}
+                    yAxisInterval={1}
                     chartConfig={{
                         backgroundGradientFrom: "#fff",
                         backgroundGradientTo: "#fff",
