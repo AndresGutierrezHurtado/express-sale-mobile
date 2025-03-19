@@ -2,8 +2,10 @@ import fs from "fs";
 import path from "path";
 import { Buffer } from "buffer";
 import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
+import { applyPlugin } from "jspdf-autotable";
 import nodemailer from "nodemailer";
+
+applyPlugin(jsPDF);
 
 // Templates
 import { orderTemplate } from "../templates/emailTemplates.js";
@@ -154,4 +156,3 @@ export const sendReceipt = (order, userSession) => {
         ],
     });
 };
-

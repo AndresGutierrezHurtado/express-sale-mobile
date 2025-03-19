@@ -371,7 +371,7 @@ authRoutes.post("/auth/login", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: "El usuario esta autenticado",
+            message: "Has iniciado sesión correctamente",
             data: user,
         });
     } catch (error) {

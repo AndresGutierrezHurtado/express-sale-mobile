@@ -184,6 +184,7 @@ export default class OrderController {
 
             res.redirect(`${process.env.EXPO_PUBLIC_DEEP_LINK}/pay/order/${order.order_id}`);
         } catch (error) {
+            console.error(error);
             await t.rollback();
             res.status(500).json({
                 success: false,

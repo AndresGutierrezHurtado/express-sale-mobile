@@ -61,7 +61,8 @@ export default function Home() {
                                     style={{
                                         width: 70,
                                         aspectRatio: 1,
-                                        objectFit: "cover",
+                                        objectFit: "contain",
+                                        backgroundColor: "white",
                                     }}
                                 />
                             </View>
@@ -78,7 +79,8 @@ export default function Home() {
                                     style={{
                                         width: 70,
                                         aspectRatio: 1,
-                                        objectFit: "cover",
+                                        objectFit: "contain",
+                                        backgroundColor: "white",
                                     }}
                                 />
                             </View>
@@ -95,7 +97,8 @@ export default function Home() {
                                     style={{
                                         width: 70,
                                         aspectRatio: 1,
-                                        objectFit: "cover",
+                                        objectFit: "contain",
+                                        backgroundColor: "white",
                                     }}
                                 />
                             </View>
@@ -107,12 +110,13 @@ export default function Home() {
                             <View className="w-fit rounded-full overflow-hidden border-2">
                                 <Image
                                     source={{
-                                        uri: `${process.env.EXPO_PUBLIC_APP_DOMAIN}/images/categories/otros.jpg`,
+                                        uri: `https://img.freepik.com/fotos-premium/mano-sosteniendo-bolsas-papel-multicolores-aisladas-blanco-concepto-compras_106006-1469.jpg`,
                                     }}
                                     style={{
                                         width: 70,
                                         aspectRatio: 1,
-                                        objectFit: "cover",
+                                        objectFit: "contain",
+                                        backgroundColor: "white",
                                     }}
                                 />
                             </View>
