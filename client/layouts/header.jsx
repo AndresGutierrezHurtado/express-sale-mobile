@@ -21,10 +21,8 @@ export default function Header() {
 
     return (
         <View
-            className="w-full bg-purple-700 p-5 items-center gap-2"
+            className="w-full bg-purple-700 p-5 items-center gap-2 rounded-b-xl"
             style={{
-                borderEndEndRadius: 20,
-                borderStartEndRadius: 20,
                 shadowColor: "black",
                 shadowOffset: { width: 0, height: 5 },
                 shadowOpacity: 0.25,
