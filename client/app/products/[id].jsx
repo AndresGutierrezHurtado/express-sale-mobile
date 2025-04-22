@@ -53,10 +53,10 @@ export default function Product() {
     return (
         <>
             <Stack.Screen
-                options={{ headerTitle: "", headerTransparent: true, headerShown: true }}
+                options={{ headerTitle: product.product_name}}
             />
             <ScrollView>
-                <View className="bg-white flex-1" style={{ paddingTop: 60 }}>
+                <View className="bg-white flex-1">
                     <View className="w-full p-5 gap-5">
                         <View className="items-center">
                             <View className="border w-full">
@@ -143,7 +143,7 @@ export default function Product() {
                         <Text className="text-3xl font-bold tracking-tight leading-none">
                             Calificaciones:
                         </Text>
-                        <View className="flex-row w-6/12">
+                        <View className="flex-row w-10/12">
                             <View className="items-center px-5">
                                 <View className="flex-row gap-2 items-center">
                                     <Text className="text-5xl font-bold leading-[1.25] text-gray-700">
@@ -158,7 +158,7 @@ export default function Product() {
                                     <ProfileIcon size={20} />
                                 </View>
                             </View>
-                            <View className="gap-1">
+                            <View className="gap-1 grow">
                                 <View className="flex-row items-center gap-4">
                                     <Text>5</Text>
                                     <View className="w-full bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
