@@ -79,7 +79,7 @@ export default function WorkerProfile() {
                                 <ProfileIcon size={20} />
                             </View>
                         </View>
-                        <View className="gap-1">
+                        <View className="flex-1 gap-1">
                             <View className="flex-row items-center gap-4">
                                 <Text>5</Text>
                                 <View className="w-8/12 bg-gray-300 rounded-[10px] overflow-hidden h-2.5">
