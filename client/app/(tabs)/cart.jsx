@@ -29,14 +29,7 @@ export default function Cart() {
             <View className="w-full px-5 py-10 pb-[100px]">
                 <View className="gap-10">
                     <View
-                        className="w-full h-fit p-5 bg-white rounded-lg gap-5"
-                        style={{
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 8 },
-                            shadowOpacity: 1,
-                            shadowRadius: 10.32,
-                            elevation: 10,
-                        }}
+                        className="w-full h-fit p-5 bg-white rounded-lg gap-5 shadow-lg"
                     >
                         <Text className="text-4xl font-extrabold tracking-tight">Carrito</Text>
                         <View>
@@ -80,17 +73,7 @@ export default function Cart() {
                         {carts.map((cart) => (
                             <View
                                 key={cart.cart_id}
-                                className="w-full h-[150px] flex-row bg-white rounded-lg"
-                                style={{
-                                    shadowColor: "#000",
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 8,
-                                    },
-                                    shadowOpacity: 1,
-                                    shadowRadius: 10.32,
-                                    elevation: 10,
-                                }}
+                                className="w-full h-[150px] flex-row bg-white rounded-lg shadow-lg"
                             >
                                 <View className="w-full h-full flex-row p-5 gap-4">
                                     <Link href={`/products/${cart.product.product_id}`}>
@@ -105,7 +88,7 @@ export default function Cart() {
                                     </Link>
                                     <View className="grow max-w-[40%] overflow-auto">
                                         <View className="grow">
-                                            <Text className="text-2xl font-extrabold text-black leading-none">
+                                            <Text className="text-2xl font-extrabold text-black leading-none line-clamp-2">
                                                 {cart.product.product_name}
                                             </Text>
                                             <Text>

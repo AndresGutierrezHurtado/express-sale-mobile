@@ -17,19 +17,7 @@ export default function Home() {
     return (
         <ScrollView className="w-full">
             <View className="w-full p-5">
-                <View
-                    className="w-full h-[200px] flex-row bg-purple-700 rounded-lg"
-                    style={{
-                        shadowColor: "#000",
-                        shadowOffset: {
-                            width: 0,
-                            height: 8,
-                        },
-                        shadowOpacity: 1,
-                        shadowRadius: 10.32,
-                        elevation: 10,
-                    }}
-                >
+                <View className="w-full min-h-[200px] flex-row bg-purple-700 rounded-lg shadow-lg">
                     <View className="w-2/3 h-full p-5 gap-1">
                         <Text className="text-4xl font-extrabold text-white leading-none">
                             ¡Bienvenidos a <Text className="text-yellow-500">Express Sale!</Text>
@@ -38,7 +26,7 @@ export default function Home() {
                             Acá puedes obtener los mejores productos de las tiendas de barrio.
                         </Text>
                     </View>
-                    <View className="w-1/3 h-full">
+                    <View className="w-1/3 aspect-[1/1]">
                         <Image
                             source={{
                                 uri: "https://png.pngtree.com/png-clipart/20231002/original/pngtree-man-with-shopping-cart-png-image_13228575.png",

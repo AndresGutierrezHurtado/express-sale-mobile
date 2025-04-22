@@ -41,12 +41,12 @@ export default function Products() {
         <ScrollView className="w-full">
             <View className="w-full p-5 pb-[100px] gap-5">
                 <View className="gap-2">
-                    <View className="w-full flex-row items-center justify-between">
+                    <View className="w-full flex-row flex-wrap gap-2 items-center justify-between">
                         <Text className="text-3xl font-extrabold tracking-tight">Productos</Text>
                         <Picker
                             selectedValue={sort}
                             onValueChange={(itemValue) => setSort(itemValue)}
-                            style={{ height: 50, width: 200 }}
+                            style={{ height: 50, width: 200, backgroundColor: "transparent" }}
                         >
                             <Picker.Item label="Relevancia" value={null} />
                             <Picker.Item label="Precio: Menor a Mayor" value="product_price:asc" />
