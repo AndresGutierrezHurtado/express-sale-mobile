@@ -10,7 +10,7 @@ import { useAddCart } from "../hooks/useCart";
 
 export default function ProductCard({ product }) {
     return (
-        <View className="bg-white p-4 shadow-xl rounded-md w-[175px] max-w-[42vw] min-h-[200px] gap-2">
+        <View className="bg-white p-4 shadow-lg rounded-md w-[175px] max-w-[42vw] min-h-[200px] gap-2">
             <Link asChild href={`/products/${product.product_id}`}>
                 <Pressable className="items-center">
                     <Image
@@ -51,7 +51,7 @@ export default function ProductCard({ product }) {
                         : product.average_rating < 4
                         ? "bg-yellow-500"
                         : "bg-green-500"
-                } aspect-square absolute top-[-10px] right-[-10px]`}
+                } absolute top-[-10px] right-[-10px]`}
             >
                 <Text className="font-bold text-white text-sm">
                     {(parseInt(product.average_rating * 10) / 10).toFixed(1) + " "}
