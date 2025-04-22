@@ -24,6 +24,7 @@
         "formik": "^2.4.6",
         "nativewind": "^4.1.23",
         "react": "18.3.1",
+        "react-dom": "^18.3.1",
         "react-native": "^0.76.6",
         "react-native-chart-kit": "^6.12.0",
         "react-native-html-to-pdf": "^0.12.0",
@@ -32,6 +33,7 @@
         "react-native-safe-area-context": "4.12.0",
         "react-native-screens": "^4.4.0",
         "react-native-table-component": "^1.2.2",
+        "react-native-web": "^0.19.9",
         "react-native-webview": "^13.13.2",
         "valibot": "^1.0.0-beta.9"
     },
